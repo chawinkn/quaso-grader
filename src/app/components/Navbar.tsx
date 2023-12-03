@@ -1,171 +1,84 @@
 'use client'
 
 import { useState } from 'react'
-import { useTheme } from 'next-themes'
-import {
-  Navbar,
-  NavbarBrand,
-  NavbarMenuToggle,
-  NavbarMenuItem,
-  NavbarMenu,
-  NavbarContent,
-  NavbarItem,
-  Link,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-  Dropdown,
-  Button,
-} from '@nextui-org/react'
 import { usePathname } from 'next/navigation'
+import Link from 'next/link'
+import { ThemeButton } from './Themebutton'
+import { Menu } from 'lucide-react'
 
 export function NavigationBar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
   const pathname = usePathname()
-  const { theme, setTheme } = useTheme()
+  const [isMenuOpen, setMenuOpen] = useState(false)
+  const [isDropdownOpen, setDropdownOpen] = useState(false)
+  const username = 'admin'
+
+  const toggleMenu = () => {
+    setMenuOpen(!isMenuOpen)
+  }
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!isDropdownOpen)
+  }
 
   return (
-    <Navbar
-      isBordered
-      isBlurred={false}
-      isMenuOpen={isMenuOpen}
-      onMenuOpenChange={setIsMenuOpen}
-    >
-      <NavbarContent className="sm:hidden" justify="start">
-        <NavbarMenuToggle />
-      </NavbarContent>
+    <>
+      <nav className="px-2 py-3 border-b">
+        <div className="container mx-auto flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <Link href="/" className="text-lg font-bold">
+              Home
+            </Link>
+            <Link href="/problems" className="hidden sm:inline-block">
+              Problems
+            </Link>
+            <Link href="/submissions" className="hidden sm:inline-block">
+              Submissions
+            </Link>
+            <Link href="/scoreboard" className="hidden sm:inline-block">
+              Scoreboard
+            </Link>
+          </div>
 
-      <NavbarContent className="pr-3 sm:hidden" justify="center">
-        <NavbarBrand>
-          <Link
-            href={pathname === '/' ? '#' : '/'}
-            className="font-bold text-inherit"
-          >
-            HOME
-          </Link>
-        </NavbarBrand>
-      </NavbarContent>
+          <div className="flex items-center space-x-4">
+            <ThemeButton />
+            <Link href={`/profile/${username}`} className="hidden sm:flex">
+              {username}
+            </Link>
+            <button className="hidden sm:flex text-red-500">Logout</button>
+            <button onClick={toggleMenu} className="sm:hidden">
+              <Menu className="h-[1.5rem] w-[1.5rem] scale-100" />
+            </button>
+          </div>
+        </div>
+      </nav>
 
-      <NavbarContent className="hidden gap-4 sm:flex" justify="center">
-        <NavbarBrand>
-          <Link
-            href={pathname === '/' ? '#' : '/'}
-            className="font-bold text-inherit"
-          >
-            HOME
-          </Link>
-        </NavbarBrand>
-        <NavbarItem>
-          <Link
-            color={pathname.startsWith('/problems') ? 'primary' : 'foreground'}
-            href={pathname.startsWith('/problems') ? '#' : '/problems'}
-          >
-            Problems
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link
-            color={
-              pathname.startsWith('/submissions') ? 'primary' : 'foreground'
-            }
-            href={pathname.startsWith('/submissions') ? '#' : '/submissions'}
-          >
-            Submissions
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link
-            color={
-              pathname.startsWith('/scoreboard') ? 'primary' : 'foreground'
-            }
-            href={pathname.startsWith('/scoreboard') ? '#' : '/scoreboard'}
-          >
-            Scoreboard
-          </Link>
-        </NavbarItem>
-      </NavbarContent>
-
-      <NavbarContent justify="end">
-        <NavbarItem>
-          <Button isIconOnly className="bg-transparent">
-            🌙
-          </Button>
-        </NavbarItem>
-        <Dropdown className="hidden sm:flex">
-          <NavbarItem>
-            <DropdownTrigger>
-              <Link color="foreground" className="cursor-pointer">
-                username
+      {isMenuOpen && (
+        <div className="sm:hidden border-b mb-5">
+          <div className="container mx-auto pl-10 py-2">
+            {/* <button className="py-2" onClick={toggleDropdown}>
+              <p>Manage</p>
+            </button>
+            {isDropdownOpen && (
+              <Link href="/problems/create" className="block pl-5 py-2">
+                - Create Problem
               </Link>
-            </DropdownTrigger>
-          </NavbarItem>
-          <DropdownMenu
-            color="default"
-            itemClasses={{
-              base: 'gap-4',
-            }}
-          >
-            <DropdownItem key="dashboard">
-              <Link
-                className="w-full"
-                color="foreground"
-                href={pathname.startsWith('/dashboard') ? '#' : '/dashboard'}
-              >
-                Dashboard
-              </Link>
-            </DropdownItem>
-            <DropdownItem key="logout">
-              <Link className="w-full" color="danger" href="#">
-                Log Out
-              </Link>
-            </DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
-      </NavbarContent>
-
-      <NavbarMenu>
-        <NavbarMenuItem>
-          <Link
-            color={pathname.startsWith('/problems') ? 'primary' : 'foreground'}
-            href={pathname.startsWith('/problems') ? '#' : '/problems'}
-          >
-            Problems
-          </Link>
-        </NavbarMenuItem>
-        <NavbarMenuItem>
-          <Link
-            color={
-              pathname.startsWith('/submissions') ? 'primary' : 'foreground'
-            }
-            href={pathname.startsWith('/submissions') ? '#' : '/submissions'}
-          >
-            Submissions
-          </Link>
-        </NavbarMenuItem>
-        <NavbarMenuItem>
-          <Link
-            color={
-              pathname.startsWith('/scoreboard') ? 'primary' : 'foreground'
-            }
-            href={pathname.startsWith('/scoreboard') ? '#' : 'scoreboard'}
-          >
-            Scoreboard
-          </Link>
-        </NavbarMenuItem>
-        <NavbarMenuItem>
-          <Link
-            color={pathname.startsWith('/dashboard') ? 'primary' : 'foreground'}
-            href={pathname.startsWith('/dashboard') ? '#' : 'dashboard'}
-          >
-            Dashboard
-          </Link>
-        </NavbarMenuItem>
-        <NavbarMenuItem>
-          <Link color="danger" href="#">
-            Log Out
-          </Link>
-        </NavbarMenuItem>
-      </NavbarMenu>
-    </Navbar>
+            )} */}
+            <Link href="/problems" className="block py-2">
+              Problems
+            </Link>
+            <Link href="/submissions" className="block py-2">
+              Submissions
+            </Link>
+            <Link href="/scoreboard" className="block py-2">
+              Scoreboard
+            </Link>
+            <Link href={`/profile/${username}`} className="block py-2">
+              Profile
+            </Link>
+            <button className="text-red-500 py-2">Logout</button>
+          </div>
+        </div>
+      )}
+    </>
   )
 }

@@ -24,7 +24,6 @@ import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
-import { signIn } from 'next-auth/react'
 
 const formSchema = z.object({
   username: z
@@ -47,34 +46,15 @@ export default function LogIn() {
     },
   })
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    router.push('/problems')
-    // const username = data?.username
-    // const password = data?.password
-    // try {
-    //   const fetchData = await signIn('credentials', {
-    //     username,
-    //     password,
-    //     redirect: false,
-    //   })
-    //   if (fetchData?.ok) {
-    //     router.push('/problems')
-    //   } else {
-    //     console.log('ERROR')
-    //   }
-    // } catch (error) {
-    //   console.log('Something')
-    // }
+  const onSubmit = (data: z.infer<typeof formSchema>) => {
+    router.push('/')
   }
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <Card className="w-[350px]">
         <CardHeader className="text-center">
-          <CardTitle>Grader</CardTitle>
-          <CardDescription>
-            Please login to see the problem list
-          </CardDescription>
+          <CardTitle>Register</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <Form {...form}>
@@ -108,12 +88,12 @@ export default function LogIn() {
                 )}
               />
               <Button className="w-full" type="submit">
-                Login
+                Register
               </Button>
             </form>
           </Form>
           <CardDescription className="text-center">
-            <Link href="/register">Don't have an account?</Link>
+            <Link href="/">Already have an account?</Link>
           </CardDescription>
         </CardContent>
       </Card>

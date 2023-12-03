@@ -1,88 +1,57 @@
-'use client'
-
 import {
   Table,
-  TableHeader,
-  TableColumn,
   TableBody,
-  TableRow,
+  TableCaption,
   TableCell,
-  getKeyValue,
-} from '@nextui-org/react'
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
-const rows = [
+type ProblemsData = [
   {
-    id: '1',
-    name: 'A+B',
-    pass: '30',
-    score: '100/100',
-  },
-  {
-    id: '2',
-    name: 'A*B',
-    pass: '27',
-    score: '100/100',
-  },
-  {
-    id: '3',
-    name: 'Grading',
-    pass: '14',
-    score: '0/100',
-  },
-  {
-    id: '4',
-    name: 'Pyramid 1',
-    pass: '15',
-    score: '0/100',
-  },
-  {
-    id: '5',
-    name: 'Hill',
-    pass: '4',
-    score: '30/100',
-  },
+    name: string
+    problemId: number
+    passCount: number
+    score: number
+  }
 ]
 
-const columns = [
-  {
-    key: 'id',
-    label: 'ID',
-  },
-  {
-    key: 'name',
-    label: 'NAME',
-  },
-  {
-    key: 'pass',
-    label: 'PASS',
-  },
-  {
-    key: 'score',
-    label: 'SCORE',
-  },
-]
+export default async function ProblemsTable() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/problems`)
+  const data: ProblemsData = await res.json()
 
-export default function ProblemsTable() {
   return (
-    <Table isStriped aria-label="Problems List">
-      <TableHeader columns={columns}>
-        {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
-      </TableHeader>
-      {rows.length ? (
-        <TableBody items={rows}>
-          {(item) => (
-            <TableRow key={item.id}>
-              {(columnKey) => (
-                <TableCell className="cursor-pointer py-3">
-                  {getKeyValue(item, columnKey)}
-                </TableCell>
-              )}
+    <Card className="w-[350px] sm:w-[500px] md:w-[650px]">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>ID</TableHead>
+            <TableHead>Name</TableHead>
+            <TableHead className="text-center">Pass</TableHead>
+            <TableHead className="text-center">Score</TableHead>
+            <TableHead className="text-center">#</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {data.map((rows) => (
+            <TableRow key={rows.problemId}>
+              <TableCell>{rows.problemId}</TableCell>
+              <TableCell>{rows.name}</TableCell>
+              <TableCell className="text-center">{rows.passCount}</TableCell>
+              <TableCell className="text-center">0 / {rows.score}</TableCell>
+              <TableCell className="text-center">
+                <Link href={`/problems/${rows.problemId}`}>
+                  <Button className="w-12 h-9">Edit</Button>
+                </Link>
+              </TableCell>
             </TableRow>
-          )}
+          ))}
         </TableBody>
-      ) : (
-        <TableBody emptyContent={'No problems to display.'}>{[]}</TableBody>
-      )}
-    </Table>
+      </Table>
+    </Card>
   )
 }
