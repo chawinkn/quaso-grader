@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
-// import { Inter } from 'next/font/google'
-import { GeistSans } from 'geist/font/sans'
+import { Inter } from 'next/font/google'
+// import { GeistSans } from 'geist/font/sans'
 import './globals.css'
-import { ThemeProvider } from './components/Themeprovider'
+import { ThemeProvider } from '../components/Themeprovider'
 
-// const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Grader',
@@ -18,13 +18,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={GeistSans.className}>
+      <body className={inter.className}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
           disableTransitionOnChange
         >
-          <div className="flex flex-col h-screen bg-background antialiased">
+          <div className="flex flex-col min-h-screen bg-background antialiased">
             {children}
           </div>
         </ThemeProvider>

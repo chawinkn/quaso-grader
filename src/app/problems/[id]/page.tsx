@@ -1,6 +1,8 @@
-import { NavigationBar } from '@/app/components/Navbar'
+import { NavigationBar } from '@/components/Navbar'
 import prisma from '@/lib/prisma'
 import { notFound } from 'next/navigation'
+import ProblemsLayout from '@/components/Problemslayout'
+import { Suspense } from 'react'
 
 type ProblemProps = {
   params: {
@@ -8,21 +10,34 @@ type ProblemProps = {
   }
 }
 
-export default async function Problems({ params }: ProblemProps) {
+async function getProblem(id: string) {
+  // await new Promise((resolve) => setTimeout(resolve, 3000))
   const res = await prisma.problem.findFirst({
-    where: { problemId: Number(params.id) },
+    where: {
+      problemId: Number(id),
+    },
   })
-
   if (!res) {
     return notFound()
   }
+  return res
+}
+
+export default async function Problems({ params }: ProblemProps) {
+  const problem = await getProblem(params.id)
 
   return (
     <>
       <NavigationBar />
-      <div className="flex flex-col items-center justify-center h-screen">
-        {res.name}
-      </div>
+      <Suspense
+        fallback={
+          <div className="flex flex-col items-center justify-center h-screen mx-10">
+            <p className="animate-pulse text-base">Loading...</p>
+          </div>
+        }
+      >
+        <ProblemsLayout problem={problem} />
+      </Suspense>
     </>
   )
 }

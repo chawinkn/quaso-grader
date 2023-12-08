@@ -25,7 +25,7 @@ export function NavigationBar() {
       <nav className="px-2 py-3 border-b">
         <div className="container mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <Link href="/" className="text-lg font-bold">
+            <Link href="/problems" className="text-lg font-bold">
               Home
             </Link>
             <Link href="/problems" className="hidden sm:inline-block">

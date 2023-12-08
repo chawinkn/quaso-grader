@@ -1,4 +1,4 @@
-import { NavigationBar } from '@/app/components/Navbar'
+import { NavigationBar } from '@/components/Navbar'
 import prisma from '@/lib/prisma'
 import { notFound } from 'next/navigation'
 
