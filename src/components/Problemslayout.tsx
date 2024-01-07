@@ -11,7 +11,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Card } from './ui/card'
 import { useState } from 'react'
+import Link from 'next/link'
 
 type ProblemsData = {
   name: string | null
@@ -29,14 +31,17 @@ export default function ProblemsLayout({ ...props }) {
   const languageList = [
     {
       name: 'C',
+      language: 'c',
       ext: 'c',
     },
     {
       name: 'C++',
+      language: 'cpp',
       ext: 'cpp',
     },
     {
       name: 'Python',
+      language: 'python',
       ext: 'py',
     },
   ]
@@ -45,7 +50,7 @@ export default function ProblemsLayout({ ...props }) {
     setLanguauge(value)
   }
 
-  const handleSourceCode = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     const name = file?.name
     const ext = name?.substring(name.lastIndexOf('.') + 1) as string
@@ -67,54 +72,72 @@ export default function ProblemsLayout({ ...props }) {
     reader.readAsText(file)
   }
 
+  const handleEditorChange = (value: string | any) => {
+    setSourcecode(value)
+  }
+
   const handleSubmit = async () => {
-    const currentTime = new Date();
-    const formattedTime = currentTime.toLocaleTimeString();
-  
-    alert(`Submitted at ${formattedTime}`);
-  };
-  
+    const currentTime = new Date()
+    const formattedTime = currentTime.toLocaleTimeString()
+    alert(`Submitted at ${formattedTime}`)
+  }
 
   return (
-    <div className='flex flex-col items-center justify-center py-10'>
+    <div className="flex flex-col items-center justify-center lg:py-5">
       <p className="font-bold">{problem.name}</p>
       <p className="text-sm">Time Limit: 1 ms</p>
       <p className="text-sm">Memory: 64 megabytes</p>
-      <div className="flex flex-col sm:flex-row h-3/4 mt-5 space-y-4 sm:space-x-4">
-        <div className="w-[350px] lg:w-[500px] xl:w-[700px] h-[400px] border">
+      <div className="flex flex-col mt-5 space-y-4 lg:flex-row h-3/4 sm:space-x-4">
+        <Card className="w-[350px] sm:w-[500px] xl:w-[700px] h-[400px] overflow-hidden">
           <Editor
             language={language}
             value={sourcecode}
             theme={theme === 'light' ? 'light' : 'vs-dark'}
             options={{
               minimap: { enabled: false },
-              padding: { top: 10, bottom: 10 },
-              roundedSelection: true,
             }}
             className="caret-transparent"
+            onChange={handleEditorChange}
           />
-        </div>
-        <div className="flex flex-col space-y-4">
+        </Card>
+        <div className="flex flex-col space-y-5">
+          <div className="inline">
+            <p className="inline font-bold">Description: </p>
+            <Link
+              href="https://api.otog.cf/problem/doc/944"
+              target="_blank"
+              className="inline"
+            >
+              [{problem.name}]
+            </Link>
+          </div>
           <Input
             id="sourcecode"
             type="file"
-            onChange={handleSourceCode}
+            onChange={handleFileUpload}
             className={fileInputColor}
           />
-          <Select onValueChange={handleLanguage}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Language" />
-            </SelectTrigger>
-            <SelectContent>
-              {languageList.map((lang) => (
-                <SelectItem key={lang.name} value={lang.ext}>
-                  {lang.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Button className="mt-5" onClick={handleSubmit}>Submit</Button>
-          <Button className="mt-5">Submission</Button>
+          <div className="flex flex-row space-x-4">
+            <Select onValueChange={handleLanguage}>
+              <SelectTrigger className="w-1/2">
+                <SelectValue placeholder="Language" />
+              </SelectTrigger>
+              <SelectContent>
+                {languageList.map((lang) => (
+                  <SelectItem key={lang.name} value={lang.language}>
+                    {lang.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button
+              disabled={!(sourcecode && language)}
+              className="w-1/2"
+              onClick={handleSubmit}
+            >
+              Submit
+            </Button>
+          </div>
         </div>
       </div>
     </div>

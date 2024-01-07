@@ -31,8 +31,8 @@ export default async function Problems({ params }: ProblemProps) {
       <NavigationBar />
       <Suspense
         fallback={
-          <div className="flex flex-col items-center justify-center h-screen mx-10">
-            <p className="animate-pulse text-base">Loading...</p>
+          <div className="flex flex-col items-center justify-center h-screen py-10">
+            <p className="text-base animate-pulse">Loading...</p>
           </div>
         }
       >

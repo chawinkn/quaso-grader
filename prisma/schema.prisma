@@ -12,18 +12,38 @@ generator client {
 
 model Problem {
   id        String  @id @default(auto()) @map("_id") @db.ObjectId
-  name      String? @unique
-  problemId Int?    @unique
-  passCount Int?    @default(0)
-  score     Int?    @default(0)
+  name      String
+  problemId Int
+  passCount Int     @default(0)
+  group     Group[]
+  fullScore Int
+  time      Int     @default(0)
+  memory    Int     @default(0)
+
+  @@unique([name, problemId])
+}
+
+model Submission {
+  id           String  @id @default(auto()) @map("_id") @db.ObjectId
+  submissionId Int
+  problemId    String  @db.ObjectId
+  language     String
+  time         Int     @default(0)
+  memory       Int     @default(0)
+  User         User?   @relation(fields: [userId], references: [id])
+  userId       String? @db.ObjectId
+
+  @@unique([submissionId])
 }
 
 model Group {
-  id          String  @id @default(auto()) @map("_id") @db.ObjectId
-  name        String? @unique
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
   description String?
-  User        User?   @relation(fields: [userId], references: [id])
-  userId      String? @db.ObjectId
+  User        User?    @relation(fields: [userId], references: [id])
+  userId      String?  @db.ObjectId
+  Problem     Problem? @relation(fields: [problemId], references: [id])
+  problemId   String?  @db.ObjectId
 }
 
 enum UserRole {
@@ -32,11 +52,14 @@ enum UserRole {
 }
 
 model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  username  String?  @unique
-  name      String?
-  password  String?
-  role      UserRole @default(USER)
-  groups    Group[]
-  createdAt DateTime @default(now())
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  username    String?
+  name        String
+  password    String
+  role        UserRole     @default(USER)
+  groups      Group[]
+  submissions Submission[]
+  createdAt   DateTime     @default(now())
+
+  @@unique([username])
 }

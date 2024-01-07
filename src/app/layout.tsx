@@ -24,7 +24,7 @@ export default function RootLayout({
           defaultTheme="dark"
           disableTransitionOnChange
         >
-          <div className="flex flex-col min-h-screen bg-background antialiased">
+          <div className="flex flex-col h-screen antialiased bg-background">
             {children}
           </div>
         </ThemeProvider>

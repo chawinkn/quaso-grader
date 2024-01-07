@@ -7,24 +7,23 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from '@/components/ui/form'
+import { Loader2 } from 'lucide-react'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
+import { useState } from 'react'
 
 const formSchema = z.object({
   username: z
@@ -46,8 +45,10 @@ export default function LogIn() {
       password: '',
     },
   })
+  const [isSubmit, setSubmit] = useState(false)
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    setSubmit(true)
     router.push('/problems')
     // const username = data?.username
     // const password = data?.password
@@ -107,8 +108,12 @@ export default function LogIn() {
                   </FormItem>
                 )}
               />
-              <Button className="w-full" type="submit">
-                Login
+              <Button disabled={isSubmit} className="w-full" type="submit">
+                {isSubmit ? (
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                ) : (
+                  'Login'
+                )}
               </Button>
             </form>
           </Form>
