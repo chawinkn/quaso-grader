@@ -14,14 +14,13 @@ import {
 } from '@/components/ui/navigation-menu'
 import { useSession, signOut } from 'next-auth/react'
 import toast from 'react-hot-toast'
-import { usePathname, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { Separator } from '@/components/ui/separator'
 
 export function NavigationBar() {
   const [isMenuOpen, setMenuOpen] = useState(false)
   const { status, data: session } = useSession()
   const router = useRouter()
-  const pathname = usePathname()
 
   const toggleMenu = () => {
     setMenuOpen(!isMenuOpen)
@@ -32,10 +31,6 @@ export function NavigationBar() {
     signOut()
     router.push('/')
   }
-
-  useEffect(() => {
-    setMenuOpen(false)
-  }, [pathname])
 
   return (
     <>
