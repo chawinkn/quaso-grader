@@ -1,28 +1,29 @@
-import { NavigationBar } from '@/components/Navbar'
-import ProblemsTable from '@/components/Problemstable'
+import TasksTable from '@/components/Taskstable'
 import { columns } from './columns'
 
-export const revalidate = 3600 // revalidate every hour
+// export const revalidate = 3600 // revalidate the data at most every hour
 
-async function getProblemList() {
-  // await new Promise((resolve) => setTimeout(resolve, 3000))
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/problems`)
-  if (!res.ok) {
-    throw new Error('Failed to fetch data')
-  }
-  const data = await res.json()
-  return data
-}
+// async function getProblemList() {
+//   await new Promise((resolve) => setTimeout(resolve, 3000))
+//   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/problems`)
+//   if (!res.ok) {
+//     throw new Error('Failed to fetch data')
+//   }
+//   const data = await res.json()
+//   const data = await prisma.problem.findMany({
+//     orderBy: {
+//       problemId: 'asc',
+//     },
+//   })
+//   return data
+// }
 
-export default async function Problems() {
-  const problemList = await getProblemList()
-
+export default async function Tasks() {
   return (
-    <>
-      <NavigationBar />
+    <div className="h-screen">
       <div className="flex flex-col items-center justify-center py-10">
         <div className="mb-10">
-          <h1 className="text-3xl font-bold">PROBLEMLIST</h1>
+          <h1 className="text-3xl font-bold">TASKS</h1>
         </div>
         {/* <Suspense
           fallback={
@@ -50,9 +51,10 @@ export default async function Problems() {
             </Card>
           }
         > */}
-        <ProblemsTable columns={columns} data={problemList} />
+        {/* <ProblemsTable columns={columns} data={problemList} /> */}
+        <TasksTable columns={columns} data={[]} />
         {/* </Suspense> */}
       </div>
-    </>
+    </div>
   )
 }

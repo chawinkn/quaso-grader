@@ -38,7 +38,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
 }
 
-export default function ProblemsTable<TData, TValue>({
+export default function TasksTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -65,7 +65,7 @@ export default function ProblemsTable<TData, TValue>({
 
   return (
     <>
-      <div className="flex flex-col sm:flex-row items-center mb-5 space-y-4 sm:space-x-4 sm:space-y-0">
+      <div className="flex flex-col items-center mb-5 space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
         <Input
           placeholder="Find name..."
           value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
@@ -111,13 +111,9 @@ export default function ProblemsTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
-                  className={
-                    index % 2 === 1
-                      ? 'bg-muted/30 cursor-pointer'
-                      : 'cursor-pointer'
-                  }
+                  className={index % 2 === 1 ? 'bg-muted/30' : ''}
                   onClick={() => {
-                    router.push(`/problems/${row.getValue('problemId')}`)
+                    router.push(`/tasks/${row.getValue('problemId')}`)
                   }}
                 >
                   {row.getVisibleCells().map((cell) => (
@@ -136,7 +132,7 @@ export default function ProblemsTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No problems.
+                  No task.
                 </TableCell>
               </TableRow>
             )}

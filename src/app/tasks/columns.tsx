@@ -4,14 +4,14 @@ import { ColumnDef } from '@tanstack/react-table'
 import { ArrowUpDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-export type ProblemsData = {
+export type TasksData = {
   name: string
   problemId: number
   passCount: number
   fullScore: number
 }
 
-export const columns: ColumnDef<ProblemsData>[] = [
+export const columns: ColumnDef<TasksData>[] = [
   {
     accessorKey: 'problemId',
     header: ({ column }) => {
@@ -27,7 +27,7 @@ export const columns: ColumnDef<ProblemsData>[] = [
                 column.toggleSorting(column.getIsSorted() === 'asc')
               }
             >
-              <ArrowUpDown className="h-4 w-4" />
+              <ArrowUpDown className="w-4 h-4" />
             </Button>
           </span>
         </div>
@@ -49,7 +49,7 @@ export const columns: ColumnDef<ProblemsData>[] = [
                 column.toggleSorting(column.getIsSorted() === 'asc')
               }
             >
-              <ArrowUpDown className="h-4 w-4" />
+              <ArrowUpDown className="w-4 h-4" />
             </Button>
           </span>
         </div>
@@ -71,7 +71,7 @@ export const columns: ColumnDef<ProblemsData>[] = [
                 column.toggleSorting(column.getIsSorted() === 'asc')
               }
             >
-              <ArrowUpDown className="h-4 w-4" />
+              <ArrowUpDown className="w-4 h-4" />
             </Button>
           </span>
         </div>
@@ -96,7 +96,7 @@ export const columns: ColumnDef<ProblemsData>[] = [
                 column.toggleSorting(column.getIsSorted() === 'asc')
               }
             >
-              <ArrowUpDown className="h-4 w-4" />
+              <ArrowUpDown className="w-4 h-4" />
             </Button>
           </span>
         </div>

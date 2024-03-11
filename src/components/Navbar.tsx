@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { ThemeButton } from './Themebutton'
 import { Menu, X } from 'lucide-react'
@@ -12,29 +12,45 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu'
+import { useSession, signOut } from 'next-auth/react'
+import toast from 'react-hot-toast'
+import { usePathname, useRouter } from 'next/navigation'
+import { Separator } from '@/components/ui/separator'
 
 export function NavigationBar() {
   const [isMenuOpen, setMenuOpen] = useState(false)
-  const username = 'admin'
+  const { status, data: session } = useSession()
+  const router = useRouter()
+  const pathname = usePathname()
 
   const toggleMenu = () => {
     setMenuOpen(!isMenuOpen)
   }
 
+  const logOut = (event: React.MouseEvent<HTMLButtonElement>) => {
+    toast.success('Logout successfully')
+    signOut()
+    router.push('/')
+  }
+
+  useEffect(() => {
+    setMenuOpen(false)
+  }, [pathname])
+
   return (
     <>
-      <div className="z-50 flex items-center px-4 py-2 text-sm font-medium border-b bg-background">
+      <div className="z-50 flex items-center px-8 py-2 text-sm font-medium border-b md:px-16 lg:px-24 bg-background">
         <NavigationMenu>
           <NavigationMenuList>
             <NavigationMenuItem>
-              <Link href="/problems" legacyBehavior passHref>
+              <Link href="/" legacyBehavior passHref>
                 <NavigationMenuLink className="px-2">Home</NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
             <NavigationMenuItem className="hidden sm:flex">
-              <Link href="/problems" legacyBehavior passHref>
+              <Link href="/tasks" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Problems
+                  Tasks
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
@@ -60,17 +76,44 @@ export function NavigationBar() {
               <NavigationMenuItem>
                 <ThemeButton />
               </NavigationMenuItem>
-              <NavigationMenuItem className="hidden sm:flex">
-                <Link href={`/profile/${username}`} legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    {username}
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
+              {session?.user ? (
+                <NavigationMenuItem className="hidden sm:flex">
+                  <Link
+                    href={`/profile/${session?.user.name}`}
+                    legacyBehavior
+                    passHref
+                  >
+                    <NavigationMenuLink
+                      className={navigationMenuTriggerStyle()}
+                    >
+                      {session?.user.name}
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+              ) : (
+                <></>
+              )}
               <NavigationMenuItem>
-                <button className="hidden px-2 text-red-500 sm:flex">
-                  Logout
-                </button>
+                {session?.user ? (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="hidden px-4 mx-2 text-red-500 sm:flex"
+                    onClick={logOut}
+                  >
+                    Logout
+                  </Button>
+                ) : (
+                  <Link href="/login">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="hidden px-4 mx-2 sm:flex"
+                    >
+                      Login
+                    </Button>
+                  </Link>
+                )}
                 <Button
                   onClick={toggleMenu}
                   variant="outline"
@@ -92,76 +135,43 @@ export function NavigationBar() {
       {isMenuOpen && (
         <>
           <div className="fixed inset-0 z-40 bg-background"></div>
-          <div className="z-50 flex flex-col items-start p-6 space-y-4 text-sm">
-            <Link href="/problems">Problems</Link>
-            <Link href="/submissions">Submissions</Link>
-            <Link href="/scoreboard">Scoreboard</Link>
-            <Link href={`/profile/${username}`} legacyBehavior passHref>
-              Profile
-            </Link>
-            <button className="text-sm font-medium text-red-500">Logout</button>
+          <div className="z-50 flex flex-col items-start py-8 text-sm px-9">
+            <div className="flex flex-col w-full space-y-3">
+              <Link href="/tasks">Tasks</Link>
+              <Separator />
+              <Link href="/submissions">Submissions</Link>
+              <Separator />
+              <Link href="/scoreboard">Scoreboard</Link>
+              <Separator />
+              <Link
+                href={`/profile/${session?.user.name}`}
+                legacyBehavior
+                passHref
+              >
+                Profile
+              </Link>
+            </div>
+            <div className="w-full mt-10">
+              {session?.user ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full text-red-500"
+                  onClick={logOut}
+                >
+                  Logout
+                </Button>
+              ) : (
+                <Link href="/login" className="w-full">
+                  <Button variant="outline" size="sm" className="w-full">
+                    Login
+                  </Button>
+                </Link>
+              )}
+            </div>
           </div>
         </>
       )}
     </>
-    // <>
-    //   <nav className="px-2 py-3 border-b">
-    //     <div className="container flex items-center justify-between mx-auto">
-    //       <div className="flex items-center space-x-4">
-    //         <Link href="/problems" className="text-lg font-bold">
-    //           Home
-    //         </Link>
-    //         <Link href="/problems" className="hidden sm:inline-block">
-    //           Problems
-    //         </Link>
-    //         <Link href="/submissions" className="hidden sm:inline-block">
-    //           Submissions
-    //         </Link>
-    //         <Link href="/scoreboard" className="hidden sm:inline-block">
-    //           Scoreboard
-    //         </Link>
-    //       </div>
-
-    //       <div className="flex items-center space-x-4">
-    // <ThemeButton />
-    // <Link href={`/profile/${username}`} className="hidden sm:flex">
-    //   {username}
-    // </Link>
-    // <button className="hidden text-red-500 sm:flex">Logout</button>
-    // <button onClick={toggleMenu} className="sm:hidden">
-    //   <Menu className="h-[1.5rem] w-[1.5rem] scale-100" />
-    // </button>
-    //       </div>
-    //     </div>
-    //   </nav>
-
-    //   {isMenuOpen && (
-    //     <div className="mb-5 border-b sm:hidden">
-    //       <div className="container py-2 pl-10 mx-auto">
-    //         {/* <button className="py-2" onClick={toggleDropdown}>
-    //           <p>Manage</p>
-    //         </button>
-    //         {isDropdownOpen && (
-    //           <Link href="/problems/create" className="block py-2 pl-5">
-    //             - Create Problem
-    //           </Link>
-    //         )} */}
-    //         <Link href="/problems" className="block py-2">
-    //           Problems
-    //         </Link>
-    //         <Link href="/submissions" className="block py-2">
-    //           Submissions
-    //         </Link>
-    //         <Link href="/scoreboard" className="block py-2">
-    //           Scoreboard
-    //         </Link>
-    //         <Link href={`/profile/${username}`} className="block py-2">
-    //           Profile
-    //         </Link>
-    //         <button className="py-2 text-red-500">Logout</button>
-    //       </div>
-    //     </div>
-    //   )}
-    // </>
   )
 }

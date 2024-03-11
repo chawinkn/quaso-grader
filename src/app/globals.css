@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  font-family: var(--font-inter), var(--font-noto-sans-thai), BlinkMacSystemFont,
+    'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
+    sans-serif;
+}
+
 .gradient {
   background: linear-gradient(to top left, #03001e, #7303c0, #ec38bc, #fdeff9);
 }

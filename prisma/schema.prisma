@@ -2,64 +2,141 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-  provider = "mongodb"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 generator client {
   provider = "prisma-client-js"
 }
 
-model Problem {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  problemId Int
-  passCount Int     @default(0)
-  group     Group[]
-  fullScore Int
-  time      Int     @default(0)
-  memory    Int     @default(0)
+model Account {
+  id                 String    @id @default(cuid())
+  userId             String
+  providerType       String
+  providerId         String
+  providerAccountId  String
+  refreshToken       String?
+  accessToken        String?
+  accessTokenExpires DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  user               User      @relation(fields: [userId], references: [id])
 
-  @@unique([name, problemId])
+  @@unique([providerId, providerAccountId])
+}
+
+model User {
+  id            String         @id @default(cuid())
+  username      String?        @unique
+  name          String?
+  password      String
+  role          UserRole       @default(USER)
+  submissions   Submission[]
+  groups        Group[]
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  announcements Announcement[]
+  accounts      Account[]
+  sessions      Session[]
+
+  @@map("user")
+}
+
+model Task {
+  id          String       @id
+  title       String       @db.Text
+  fullScore   Int          @map("full_score")
+  private     Boolean      @default(false)
+  submissions Submission[]
+  group       Group?       @relation(fields: [groupId], references: [id])
+  groupId     String?
+
+  @@index([id])
+  @@map("task")
 }
 
 model Submission {
-  id           String  @id @default(auto()) @map("_id") @db.ObjectId
-  submissionId Int
-  problemId    String  @db.ObjectId
-  language     String
-  time         Int     @default(0)
-  memory       Int     @default(0)
-  User         User?   @relation(fields: [userId], references: [id])
-  userId       String? @db.ObjectId
+  id          Int      @id @default(autoincrement())
+  taskId      String   @map("task_id")
+  status      String   @default("In Queue")
+  submittedAt DateTime @default(now()) @map("submitted_at")
+  time        Int      @default(0)
+  memory      Int      @default(0)
+  code        Bytes
+  score       Int      @default(0)
+  language    String
+  private     Boolean  @default(false)
+  userId      String?  @map("user_id")
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  task        Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  group       Group?   @relation(fields: [groupId], references: [id])
+  groupId     String?
 
-  @@unique([submissionId])
+  @@index([id])
+  @@map("submission")
 }
 
 model Group {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
-  description String?
-  User        User?    @relation(fields: [userId], references: [id])
-  userId      String?  @db.ObjectId
-  Problem     Problem? @relation(fields: [problemId], references: [id])
-  problemId   String?  @db.ObjectId
+  id            String         @id @default(cuid())
+  name          String         @unique
+  tasks         Task[]
+  submissions   Submission[]
+  private       Boolean        @default(true)
+  inviteCode    String?        @unique
+  createdAt     DateTime       @default(now()) @map("created_at")
+  users         User[]
+  announcements Announcement[]
+
+  @@map("group")
+}
+
+model Announcement {
+  id          String   @id @default(cuid())
+  title       String
+  content     String
+  createdAt   DateTime @default(now()) @map("created_at")
+  createdBy   User?    @relation(fields: [createdById], references: [id])
+  createdById String?
+  group       Group?   @relation(fields: [groupId], references: [id])
+  groupId     String?
+
+  @@map("announcement")
+}
+
+model GlobalAnnouncement {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("global_announcement")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  userId       String
+  expires      DateTime
+  sessionToken String   @unique
+  accessToken  String   @unique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id])
+}
+
+model VerificationRequest {
+  id         String   @id @default(cuid())
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([identifier, token])
 }
 
 enum UserRole {
   USER
   ADMIN
-}
-
-model User {
-  id          String       @id @default(auto()) @map("_id") @db.ObjectId
-  username    String?
-  name        String
-  password    String
-  role        UserRole     @default(USER)
-  groups      Group[]
-  submissions Submission[]
-  createdAt   DateTime     @default(now())
-
-  @@unique([username])
 }

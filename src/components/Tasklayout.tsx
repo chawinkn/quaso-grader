@@ -15,15 +15,15 @@ import { Card } from './ui/card'
 import { useState } from 'react'
 import Link from 'next/link'
 
-type ProblemsData = {
+type TaskData = {
   name: string | null
   problemId: number | null
   passCount: number | null
   score: number | null
 }
 
-export default function ProblemsLayout({ ...props }) {
-  const problem: ProblemsData = props?.problem
+export default function TaskLayout({ ...props }) {
+  const task: TaskData = props?.task
   const { theme } = useTheme()
   const [language, setLanguauge] = useState('')
   const [sourcecode, setSourcecode] = useState('')
@@ -84,7 +84,7 @@ export default function ProblemsLayout({ ...props }) {
 
   return (
     <div className="flex flex-col items-center justify-center lg:py-5">
-      <p className="font-bold">{problem.name}</p>
+      <p className="font-bold">{task.name}</p>
       <p className="text-sm">Time Limit: 1 ms</p>
       <p className="text-sm">Memory: 64 megabytes</p>
       <div className="flex flex-col mt-5 space-y-4 lg:flex-row h-3/4 sm:space-x-4">
@@ -103,12 +103,8 @@ export default function ProblemsLayout({ ...props }) {
         <div className="flex flex-col space-y-5">
           <div className="inline">
             <p className="inline font-bold">Description: </p>
-            <Link
-              href="https://api.otog.cf/problem/doc/944"
-              target="_blank"
-              className="inline"
-            >
-              [{problem.name}]
+            <Link href="#" target="_blank" className="inline">
+              [{task.name}]
             </Link>
           </div>
           <Input

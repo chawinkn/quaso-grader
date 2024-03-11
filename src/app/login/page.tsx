@@ -7,17 +7,14 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from '@/components/ui/form'
 import { Loader2 } from 'lucide-react'
@@ -25,29 +22,27 @@ import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
+import { signIn } from 'next-auth/react'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
-import { Badge } from '@/components/ui/badge'
 
 const formSchema = z.object({
   username: z
     .string()
     .min(5, { message: 'Username must be 5-15 characters.' })
     .max(15, { message: 'Username must be 5-15 characters.' }),
-  inviteCode: z.string(),
   password: z
     .string()
     .min(5, { message: 'Password must be 5-15 characters.' })
     .max(15, { message: 'Password must be 5-15 characters.' }),
 })
 
-export default function Register() {
+export default function LogIn() {
   const router = useRouter()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: '',
-      inviteCode: '',
       password: '',
     },
   })
@@ -55,25 +50,18 @@ export default function Register() {
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setSubmit(true)
-    const { username, inviteCode, password } = data
+    const { username, password } = data
     try {
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username,
-          inviteCode,
-          password,
-        }),
+      const response = await signIn('credentials', {
+        username,
+        password,
+        redirect: false,
       })
       if (response?.ok) {
-        toast.success('Registration successfully')
-        router.push('/')
+        toast.success('Login successfully')
+        router.push('/tasks')
       } else {
-        const result = await response.json()
-        toast.error(result.error)
+        toast.error('Invalid username or password.')
       }
     } catch (error) {
       toast.error('An unexpected error occurred. Please try again later.')
@@ -85,10 +73,8 @@ export default function Register() {
     <div className="flex items-center justify-center h-screen">
       <Card className="w-[350px]">
         <CardHeader className="text-center">
-          <CardTitle>Register</CardTitle>
-          <CardDescription>
-            Invitation code : <Badge variant="secondary">test</Badge>
-          </CardDescription>
+          <CardTitle>Grader</CardTitle>
+          <CardDescription>Please login to see the tasks</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <Form {...form}>
@@ -100,18 +86,6 @@ export default function Register() {
                   <FormItem>
                     <FormControl>
                       <Input placeholder="Username" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="inviteCode"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input placeholder="Invitation code" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -137,13 +111,13 @@ export default function Register() {
                 {isSubmit ? (
                   <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                 ) : (
-                  'Register'
+                  'Login'
                 )}
               </Button>
             </form>
           </Form>
           <CardDescription className="text-center">
-            <Link href="/">Already have an account?</Link>
+            <Link href="/register">Don't have an account?</Link>
           </CardDescription>
         </CardContent>
       </Card>
