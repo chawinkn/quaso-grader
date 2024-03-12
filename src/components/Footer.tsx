@@ -1,4 +1,4 @@
-import { PoweredByVercel, GithubIcon } from '@/svg/Logo'
+import { GithubIcon } from '@/svg/Logo'
 import Link from 'next/link'
 
 export default function Footer() {
@@ -9,9 +9,6 @@ export default function Footer() {
         <div className="flex flex-row items-center mt-5 space-x-5 md:mt-0">
           <Link href="https://github.com/chawinkn/grader-project">
             <GithubIcon />
-          </Link>
-          <Link href="https://vercel.com">
-            <PoweredByVercel />
           </Link>
         </div>
       </div>
