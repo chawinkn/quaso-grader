@@ -16,6 +16,8 @@ export async function GET(
   const user = await getServerUser()
   if (!user) return unauthorized()
 
+  if (isNaN(Number(params.id))) return json(null)
+
   const User = await prisma.user.findUnique({
     where: {
       id: Number(params.id),

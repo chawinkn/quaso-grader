@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 export type SubmissionData = {
   id: number
   taskId: string
-  userId: number
+  username: number
   status: string
   score: number
   submittedAt: string
@@ -101,7 +101,7 @@ export const columns: ColumnDef<SubmissionData>[] = [
     },
   },
   {
-    accessorKey: 'userId',
+    accessorKey: 'username',
     header: ({ column }) => {
       return (
         <div>

@@ -3,7 +3,7 @@ import { Suspense } from 'react'
 import { headers } from 'next/headers'
 import SubmissionLayout from '@/components/Submissionslayout'
 
-async function getSubmission(submissionId: number) {
+async function getSubmission(submissionId: string) {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/submissions/${submissionId}`,
     {
@@ -11,6 +11,9 @@ async function getSubmission(submissionId: number) {
       headers: new Headers(headers()),
     }
   )
+  if (!res) {
+    return notFound()
+  }
   const data = await res.json()
   if (!data) {
     return notFound()
@@ -26,6 +29,9 @@ async function getUser(userId: number) {
       headers: new Headers(headers()),
     }
   )
+  if (!res) {
+    return notFound()
+  }
   const data = await res.json()
   if (!data) {
     return notFound()
@@ -33,11 +39,17 @@ async function getUser(userId: number) {
   return data
 }
 
-async function getTask(id: number) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks/${id}`, {
-    method: 'GET',
-    headers: new Headers(headers()),
-  })
+async function getTask(taskId: string) {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/tasks/${taskId}`,
+    {
+      method: 'GET',
+      headers: new Headers(headers()),
+    }
+  )
+  if (!res) {
+    return notFound()
+  }
   const data = await res.json()
   if (!data) {
     return notFound()
@@ -52,8 +64,7 @@ export default async function Submission({
     id: string
   }
 }) {
-  if (isNaN(Number(params.id))) return notFound()
-  const submission = await getSubmission(Number(params.id))
+  const submission = await getSubmission(params.id)
   const User = await getUser(submission.userId)
   const Task = await getTask(submission.taskId)
   submission.username = User.username

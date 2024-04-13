@@ -60,9 +60,11 @@ export default function SubmissionsTable<TData, TValue>({
       <div className="flex flex-col items-center mb-5 space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
         <Input
           placeholder="Find user..."
-          value={(table.getColumn('userId')?.getFilterValue() as string) ?? ''}
+          value={
+            (table.getColumn('username')?.getFilterValue() as string) ?? ''
+          }
           onChange={(event) => {
-            table.getColumn('userId')?.setFilterValue(event.target.value)
+            table.getColumn('username')?.setFilterValue(event.target.value)
           }}
           className="w-[250px] lg:w-[300px]"
         />

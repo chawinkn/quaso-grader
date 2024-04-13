@@ -9,7 +9,13 @@ async function getSubmissionList() {
     method: 'GET',
     headers: new Headers(headers()),
   })
+  if (!res) {
+    return notFound()
+  }
   const data = await res.json()
+  if (!data) {
+    return notFound()
+  }
   return data
 }
 
@@ -21,6 +27,9 @@ async function getUser(userId: number) {
       headers: new Headers(headers()),
     }
   )
+  if (!res) {
+    return notFound()
+  }
   const data = await res.json()
   if (!data) {
     return notFound()
@@ -33,7 +42,7 @@ export default async function Submissions() {
 
   for (const submission of submissionList) {
     const User = await getUser(submission.userId)
-    submission.userId = User.username
+    submission.username = User.username
   }
 
   return (
