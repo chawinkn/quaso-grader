@@ -46,7 +46,7 @@ export default async function RootLayout({
             defaultTheme="system"
             disableTransitionOnChange
           >
-            <main className="flex flex-col h-screen antialiased bg-background">
+            <main className="flex flex-col antialiased bg-background">
               <NavigationBar />
               {children}
               <Footer />

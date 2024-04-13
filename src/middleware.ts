@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getToken } from 'next-auth/jwt'
 
-export async function middleware(request: NextRequest) {
+export async function middleware(req: NextRequest) {
   const user = await getToken({
-    req: request,
+    req,
     secret: process.env.NEXTAUTH_SECRET,
   })
 
-  const path = request.nextUrl.pathname
+  const path = req.nextUrl.pathname
 
   if (
     !user &&
@@ -16,12 +16,12 @@ export async function middleware(request: NextRequest) {
       path.startsWith('/scoreboard') ||
       path.startsWith('/profile'))
   ) {
-    return NextResponse.redirect(new URL('/login', request.url))
+    return NextResponse.redirect(new URL('/login', req.url))
   } else if (
     user &&
     (path === '/' || path === '/login' || path === '/register')
   ) {
-    return NextResponse.redirect(new URL('/tasks', request.url))
+    return NextResponse.redirect(new URL('/tasks', req.url))
   }
   return NextResponse.next()
 }

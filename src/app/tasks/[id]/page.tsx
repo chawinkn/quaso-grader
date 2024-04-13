@@ -1,29 +1,28 @@
-import prisma from '@/lib/prisma'
 import { notFound } from 'next/navigation'
 import TaskLayout from '@/components/Tasklayout'
 import { Suspense } from 'react'
+import { headers } from 'next/headers'
 
-type TaskProps = {
+async function getTask(id: string) {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks/${id}`, {
+    method: 'GET',
+    headers: headers(),
+  })
+  const data = await res.json()
+  if (!data) {
+    return notFound()
+  }
+  return data
+}
+
+export default async function Task({
+  params,
+}: {
   params: {
     id: string
   }
-}
-
-// async function getProblem(id: string) {
-//   // await new Promise((resolve) => setTimeout(resolve, 3000))
-//   const res = await prisma.problem.findFirst({
-//     where: {
-//       problemId: Number(id),
-//     },
-//   })
-//   if (!res) {
-//     return notFound()
-//   }
-//   return res
-// }
-
-export default async function Tasks({ params }: TaskProps) {
-  // const problem = await getProblem(params.id)
+}) {
+  const task = await getTask(params.id)
 
   return (
     <Suspense
@@ -33,7 +32,7 @@ export default async function Tasks({ params }: TaskProps) {
         </div>
       }
     >
-      <TaskLayout task={[]} />
+      <TaskLayout task={task} />
     </Suspense>
   )
 }

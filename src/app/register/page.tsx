@@ -70,7 +70,7 @@ export default function Register() {
       })
       if (response?.ok) {
         toast.success('Registration successfully')
-        router.push('/')
+        router.push('/login')
       } else {
         const result = await response.json()
         toast.error(result.error)
@@ -143,7 +143,7 @@ export default function Register() {
             </form>
           </Form>
           <CardDescription className="text-center">
-            <Link href="/">Already have an account?</Link>
+            <Link href="/login">Already have an account?</Link>
           </CardDescription>
         </CardContent>
       </Card>

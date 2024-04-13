@@ -6,9 +6,9 @@ export async function GET() {
   const user = await getServerUser()
   if (!user) return unauthorized()
 
-  const res = await prisma.task.findMany({
+  const res = await prisma.user.findMany({
     orderBy: {
-      id: 'asc',
+      createdAt: 'asc',
     },
   })
   return json(res)

@@ -67,23 +67,21 @@ export default function TasksTable<TData, TValue>({
     <>
       <div className="flex flex-col items-center mb-5 space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
         <Input
-          placeholder="Find name..."
-          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-          onChange={(event) =>
-            table.getColumn('name')?.setFilterValue(event.target.value)
-          }
+          placeholder="Find id..."
+          value={(table.getColumn('id')?.getFilterValue() as string) ?? ''}
+          onChange={(event) => {
+            table.getColumn('id')?.setFilterValue(event.target.value)
+          }}
           className="w-[250px] lg:w-[300px]"
         />
-        <Select defaultValue="all">
-          <SelectTrigger className="w-[250px] lg:w-[300px]">
-            <SelectValue placeholder="Select a group" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">ALL</SelectItem>
-            <SelectItem value="group1">group1</SelectItem>
-            <SelectItem value="group2">group2</SelectItem>
-          </SelectContent>
-        </Select>
+        <Input
+          placeholder="Find title..."
+          value={(table.getColumn('title')?.getFilterValue() as string) ?? ''}
+          onChange={(event) => {
+            table.getColumn('title')?.setFilterValue(event.target.value)
+          }}
+          className="w-[250px] lg:w-[300px]"
+        />
       </div>
       <Card className="w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px]">
         <Table>
@@ -113,7 +111,7 @@ export default function TasksTable<TData, TValue>({
                   data-state={row.getIsSelected() && 'selected'}
                   className={index % 2 === 1 ? 'bg-muted/30' : ''}
                   onClick={() => {
-                    router.push(`/tasks/${row.getValue('problemId')}`)
+                    router.push(`/tasks/${row.getValue('id')}`)
                   }}
                 >
                   {row.getVisibleCells().map((cell) => (
@@ -132,7 +130,7 @@ export default function TasksTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No task.
+                  No tasks.
                 </TableCell>
               </TableRow>
             )}

@@ -5,15 +5,16 @@ import { ArrowUpDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 export type TasksData = {
-  name: string
-  problemId: number
-  passCount: number
+  id: number
+  title: string
   fullScore: number
+  private: boolean
+  passCount: number
 }
 
 export const columns: ColumnDef<TasksData>[] = [
   {
-    accessorKey: 'problemId',
+    accessorKey: 'id',
     header: ({ column }) => {
       return (
         <div>
@@ -23,9 +24,9 @@ export const columns: ColumnDef<TasksData>[] = [
               variant="ghost"
               size="icon"
               className="border-0"
-              onClick={() =>
-                column.toggleSorting(column.getIsSorted() === 'asc')
-              }
+              onClick={() => {
+                column.toggleSorting(column.getIsSorted() !== 'desc')
+              }}
             >
               <ArrowUpDown className="w-4 h-4" />
             </Button>
@@ -35,18 +36,20 @@ export const columns: ColumnDef<TasksData>[] = [
     },
   },
   {
-    accessorKey: 'name',
+    accessorKey: 'title',
     header: ({ column }) => {
       return (
         <div>
           <span className="flex items-center">
-            Name
+            Title
             <Button
               variant="ghost"
               size="icon"
               className="border-0"
               onClick={() =>
-                column.toggleSorting(column.getIsSorted() === 'asc')
+                column.toggleSorting(
+                  column.getIsSorted() === 'asc' || !column.getIsSorted()
+                )
               }
             >
               <ArrowUpDown className="w-4 h-4" />
@@ -68,7 +71,9 @@ export const columns: ColumnDef<TasksData>[] = [
               size="icon"
               className="border-0"
               onClick={() =>
-                column.toggleSorting(column.getIsSorted() === 'asc')
+                column.toggleSorting(
+                  column.getIsSorted() === 'asc' || !column.getIsSorted()
+                )
               }
             >
               <ArrowUpDown className="w-4 h-4" />
@@ -78,7 +83,9 @@ export const columns: ColumnDef<TasksData>[] = [
       )
     },
     cell: ({ row }) => {
-      return <div className="hidden sm:flex">{row.getValue('passCount')}</div>
+      return (
+        <div className="hidden sm:flex">{row.getValue('passCount') || 0}</div>
+      )
     },
   },
   {
@@ -93,7 +100,9 @@ export const columns: ColumnDef<TasksData>[] = [
               size="icon"
               className="border-0"
               onClick={() =>
-                column.toggleSorting(column.getIsSorted() === 'asc')
+                column.toggleSorting(
+                  column.getIsSorted() === 'asc' || !column.getIsSorted()
+                )
               }
             >
               <ArrowUpDown className="w-4 h-4" />

@@ -1,3 +1,5 @@
+// https://github.com/programming-in-th/programming.in.th/blob/25afbe943d41b5b031600d2523089e1fc612d2b9/src/utils/apiResponse.ts
+
 import { NextResponse } from 'next/server'
 
 export function json<T = unknown>(data: T) {

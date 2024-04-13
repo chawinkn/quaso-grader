@@ -3,17 +3,17 @@ import { NextRequest } from 'next/server'
 import bcrypt from 'bcrypt'
 import prisma from '@/lib/prisma'
 
-export async function POST(request: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
-    const { username, inviteCode, password } = await request.json()
+    const { username, inviteCode, password } = await req.json()
     if (!username || !inviteCode || !password) return badRequest()
 
-    const group = await prisma.group.findUnique({
+    const invitation = await prisma.invitation.findUnique({
       where: {
         inviteCode,
       },
     })
-    if (!group) return badRequest('Invalid invitation code')
+    if (!invitation) return badRequest('Invalid invitation code')
 
     const existingUser = await prisma.user.findUnique({
       where: {
@@ -28,19 +28,6 @@ export async function POST(request: NextRequest) {
         username,
         name: username,
         password: hashedPassword,
-      },
-    })
-
-    await prisma.group.update({
-      where: {
-        id: group.id,
-      },
-      data: {
-        users: {
-          connect: {
-            id: newUser.id,
-          },
-        },
       },
     })
 

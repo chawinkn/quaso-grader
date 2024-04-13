@@ -8,12 +8,12 @@ declare module 'next-auth' {
   interface Session {
     user: {
       name: string
-      id: string
+      id: int
       role: string
     }
   }
   interface User {
-    id: string
+    id: int
     role: string
   }
 }

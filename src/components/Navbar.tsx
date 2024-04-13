@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { ThemeButton } from './Themebutton'
 import { Menu, X } from 'lucide-react'
@@ -34,7 +34,7 @@ export function NavigationBar() {
 
   return (
     <>
-      <div className="z-50 flex items-center px-8 py-2 text-sm font-medium border-b md:px-16 lg:px-24 bg-background">
+      <div className="z-50 flex items-center px-8 py-2 text-sm font-medium border-b md:px-16 lg:px-24">
         <NavigationMenu>
           <NavigationMenuList>
             <NavigationMenuItem>
@@ -74,7 +74,7 @@ export function NavigationBar() {
               {session?.user ? (
                 <NavigationMenuItem className="hidden sm:flex">
                   <Link
-                    href={`/profile/${session?.user.name}`}
+                    href={`/profile/${session?.user.id}`}
                     legacyBehavior
                     passHref
                   >

@@ -13,7 +13,7 @@ generator client {
 
 model Account {
   id                 String    @id @default(cuid())
-  userId             String
+  userId             Int
   providerType       String
   providerId         String
   providerAccountId  String
@@ -28,18 +28,18 @@ model Account {
 }
 
 model User {
-  id            String         @id @default(cuid())
+  id            Int            @id @default(autoincrement())
   username      String?        @unique
   name          String?
   password      String
   role          UserRole       @default(USER)
   submissions   Submission[]
-  groups        Group[]
   createdAt     DateTime       @default(now()) @map("created_at")
   updatedAt     DateTime       @updatedAt @map("updated_at")
   announcements Announcement[]
   accounts      Account[]
   sessions      Session[]
+  Invitation    Invitation[]
 
   @@map("user")
 }
@@ -50,8 +50,6 @@ model Task {
   fullScore   Int          @map("full_score")
   private     Boolean      @default(false)
   submissions Submission[]
-  group       Group?       @relation(fields: [groupId], references: [id])
-  groupId     String?
 
   @@index([id])
   @@map("task")
@@ -66,30 +64,26 @@ model Submission {
   memory      Int      @default(0)
   code        Bytes
   score       Int      @default(0)
+  result      Json     @default("[]")
   language    String
   private     Boolean  @default(false)
-  userId      String?  @map("user_id")
+  userId      Int?     @map("user_id")
   user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   task        Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  group       Group?   @relation(fields: [groupId], references: [id])
-  groupId     String?
 
   @@index([id])
   @@map("submission")
 }
 
-model Group {
-  id            String         @id @default(cuid())
-  name          String         @unique
-  tasks         Task[]
-  submissions   Submission[]
-  private       Boolean        @default(true)
-  inviteCode    String?        @unique
-  createdAt     DateTime       @default(now()) @map("created_at")
-  users         User[]
-  announcements Announcement[]
+model Invitation {
+  id          String   @id @default(cuid())
+  inviteCode  String   @unique
+  expires     DateTime
+  createdAt   DateTime @default(now()) @map("created_at")
+  createdBy   User?    @relation(fields: [createdById], references: [id])
+  createdById Int?
 
-  @@map("group")
+  @@map("invitation")
 }
 
 model Announcement {
@@ -98,25 +92,14 @@ model Announcement {
   content     String
   createdAt   DateTime @default(now()) @map("created_at")
   createdBy   User?    @relation(fields: [createdById], references: [id])
-  createdById String?
-  group       Group?   @relation(fields: [groupId], references: [id])
-  groupId     String?
+  createdById Int?
 
   @@map("announcement")
 }
 
-model GlobalAnnouncement {
-  id        String   @id @default(cuid())
-  title     String
-  content   String
-  createdAt DateTime @default(now()) @map("created_at")
-
-  @@map("global_announcement")
-}
-
 model Session {
   id           String   @id @default(cuid())
-  userId       String
+  userId       Int
   expires      DateTime
   sessionToken String   @unique
   accessToken  String   @unique
