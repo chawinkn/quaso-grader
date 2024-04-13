@@ -60,6 +60,7 @@ export default function LogIn() {
       if (response?.ok) {
         toast.success('Login successfully')
         router.push('/tasks')
+        router.refresh()
       } else {
         toast.error('Invalid username or password.')
       }

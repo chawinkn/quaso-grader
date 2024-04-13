@@ -6,7 +6,7 @@ import { headers } from 'next/headers'
 async function getTask(id: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks/${id}`, {
     method: 'GET',
-    headers: headers(),
+    headers: new Headers(headers()),
   })
   const data = await res.json()
   if (!data) {
