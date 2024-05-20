@@ -69,12 +69,11 @@ export default function SubmissionLayout({ ...props }) {
         <p className="inline">{submission.memory} kB</p>
       </div>
       <div className="flex flex-col mt-5 space-y-4 lg:flex-row sm:space-x-4">
-        <Card className="w-[350px] sm:w-[500px] xl:w-[700px] h-[400px] overflow-hidden">
+        <Card className="w-[350px] sm:w-[500px] xl:w-[700px] 2xl:w-[800px] h-[600px] overflow-hidden">
           <Editor
             language={submission.language}
             value={submission.code}
             theme="vs-dark"
-            height="75vh"
             options={{
               minimap: { enabled: false },
               fontSize: 16,
