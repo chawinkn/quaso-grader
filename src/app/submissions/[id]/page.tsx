@@ -71,14 +71,16 @@ export default async function Submission({
   submission.taskTitle = Task.title
 
   return (
-    <Suspense
-      fallback={
-        <div className="flex flex-col items-center justify-center h-screen py-10">
-          <p className="text-base animate-pulse">Loading...</p>
-        </div>
-      }
-    >
-      <SubmissionLayout submission={submission} />
-    </Suspense>
+    <div className="min-h-screen">
+      <Suspense
+        fallback={
+          <div className="flex flex-col items-center justify-center py-10">
+            <p className="text-base animate-pulse">Loading...</p>
+          </div>
+        }
+      >
+        <SubmissionLayout submission={submission} />
+      </Suspense>
+    </div>
   )
 }

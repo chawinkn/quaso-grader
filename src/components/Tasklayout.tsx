@@ -106,28 +106,27 @@ export default function TaskLayout({ ...props }) {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center py-10">
-      <p className="font-bold">{task.title}</p>
-      <p>{task.id}</p>
-      <div className="flex flex-col mt-5 space-y-4 lg:flex-row sm:space-x-4">
-        <Card className="w-[350px] sm:w-[500px] xl:w-[700px] h-[400px] overflow-hidden">
+    <div className="grow flex flex-col items-center justify-center py-10">
+      <h2 className="font-bold text-4xl">{task.title}</h2>
+      <div className="grow flex flex-col-reverse mt-5 space-y-4 lg:flex-row-reverse sm:space-x-4">
+        <Card className="w-[350px] sm:w-[500px] xl:w-[700px] 2xl:w-[800px] max-h-[600px] overflow-hidden my-4 lg:mx-8">
           <Editor
             language={language}
             value={sourcecode}
             theme="vs-dark"
-            height="75vh"
             options={{
               minimap: { enabled: false },
-              fontSize: 12,
+              fontSize: 16,
+              fontLigatures: true,
             }}
-            className="caret-transparent"
+            className="caret-transparent what-the-fuck-monaco"
             onChange={handleEditorChange}
           />
         </Card>
         <div className="flex flex-col space-y-5">
           <div className="inline">
             <p className="inline font-bold">Description: </p>
-            <Link href="#" target="_blank" className="hover:underline inline">
+            <Link href="#" target="_blank" className="hover:underline inline text-2xl">
               [{task.title}]
             </Link>
           </div>
@@ -135,7 +134,7 @@ export default function TaskLayout({ ...props }) {
             id="sourcecode"
             type="file"
             onChange={handleFileUpload}
-            className={fileInputColor}
+            className={`${fileInputColor} hover:cursor-pointer transition-transform scale-100 active:scale-95`}
           />
           <div className="flex flex-row space-x-4">
             <Select onValueChange={handleLanguage}>

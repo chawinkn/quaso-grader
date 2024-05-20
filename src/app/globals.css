@@ -67,3 +67,11 @@
     @apply bg-background text-foreground;
   }
 }
+
+.what-the-fuck-monaco {
+    font-family: 'Consolas', monospace;
+}
+
+.what-the-fuck-monaco * {
+    font-family: 'Consolas', monospace;
+}
