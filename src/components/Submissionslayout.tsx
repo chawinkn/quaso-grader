@@ -77,10 +77,11 @@ export default function SubmissionLayout({ ...props }) {
             height="75vh"
             options={{
               minimap: { enabled: false },
-              fontSize: 12,
+              fontSize: 16,
+              fontLigatures: true,
               readOnly: true,
             }}
-            className="caret-transparent"
+            className="caret-transparent what-the-fuck-monaco"
           />
         </Card>
       </div>

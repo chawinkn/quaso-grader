@@ -118,9 +118,10 @@ export default function TaskLayout({ ...props }) {
             height="75vh"
             options={{
               minimap: { enabled: false },
-              fontSize: 12,
+              fontSize: 16,
+              fontLigatures: true,
             }}
-            className="caret-transparent"
+            className="caret-transparent what-the-fuck-monaco"
             onChange={handleEditorChange}
           />
         </Card>
