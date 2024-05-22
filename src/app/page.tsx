@@ -2,9 +2,8 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { getServerUser } from '@/lib/session'
 import Announcement from '@/components/Announcement'
-import { Croissant, CroissantIcon } from 'lucide-react'
 
-function Landing(){
+function Landing() {
   return (
     <div className="text-center">
       <h1 className="text-4xl font-bold md:text-6xl">Quaso</h1>
@@ -28,13 +27,19 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col items-center justify-evenly min-h-screen py-10 gap-8">
-      {user ? <>
-                <div className="w-full h-full text-center">
-                  <h1 className='text-5xl '>Welcome to Quaso!</h1>
-                  <p className='text-muted-foreground text-lg'>โคตรหิว</p>
-                </div>
-                <Announcement {...user} />
-              </> : <Landing/>}
+      {user ? (
+        <>
+          <div className="text-center">
+            <h1 className="text-3xl font-bold">ANNOUNCEMENTS</h1>
+            <p className="pt-2 text-md md:text-lg text-muted-foreground">
+              ยินดีต้อนรับสู่ Quaso!
+            </p>
+          </div>
+          <Announcement {...user} />
+        </>
+      ) : (
+        <Landing />
+      )}
     </div>
   )
 }

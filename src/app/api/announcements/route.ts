@@ -15,7 +15,6 @@ export async function GET() {
   return json(res)
 }
 
-
 export async function POST(req: NextRequest) {
   const user = await getServerUser()
   if (!user) return unauthorized()
@@ -23,7 +22,7 @@ export async function POST(req: NextRequest) {
   const { userId, title, content } = await req.json()
   if (!userId || !title || !content) return badRequest()
 
-  const announcement = await prisma.announcement.create({
+  await prisma.announcement.create({
     data: {
       title,
       content,

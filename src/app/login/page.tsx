@@ -60,6 +60,7 @@ export default function LogIn() {
       if (response?.ok) {
         toast.success('Login successfully')
         router.push('/')
+        router.refresh()
       } else {
         toast.error('Invalid username or password or not approved.')
       }
