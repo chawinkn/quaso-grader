@@ -97,8 +97,8 @@ function AnnouncementCard(props: AnnouncementData){
     "use client"
     const createdDate = new Date(props.createdAt)
     return (
-      <Card className="w-full lg:w-5/12 overflow-hidden">
-        <div className="p-6 flex flex-row justify-between items-center bg-slate-100">
+      <Card className="w-11/12 sm:w-9/12 md:w-8/12 lg:w-5/12 overflow-hidden">
+        <div className="p-6 flex flex-row justify-between items-center bg-muted/50">
           <CardTitle>{props.title}</CardTitle>
           <CardDescription className="grow flex flex-row-reverse gap-2 items-center">
             <Badge className="w-max">{props.author}</Badge>

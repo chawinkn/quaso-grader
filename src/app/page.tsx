@@ -29,8 +29,9 @@ export default async function Home() {
   return (
     <div className="flex flex-col items-center justify-evenly min-h-screen py-10 gap-8">
       {user ? <>
-                <div className="text-5xl w-full h-full text-center">
-                  <h1>Welcome to Quaso!</h1>
+                <div className="w-full h-full text-center">
+                  <h1 className='text-5xl '>Welcome to Quaso!</h1>
+                  <p className='text-muted-foreground text-lg'>โคตรหิว</p>
                 </div>
                 <Announcement {...user} />
               </> : <Landing/>}
