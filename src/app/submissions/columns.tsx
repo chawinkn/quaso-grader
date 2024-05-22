@@ -16,7 +16,7 @@ export type SubmissionData = {
   memory: number
 }
 
-function formatDateTime(dateTimeString: string) {
+export function formatDateTime(dateTimeString: string) {
   const date = new Date(dateTimeString)
 
   const day = date.getDate()

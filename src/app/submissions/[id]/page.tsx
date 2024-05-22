@@ -1,4 +1,3 @@
-import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import { headers } from 'next/headers'
 import SubmissionLayout from '@/components/Submissionslayout'
@@ -11,13 +10,7 @@ async function getSubmission(submissionId: string) {
       headers: new Headers(headers()),
     }
   )
-  if (!res) {
-    return notFound()
-  }
   const data = await res.json()
-  if (!data) {
-    return notFound()
-  }
   return data
 }
 
@@ -29,13 +22,7 @@ async function getUser(userId: number) {
       headers: new Headers(headers()),
     }
   )
-  if (!res) {
-    return notFound()
-  }
   const data = await res.json()
-  if (!data) {
-    return notFound()
-  }
   return data
 }
 
@@ -47,13 +34,7 @@ async function getTask(taskId: string) {
       headers: new Headers(headers()),
     }
   )
-  if (!res) {
-    return notFound()
-  }
   const data = await res.json()
-  if (!data) {
-    return notFound()
-  }
   return data
 }
 

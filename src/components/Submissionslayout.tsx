@@ -3,6 +3,7 @@
 import Editor from '@monaco-editor/react'
 import { Card } from './ui/card'
 import Link from 'next/link'
+import { formatDateTime } from '@/app/submissions/columns'
 
 type SubmissionData = {
   id: number
@@ -44,15 +45,19 @@ export default function SubmissionLayout({ ...props }) {
 
   return (
     <div className="flex flex-col items-center justify-center py-10">
-      <p className="font-bold">Submission: {submission.id}</p>
+      <p className="font-bold">Submission : {submission.id}</p>
       <div className="inline">
-        <p className="inline font-bold">Task: </p>
-        <Link
-          href={`/tasks/${submission.taskId}`}
-          className="hover:underline inline"
-        >
-          [{submission.taskTitle}]
+        <p className="inline font-bold">Task : </p>
+        <Link href={`/tasks/${submission.taskId}`} className="underline inline">
+          {submission.taskTitle}
         </Link>
+      </div>
+      <div className="inline pt-2">
+        <p className="inline font-bold">Submitted At : </p>
+        <p className="inline">
+          {formatDateTime(submission.submittedAt).formattedDate}{' '}
+          {formatDateTime(submission.submittedAt).formattedTime}
+        </p>
       </div>
       <div className="inline">
         <p className="inline font-bold">User : </p>
@@ -80,7 +85,7 @@ export default function SubmissionLayout({ ...props }) {
               fontLigatures: true,
               readOnly: true,
             }}
-            className="caret-transparent what-the-fuck-monaco"
+            className="caret-transparent monaco-font"
           />
         </Card>
       </div>

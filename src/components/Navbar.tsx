@@ -139,7 +139,7 @@ export function NavigationBar() {
               <Link href="/scoreboard">Scoreboard</Link>
               <Separator />
               <Link
-                href={`/profile/${session?.user.name}`}
+                href={`/profile/${session?.user.id}`}
                 legacyBehavior
                 passHref
               >

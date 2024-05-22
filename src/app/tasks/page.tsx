@@ -2,7 +2,8 @@ import TasksTable from '@/components/Taskstable'
 import { columns } from './columns'
 import { Suspense } from 'react'
 import { headers } from 'next/headers'
-import { notFound } from 'next/navigation'
+
+export const revalidate = 3600
 
 async function getTaskList() {
   // await new Promise((resolve) => setTimeout(resolve, 3000))
@@ -10,13 +11,7 @@ async function getTaskList() {
     method: 'GET',
     headers: new Headers(headers()),
   })
-  if (!res) {
-    return notFound()
-  }
   const data = await res.json()
-  if (!data) {
-    return notFound()
-  }
   return data
 }
 

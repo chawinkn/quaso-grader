@@ -62,7 +62,7 @@ export default function LogIn() {
         router.push('/tasks')
         router.refresh()
       } else {
-        toast.error('Invalid username or password.')
+        toast.error('Invalid username or password or not approved.')
       }
     } catch (error) {
       toast.error('An unexpected error occurred. Please try again later.')

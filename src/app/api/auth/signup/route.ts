@@ -5,15 +5,8 @@ import prisma from '@/lib/prisma'
 
 export async function POST(req: NextRequest) {
   try {
-    const { username, inviteCode, password } = await req.json()
-    if (!username || !inviteCode || !password) return badRequest()
-
-    const invitation = await prisma.invitation.findUnique({
-      where: {
-        inviteCode,
-      },
-    })
-    if (!invitation) return badRequest('Invalid invitation code')
+    const { username, password } = await req.json()
+    if (!username || !password) return badRequest()
 
     const existingUser = await prisma.user.findUnique({
       where: {

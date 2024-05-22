@@ -39,17 +39,18 @@ model User {
   announcements Announcement[]
   accounts      Account[]
   sessions      Session[]
-  Invitation    Invitation[]
+  approved      Boolean        @default(false)
 
   @@map("user")
 }
 
 model Task {
-  id          String       @id
-  title       String       @db.Text
-  fullScore   Int          @map("full_score")
-  private     Boolean      @default(false)
+  id          String        @id
+  title       String        @db.Text
+  fullScore   Int           @map("full_score")
+  private     Boolean       @default(false)
   submissions Submission[]
+  statement   StatementType @default(PDF)
 
   @@index([id])
   @@map("task")
@@ -73,17 +74,6 @@ model Submission {
 
   @@index([id])
   @@map("submission")
-}
-
-model Invitation {
-  id          String   @id @default(cuid())
-  inviteCode  String   @unique
-  expires     DateTime
-  createdAt   DateTime @default(now()) @map("created_at")
-  createdBy   User?    @relation(fields: [createdById], references: [id])
-  createdById Int?
-
-  @@map("invitation")
 }
 
 model Announcement {
@@ -122,4 +112,9 @@ model VerificationRequest {
 enum UserRole {
   USER
   ADMIN
+}
+
+enum StatementType {
+  PDF
+  MARKDOWN
 }
