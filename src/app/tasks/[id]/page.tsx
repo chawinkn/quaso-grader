@@ -22,7 +22,7 @@ export default async function Task({
   const task = await getTask(params.id)
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex">
       <Suspense
         fallback={
           <div className="flex flex-col items-center justify-center h-screen py-10">
