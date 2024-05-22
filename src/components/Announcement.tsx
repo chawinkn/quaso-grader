@@ -1,26 +1,10 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from '@/components/ui/form'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { headers } from 'next/headers'
 import { Separator } from '@/components/ui/separator'
-import * as z from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
 import CreateAnnouncementCard from './CreateAnnouncementCard'
-import { getServerUser } from '@/lib/session'
+import Markdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 type AnnouncementData = {
   title: string
@@ -41,6 +25,9 @@ async function getAnnouncementList() {
     method: 'GET',
     headers: new Headers(headers()),
   })
+  if (!res) {
+    return null
+  }
   const data = await res.json()
   return data
 }
@@ -53,6 +40,9 @@ async function getUser(userId: number) {
       headers: new Headers(headers()),
     }
   )
+  if (!res) {
+    return null
+  }
   const data = await res.json()
   return data
 }
@@ -61,19 +51,19 @@ function AnnouncementCard(props: AnnouncementData) {
   const createdDate = new Date(props.createdAt)
 
   return (
-    <Card className="w-full lg:w-5/12">
-      <div className="p-6 flex flex-row justify-between items-center bg-muted/70">
-        <CardTitle>{props.title}</CardTitle>
-        <CardDescription className="grow flex flex-row-reverse gap-2 items-center">
+    <Card className="w-[350px] sm:w-[450px] md:w-[600px]">
+      <CardHeader className="flex flex-col md:flex-row justify-between items-center bg-muted/70">
+        <CardTitle className="text-xl">{props.title}</CardTitle>
+        <div className="grow flex flex-row-reverse gap-2 items-center">
           <Badge className="w-max">{props.author}</Badge>
-          <Badge variant={'secondary'} className="w-max">
+          <Badge variant="secondary" className="w-max">
             {createdDate.toLocaleString()}
           </Badge>
-        </CardDescription>
-      </div>
+        </div>
+      </CardHeader>
       <Separator />
-      <CardContent className="mt-4">
-        <p>{props.content}</p>
+      <CardContent className="p-6 break-all">
+        <Markdown remarkPlugins={[remarkGfm]}>{props.content}</Markdown>
       </CardContent>
     </Card>
   )
@@ -82,15 +72,17 @@ function AnnouncementCard(props: AnnouncementData) {
 export default async function Announcement(props: UserData) {
   const announcementList = await getAnnouncementList()
 
-  for (const announcement of announcementList) {
-    const User = await getUser(announcement.createdById)
-    announcement.author = User.username
-  }
+  const announcementsWithAuthors = await Promise.all(
+    announcementList.map(async (announcement: AnnouncementData) => {
+      const user = await getUser(announcement.createdById)
+      return { ...announcement, author: user.username }
+    })
+  )
 
   return (
     <div className="flex flex-col h-full items-center justify-center gap-4">
       {props.role === 'ADMIN' ? <CreateAnnouncementCard {...props} /> : <></>}
-      {announcementList.map((announcement: AnnouncementData) => {
+      {announcementsWithAuthors.map((announcement: AnnouncementData) => {
         return (
           <AnnouncementCard key={announcement.createdAt} {...announcement} />
         )

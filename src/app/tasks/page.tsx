@@ -8,6 +8,9 @@ async function getTaskList() {
     method: 'GET',
     headers: new Headers(headers()),
   })
+  if (!res) {
+    return null
+  }
   const data = await res.json()
   return data
 }

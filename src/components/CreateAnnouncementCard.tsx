@@ -1,6 +1,6 @@
 'use client'
 
-import { Card, CardTitle, CardContent } from './ui/card'
+import { Card, CardTitle, CardContent, CardHeader } from './ui/card'
 import {
   Form,
   FormControl,
@@ -72,12 +72,12 @@ export default function CreateAnnouncementCard(props: UserData) {
   }
 
   return (
-    <Card className="w-full lg:w-5/12">
-      <div className="p-6 flex flex-row justify-between items-center bg-muted/70">
-        <CardTitle>New announcement</CardTitle>
-      </div>
+    <Card className="w-[350px] sm:w-[450px] md:w-[600px]">
+      <CardHeader className="flex flex-col md:flex-row justify-between items-center bg-muted/70">
+        <CardTitle className="text-xl">New announcement</CardTitle>
+      </CardHeader>
       <Separator />
-      <CardContent className="mt-4">
+      <CardContent className="p-6 break-all">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
@@ -99,6 +99,7 @@ export default function CreateAnnouncementCard(props: UserData) {
                 <FormItem>
                   <FormControl>
                     <Textarea
+                      id="editor"
                       placeholder="Content"
                       className="min-h-48"
                       {...field}

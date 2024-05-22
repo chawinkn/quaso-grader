@@ -11,6 +11,9 @@ async function getSubmission(submissionId: string) {
       headers: new Headers(headers()),
     }
   )
+  if (!res) {
+    return null
+  }
   const data = await res.json()
   if (!data) {
     return notFound()
@@ -26,6 +29,9 @@ async function getUser(userId: number) {
       headers: new Headers(headers()),
     }
   )
+  if (!res) {
+    return null
+  }
   const data = await res.json()
   return data
 }
@@ -38,6 +44,9 @@ async function getTask(taskId: string) {
       headers: new Headers(headers()),
     }
   )
+  if (!res) {
+    return null
+  }
   const data = await res.json()
   return data
 }

@@ -8,6 +8,9 @@ async function getTask(id: string) {
     method: 'GET',
     headers: new Headers(headers()),
   })
+  if (!res) {
+    return null
+  }
   const data = await res.json()
   if (!data) {
     return notFound()

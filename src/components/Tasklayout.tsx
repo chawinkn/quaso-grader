@@ -113,7 +113,7 @@ export default function TaskLayout({ ...props }) {
 
   return (
     <div className="grow flex flex-col items-center justify-center py-10">
-      <h2 className="font-bold text-4xl">{task.title}</h2>
+      <h2 className="text-3xl font-bold">{task.title}</h2>
       <div className="px-4 lg:px-8 w-full md:w-4/5 my-5 space-y-4 min-h-[500px] xl:h-[75vh] 2xl:h-screen sm:space-x-4">
         <StatementLayout />
       </div>
