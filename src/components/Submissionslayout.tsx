@@ -73,8 +73,8 @@ export default function SubmissionLayout({ ...props }) {
         <p className="inline font-bold">Memory : </p>
         <p className="inline">{submission.memory} kB</p>
       </div>
-      <div className="flex flex-col mt-5 space-y-4 lg:flex-row sm:space-x-4 py-5">
-        <Card className="w-[350px] sm:w-[450px] md:w-[550px] lg:w-[650px] xl:w-[750px] h-[300px] md:h-[500px] overflow-hidden">
+      <div className="flex flex-col mt-5 space-y-4 lg:flex-row sm:space-x-4">
+        <Card className="w-[350px] sm:w-[500px] xl:w-[700px] 2xl:w-[800px] h-full max-h-[600px] overflow-hidden">
           <Editor
             language={submission.language}
             value={submission.code}
