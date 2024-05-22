@@ -17,6 +17,11 @@ export async function middleware(req: NextRequest) {
       path.startsWith('/profile'))
   ) {
     return NextResponse.redirect(new URL('/login', req.url))
+  } else if (
+    user &&
+    (path === '/login' || path === '/register')
+  ) {
+    return NextResponse.redirect(new URL('/', req.url))
   }
   return NextResponse.next()
 }

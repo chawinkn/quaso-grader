@@ -59,8 +59,7 @@ export default function LogIn() {
       })
       if (response?.ok) {
         toast.success('Login successfully')
-        router.push('/tasks')
-        router.refresh()
+        router.push('/')
       } else {
         toast.error('Invalid username or password or not approved.')
       }
