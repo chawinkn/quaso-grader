@@ -25,18 +25,16 @@ export const authOptions: NextAuthOptions = {
           where: { username: credentials.username },
         })
 
-        if (
-          user &&
-          (await bcrypt.compare(credentials.password, user.password))
-        ) {
-          return {
-            id: user.id,
-            name: user.username,
-            role: user.role,
-          }
-        } else {
-          throw new Error('Invalid username or password.')
+        if (user && user.approved) {
+          if (await bcrypt.compare(credentials.password, user.password))
+            return {
+              id: user.id,
+              name: user.username,
+              role: user.role,
+            }
         }
+
+        throw new Error('Invalid username or password or not approved.')
       },
     }),
   ],

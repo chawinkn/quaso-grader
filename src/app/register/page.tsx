@@ -7,17 +7,14 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from '@/components/ui/form'
 import { Loader2 } from 'lucide-react'
@@ -27,19 +24,26 @@ import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
-import { Badge } from '@/components/ui/badge'
 
-const formSchema = z.object({
-  username: z
-    .string()
-    .min(5, { message: 'Username must be 5-15 characters.' })
-    .max(15, { message: 'Username must be 5-15 characters.' }),
-  inviteCode: z.string(),
-  password: z
-    .string()
-    .min(5, { message: 'Password must be 5-15 characters.' })
-    .max(15, { message: 'Password must be 5-15 characters.' }),
-})
+const formSchema = z
+  .object({
+    username: z
+      .string()
+      .min(5, { message: 'Username must be 5-15 characters.' })
+      .max(15, { message: 'Username must be 5-15 characters.' }),
+    password: z
+      .string()
+      .min(5, { message: 'Password must be 5-15 characters.' })
+      .max(15, { message: 'Password must be 5-15 characters.' }),
+    confirm_password: z
+      .string()
+      .min(5, { message: 'Password must be 5-15 characters.' })
+      .max(15, { message: 'Password must be 5-15 characters.' }),
+  })
+  .refine((data) => data.password === data.confirm_password, {
+    message: 'Passwords do not match.',
+    path: ['confirm_password'],
+  })
 
 export default function Register() {
   const router = useRouter()
@@ -47,15 +51,15 @@ export default function Register() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: '',
-      inviteCode: '',
       password: '',
+      confirm_password: '',
     },
   })
   const [isSubmit, setSubmit] = useState(false)
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setSubmit(true)
-    const { username, inviteCode, password } = data
+    const { username, confirm_password, password } = data
     try {
       const response = await fetch('/api/auth/signup', {
         method: 'POST',
@@ -64,7 +68,6 @@ export default function Register() {
         },
         body: JSON.stringify({
           username,
-          inviteCode,
           password,
         }),
       })
@@ -86,9 +89,6 @@ export default function Register() {
       <Card className="w-[350px]">
         <CardHeader className="text-center">
           <CardTitle>Register</CardTitle>
-          <CardDescription>
-            Invitation code : <Badge variant="secondary">test</Badge>
-          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <Form {...form}>
@@ -107,11 +107,15 @@ export default function Register() {
               />
               <FormField
                 control={form.control}
-                name="inviteCode"
+                name="password"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input placeholder="Invitation code" {...field} />
+                      <Input
+                        type="password"
+                        placeholder="Password"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -119,12 +123,12 @@ export default function Register() {
               />
               <FormField
                 control={form.control}
-                name="password"
+                name="confirm_password"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
                       <Input
-                        placeholder="Password"
+                        placeholder="Confirm Password"
                         type="password"
                         {...field}
                       />

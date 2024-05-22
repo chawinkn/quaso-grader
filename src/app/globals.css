@@ -68,10 +68,10 @@
   }
 }
 
-.what-the-fuck-monaco {
+.monaco-font {
     font-family: 'Consolas', monospace;
 }
 
-.what-the-fuck-monaco * {
+.monaco-font * {
     font-family: 'Consolas', monospace;
 }

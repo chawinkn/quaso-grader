@@ -8,13 +8,7 @@ async function getTask(id: string) {
     method: 'GET',
     headers: new Headers(headers()),
   })
-  if (!res) {
-    return notFound()
-  }
   const data = await res.json()
-  if (!data) {
-    return notFound()
-  }
   return data
 }
 
@@ -28,7 +22,7 @@ export default async function Task({
   const task = await getTask(params.id)
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen">
       <Suspense
         fallback={
           <div className="flex flex-col items-center justify-center h-screen py-10">

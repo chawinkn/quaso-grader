@@ -17,6 +17,8 @@ import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 import { Loader2 } from 'lucide-react'
 import { revalidatePath } from 'next/cache'
+import { ExternalLink } from 'lucide-react'
+import StatementLayout from './Statementlayout'
 
 type TaskData = {
   title: string
@@ -74,6 +76,12 @@ export default function TaskLayout({ ...props }) {
       setSourcecode(content)
     }
     reader.readAsText(file)
+
+    if (ext == 'py') {
+      setLanguauge('python')
+    } else {
+      setLanguauge(ext)
+    }
   }
 
   const handleEditorChange = (value: string | any) => {
@@ -93,8 +101,8 @@ export default function TaskLayout({ ...props }) {
       })
       if (response?.ok) {
         toast.success('Submit successfully')
+        revalidatePath('/submissions')
         router.push('/submissions')
-        router.refresh()
       } else {
         const result = await response.json()
         toast.error(result.error)
@@ -106,10 +114,12 @@ export default function TaskLayout({ ...props }) {
   }
 
   return (
-    <div className="grow flex flex-col items-center justify-center py-10">
-      <h2 className="font-bold text-4xl">{task.title}</h2>
-      <div className="grow flex flex-col-reverse mt-5 space-y-4 lg:flex-row-reverse sm:space-x-4">
-        <Card className="w-[350px] sm:w-[500px] xl:w-[700px] 2xl:w-[800px] max-h-[600px] overflow-hidden my-4 lg:mx-8">
+    <div className="flex flex-col items-center justify-center py-10">
+      <p className="font-bold">{task.title}</p>
+      <p>{task.id}</p>
+      <div className="mt-5 space-y-4">
+        <StatementLayout />
+        <Card className="w-[350px] sm:w-[450px] md:w-[550px] lg:w-[650px] xl:w-[750px] h-[300px] md:h-[500px] overflow-hidden">
           <Editor
             language={language}
             value={sourcecode}
@@ -119,25 +129,20 @@ export default function TaskLayout({ ...props }) {
               fontSize: 16,
               fontLigatures: true,
             }}
-            className="caret-transparent what-the-fuck-monaco"
+            className="caret-transparent monaco-font"
             onChange={handleEditorChange}
           />
         </Card>
         <div className="flex flex-col space-y-5">
-          <div className="inline">
-            <p className="inline font-bold">Description: </p>
-            <Link href="#" target="_blank" className="hover:underline inline text-2xl">
-              [{task.title}]
-            </Link>
-          </div>
           <Input
             id="sourcecode"
             type="file"
+            accept=".c,.cpp,.py"
             onChange={handleFileUpload}
-            className={`${fileInputColor} hover:cursor-pointer transition-transform scale-100 active:scale-95`}
+            className={fileInputColor}
           />
           <div className="flex flex-row space-x-4">
-            <Select onValueChange={handleLanguage}>
+            <Select value={language} onValueChange={handleLanguage}>
               <SelectTrigger className="w-1/2">
                 <SelectValue placeholder="Language" />
               </SelectTrigger>

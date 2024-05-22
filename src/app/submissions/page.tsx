@@ -2,20 +2,15 @@ import { columns } from './columns'
 import { Suspense } from 'react'
 import SubmissionsTable from '@/components/Submissionstable'
 import { headers } from 'next/headers'
-import { notFound } from 'next/navigation'
+
+export const revalidate = 3600
 
 async function getSubmissionList() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/submissions`, {
     method: 'GET',
     headers: new Headers(headers()),
   })
-  if (!res) {
-    return notFound()
-  }
   const data = await res.json()
-  if (!data) {
-    return notFound()
-  }
   return data
 }
 
@@ -27,13 +22,7 @@ async function getUser(userId: number) {
       headers: new Headers(headers()),
     }
   )
-  if (!res) {
-    return notFound()
-  }
   const data = await res.json()
-  if (!data) {
-    return notFound()
-  }
   return data
 }
 
