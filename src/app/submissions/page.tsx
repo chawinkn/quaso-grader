@@ -3,8 +3,6 @@ import { Suspense } from 'react'
 import SubmissionsTable from '@/components/Submissionstable'
 import { headers } from 'next/headers'
 
-export const revalidate = 3600
-
 async function getSubmissionList() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/submissions`, {
     method: 'GET',
@@ -40,13 +38,7 @@ export default async function Submissions() {
         <div className="mb-5 md:mb-8">
           <h1 className="text-3xl font-bold">SUBMISSIONS</h1>
         </div>
-        <Suspense
-          fallback={
-            <div className="flex flex-col items-center justify-center h-screen py-10">
-              <p className="text-base animate-pulse">Loading...</p>
-            </div>
-          }
-        >
+        <Suspense fallback={null}>
           <SubmissionsTable columns={columns} data={submissionList} />
         </Suspense>
       </div>

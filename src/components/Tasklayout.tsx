@@ -12,12 +12,10 @@ import {
 } from '@/components/ui/select'
 import { Card } from './ui/card'
 import { useState } from 'react'
-import Link from 'next/link'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 import { Loader2 } from 'lucide-react'
 import { revalidatePath } from 'next/cache'
-import { ExternalLink } from 'lucide-react'
 import StatementLayout from './Statementlayout'
 
 type TaskData = {
@@ -99,15 +97,15 @@ export default function TaskLayout({ ...props }) {
           language,
         }),
       })
+      const result = await response.json()
       if (response?.ok) {
         toast.success('Submit successfully')
-        revalidatePath('/submissions')
-        router.push('/submissions')
+        router.push(`/submissions/${result.id}`)
       } else {
-        const result = await response.json()
         toast.error(result.error)
       }
     } catch (error) {
+      console.log(error)
       toast.error('An unexpected error occurred. Please try again later.')
     }
     setSubmit(false)

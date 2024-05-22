@@ -9,6 +9,8 @@ import { Toaster } from 'react-hot-toast'
 import Footer from '@/components/Footer'
 import { NavigationBar } from '@/components/Navbar'
 
+export const revalidate = 3600
+
 const inter = Inter({
   variable: '--font-inter',
   subsets: ['latin'],

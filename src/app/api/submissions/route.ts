@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
 
   const compressedCode = await compressCode(JSON.stringify(sourcecode))
 
-  await prisma.submission.create({
+  const submission = await prisma.submission.create({
     data: {
       taskId,
       status: 'Pending',
@@ -35,5 +35,5 @@ export async function POST(req: NextRequest) {
     },
   })
 
-  return json({ success: true })
+  return json({ id: submission.id })
 }

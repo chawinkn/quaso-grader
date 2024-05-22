@@ -1,6 +1,7 @@
 import { Suspense } from 'react'
 import { headers } from 'next/headers'
 import SubmissionLayout from '@/components/Submissionslayout'
+import { notFound } from 'next/navigation'
 
 async function getSubmission(submissionId: string) {
   const res = await fetch(
@@ -11,6 +12,9 @@ async function getSubmission(submissionId: string) {
     }
   )
   const data = await res.json()
+  if (!data) {
+    return notFound()
+  }
   return data
 }
 
@@ -46,20 +50,16 @@ export default async function Submission({
   }
 }) {
   const submission = await getSubmission(params.id)
-  const User = await getUser(submission.userId)
-  const Task = await getTask(submission.taskId)
+  const [User, Task] = await Promise.all([
+    getUser(submission.userId),
+    getTask(submission.taskId),
+  ])
   submission.username = User.username
   submission.taskTitle = Task.title
 
   return (
     <div className="min-h-screen">
-      <Suspense
-        fallback={
-          <div className="flex flex-col items-center justify-center py-10">
-            <p className="text-base animate-pulse">Loading...</p>
-          </div>
-        }
-      >
+      <Suspense fallback={null}>
         <SubmissionLayout submission={submission} />
       </Suspense>
     </div>

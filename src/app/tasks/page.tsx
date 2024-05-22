@@ -1,9 +1,6 @@
 import TasksTable from '@/components/Taskstable'
 import { columns } from './columns'
-import { Suspense } from 'react'
 import { headers } from 'next/headers'
-
-export const revalidate = 3600
 
 async function getTaskList() {
   // await new Promise((resolve) => setTimeout(resolve, 3000))
@@ -24,15 +21,7 @@ export default async function Tasks() {
         <div className="mb-5 md:mb-8">
           <h1 className="text-3xl font-bold">TASKS</h1>
         </div>
-        <Suspense
-          fallback={
-            <div className="flex flex-col items-center justify-center h-screen py-10">
-              <p className="text-base animate-pulse">Loading...</p>
-            </div>
-          }
-        >
-          <TasksTable columns={columns} data={taskList} />
-        </Suspense>
+        <TasksTable columns={columns} data={taskList} />
       </div>
     </div>
   )

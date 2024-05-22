@@ -9,9 +9,6 @@ async function getUser(userId: number) {
       headers: new Headers(headers()),
     }
   )
-  if (!res) {
-    return notFound()
-  }
   const data = await res.json()
   if (!data) {
     return notFound()
