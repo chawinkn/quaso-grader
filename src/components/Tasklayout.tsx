@@ -108,8 +108,8 @@ export default function TaskLayout({ ...props }) {
   return (
     <div className="grow flex flex-col items-center justify-center py-10">
       <h2 className="font-bold text-4xl">{task.title}</h2>
-      <div className="grow flex flex-col-reverse mt-5 space-y-4 lg:flex-row-reverse sm:space-x-4">
-        <Card className="w-[350px] sm:w-[500px] xl:w-[700px] 2xl:w-[800px] max-h-[600px] overflow-hidden my-4 lg:mx-8">
+      <div className="grow flex flex-col mt-5 space-y-4 lg:flex-row-reverse sm:space-x-4">
+        <Card className="w-[350px] sm:w-[500px] xl:w-[700px] 2xl:w-[800px] h-full max-h-[600px] overflow-hidden my-4 lg:mx-8">
           <Editor
             language={language}
             value={sourcecode}
