@@ -162,6 +162,16 @@ export function NavigationBar() {
               >
                 Profile
               </Link>
+              {
+                session?.user && session?.user.role == "ADMIN" ? (
+                  <>
+                    <Separator />
+                    <Link href="/dashboard">Dashboard</Link>
+                  </>
+                ) : (
+                  <></>
+                )
+              }
             </div>
             <div className="w-full mt-10">
               {session?.user ? (

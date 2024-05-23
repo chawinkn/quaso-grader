@@ -8,7 +8,7 @@ import AdminUserTable from './AdminUserTable';
 export default function User() {
 
     return (
-    <Card className='w-full min-h-[650px] h-max'>
+    <Card className='w-full min-h-[250px] h-max'>
         <CardHeader>
             <CardTitle>User</CardTitle>
         </CardHeader>
