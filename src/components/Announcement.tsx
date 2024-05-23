@@ -5,6 +5,9 @@ import { Separator } from '@/components/ui/separator'
 import CreateAnnouncementCard from './CreateAnnouncementCard'
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import rehypeSanitize from 'rehype-sanitize'
+import rehypeExternalLinks from 'rehype-external-links'
+
 
 type AnnouncementData = {
   title: string
@@ -51,8 +54,8 @@ function AnnouncementCard(props: AnnouncementData) {
   const createdDate = new Date(props.createdAt)
 
   return (
-    <Card className="w-[350px] sm:w-[450px] md:w-[600px]">
-      <CardHeader className="flex flex-col md:flex-row justify-between items-center bg-muted/70">
+    <Card className="w-[350px] sm:w-[450px] md:w-[600px] xl:w-[700px]">
+      <CardHeader className="flex flex-col md:flex-row justify-between items-center bg-muted/40">
         <CardTitle className="text-xl">{props.title}</CardTitle>
         <div className="grow flex flex-row-reverse gap-2 items-center">
           <Badge className="w-max">{props.author}</Badge>
@@ -63,7 +66,18 @@ function AnnouncementCard(props: AnnouncementData) {
       </CardHeader>
       <Separator />
       <CardContent className="p-6 break-all">
-        <Markdown remarkPlugins={[remarkGfm]}>{props.content}</Markdown>
+        <Markdown 
+          className={'prose dark:prose-invert text-muted-foreground dark:text-muted-foreground'}
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[
+            rehypeSanitize,
+            [rehypeExternalLinks,
+              { content: { type: 'text', value: '🔗'}}
+            ],
+          ]}
+        >
+          {props.content}
+        </Markdown>
       </CardContent>
     </Card>
   )

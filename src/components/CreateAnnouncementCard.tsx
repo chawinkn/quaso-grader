@@ -72,8 +72,8 @@ export default function CreateAnnouncementCard(props: UserData) {
   }
 
   return (
-    <Card className="w-[350px] sm:w-[450px] md:w-[600px]">
-      <CardHeader className="flex flex-col md:flex-row justify-between items-center bg-muted/70">
+    <Card className="w-[350px] sm:w-[450px] md:w-[600px] xl:w-[700px]">
+      <CardHeader className="flex flex-col md:flex-row justify-between items-center bg-muted/40">
         <CardTitle className="text-xl">New announcement</CardTitle>
       </CardHeader>
       <Separator />
