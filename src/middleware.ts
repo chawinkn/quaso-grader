@@ -22,6 +22,8 @@ export async function middleware(req: NextRequest) {
     (path === '/login' || path === '/register')
   ) {
     return NextResponse.redirect(new URL('/', req.url))
+  } else if (path === '/dashboard' && user?.role !== 'ADMIN') {
+    return NextResponse.error()
   }
   return NextResponse.next()
 }

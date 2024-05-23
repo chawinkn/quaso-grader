@@ -63,6 +63,23 @@ export function NavigationBar() {
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
+            {session?.user && session?.user.role == "ADMIN" ? (
+              <NavigationMenuItem className="hidden sm:flex">
+                <Link
+                  href="/dashboard"
+                  legacyBehavior
+                  passHref
+                >
+                  <NavigationMenuLink
+                    className={navigationMenuTriggerStyle()}
+                  >
+                    Dashboard
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+            ) : (
+              <></>
+            )}
           </NavigationMenuList>
         </NavigationMenu>
         <div className="flex items-center ml-auto">
