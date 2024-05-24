@@ -35,7 +35,7 @@ export default async function Submissions() {
 
   for (const submission of submissionList) {
     const User = await getUser(submission.userId)
-    submission.username = User.username
+    submission.name = User.name
   }
 
   return (

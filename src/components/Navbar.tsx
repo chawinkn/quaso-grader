@@ -42,37 +42,31 @@ export function NavigationBar() {
                 <NavigationMenuLink className="px-2">Home</NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
-            <NavigationMenuItem className="hidden sm:flex">
+            <NavigationMenuItem className="hidden md:flex">
               <Link href="/tasks" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   Tasks
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
-            <NavigationMenuItem className="hidden sm:flex">
+            <NavigationMenuItem className="hidden md:flex">
               <Link href="/submissions" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   Submissions
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
-            <NavigationMenuItem className="hidden sm:flex">
+            <NavigationMenuItem className="hidden md:flex">
               <Link href="/scoreboard" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   Scoreboard
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
-            {session?.user && session?.user.role == "ADMIN" ? (
-              <NavigationMenuItem className="hidden sm:flex">
-                <Link
-                  href="/dashboard"
-                  legacyBehavior
-                  passHref
-                >
-                  <NavigationMenuLink
-                    className={navigationMenuTriggerStyle()}
-                  >
+            {session?.user.role == 'ADMIN' ? (
+              <NavigationMenuItem className="hidden md:flex">
+                <Link href="/dashboard" legacyBehavior passHref>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                     Dashboard
                   </NavigationMenuLink>
                 </Link>
@@ -89,7 +83,7 @@ export function NavigationBar() {
                 <ThemeButton />
               </NavigationMenuItem>
               {session?.user ? (
-                <NavigationMenuItem className="hidden sm:flex">
+                <NavigationMenuItem className="hidden md:flex">
                   <Link
                     href={`/profile/${session?.user.id}`}
                     legacyBehavior
@@ -110,7 +104,7 @@ export function NavigationBar() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="hidden px-4 mx-2 text-red-500 sm:flex"
+                    className="hidden px-4 mx-2 text-red-500 md:flex"
                     onClick={logOut}
                   >
                     Logout
@@ -120,7 +114,7 @@ export function NavigationBar() {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="hidden px-4 mx-2 sm:flex"
+                      className="hidden px-4 mx-2 md:flex"
                     >
                       Login
                     </Button>
@@ -130,7 +124,7 @@ export function NavigationBar() {
                   onClick={toggleMenu}
                   variant="outline"
                   size="icon"
-                  className="border-0 sm:hidden"
+                  className="border-0 md:hidden"
                 >
                   {!isMenuOpen ? (
                     <Menu className="h-[1.5rem] w-[1.5rem] scale-100" />
@@ -154,6 +148,14 @@ export function NavigationBar() {
               <Link href="/submissions">Submissions</Link>
               <Separator />
               <Link href="/scoreboard">Scoreboard</Link>
+              {session?.user.role === 'ADMIN' ? (
+                <>
+                  <Separator />
+                  <Link href="/dashboard">Dashboard</Link>
+                </>
+              ) : (
+                <></>
+              )}
               <Separator />
               <Link
                 href={`/profile/${session?.user.id}`}
