@@ -20,7 +20,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-import { useRouter } from "next/router"
+//import { useRouter } from "next/router"
 import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
 import * as React from "react"
@@ -86,7 +86,7 @@ export default function AdminUserTable<TData, TValue>({
           className="w-[250px] lg:w-[300px]"
         />
       </div>
-      <Card className="w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px]">
+      <Card className="w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px] xl:min-w-max overflow-auto">
         <Table>
           <TableHeader className="bg-muted/80">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -107,16 +107,12 @@ export default function AdminUserTable<TData, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-            {/* 
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row, index) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
                   className={index % 2 ? 'bg-muted/30' : ''}
-                  onClick={() => {
-                    router.push(`/submissions/${row.getValue('id')}`)
-                  }}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -134,11 +130,10 @@ export default function AdminUserTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No submissions.
+                  No User Data.
                 </TableCell>
               </TableRow>
             )}
-            */}
           </TableBody>
         </Table>
       </Card>
