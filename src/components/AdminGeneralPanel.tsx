@@ -50,7 +50,7 @@ export default function General() {
     }
 
     return (
-    <Card className='w-full min-h-[650px] h-max'>
+    <Card className='min-w-max w-[350px] sm:w-[450px] md:w-[600px] xl:w-[700px] h-max'>
         <CardHeader>
             <CardTitle>General</CardTitle>
         </CardHeader>

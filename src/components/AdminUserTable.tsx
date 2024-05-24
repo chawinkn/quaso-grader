@@ -86,7 +86,7 @@ export default function AdminUserTable<TData, TValue>({
           className="w-[250px] lg:w-[300px]"
         />
       </div>
-      <Card className="w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px]">
+      <Card className="w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px] min-w-max">
         <Table>
           <TableHeader className="bg-muted/80">
             {table.getHeaderGroups().map((headerGroup) => (
