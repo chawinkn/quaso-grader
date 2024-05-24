@@ -21,6 +21,7 @@ export async function POST(req: NextRequest) {
         username,
         name: username,
         password: hashedPassword,
+        approved: true,
       },
     })
 

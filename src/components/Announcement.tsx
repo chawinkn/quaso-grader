@@ -8,7 +8,6 @@ import remarkGfm from 'remark-gfm'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
 
-
 type AnnouncementData = {
   title: string
   content: string
@@ -66,14 +65,14 @@ function AnnouncementCard(props: AnnouncementData) {
       </CardHeader>
       <Separator />
       <CardContent className="p-6 break-all">
-        <Markdown 
-          className={'prose dark:prose-invert text-muted-foreground dark:text-muted-foreground'}
+        <Markdown
+          className={
+            'prose dark:prose-invert text-muted-foreground dark:text-muted-foreground'
+          }
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[
             rehypeSanitize,
-            [rehypeExternalLinks,
-              { content: { type: 'text', value: '🔗'}}
-            ],
+            [rehypeExternalLinks, { content: { type: 'text', value: '🔗' } }],
           ]}
         >
           {props.content}
@@ -89,7 +88,7 @@ export default async function Announcement(props: UserData) {
   const announcementsWithAuthors = await Promise.all(
     announcementList.map(async (announcement: AnnouncementData) => {
       const user = await getUser(announcement.createdById)
-      return { ...announcement, author: user.username }
+      return { ...announcement, author: user.name }
     })
   )
 

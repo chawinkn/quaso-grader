@@ -31,7 +31,8 @@ export default async function Profile({
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      {User.username}
+      <h1 className="font-bold text-4xl">{User.username}</h1>
+      <p className="mt-2 text-md">{User.name}</p>
     </div>
   )
 }

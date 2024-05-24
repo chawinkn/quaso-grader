@@ -3,8 +3,8 @@ import { ExternalLink } from 'lucide-react'
 
 export default function StatementLayout() {
   return (
-    <article className='w-full h-full'>
-      <div className="flex justify-center space-x-1 pb-4">
+    <article className="h-screen">
+      <div className="flex justify-center space-x-1 pb-5">
         <Link
           href="https://qccwwndtp6owt1wz.public.blob.vercel-storage.com/a_mul_b-qmwk2kuHbRIECVuas5knSlRQkFiMRe.pdf"
           target="_blank"
