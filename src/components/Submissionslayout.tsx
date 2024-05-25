@@ -4,12 +4,16 @@ import Editor from '@monaco-editor/react'
 import { Card } from './ui/card'
 import Link from 'next/link'
 import { formatDateTime } from '@/app/submissions/columns'
+import { useEffect, useState } from 'react'
+import { cx } from 'class-variance-authority'
+import { ResultData } from '@/app/submissions/[id]/columns'
 
-type SubmissionData = {
+export type SubmissionData = {
   id: number
   taskTitle: string
   taskId: string
   submittedAt: string
+  status: string
   time: number
   memory: number
   code: string
@@ -19,8 +23,98 @@ type SubmissionData = {
   username: string
 }
 
-export default function SubmissionLayout({ ...props }) {
-  const submission: SubmissionData = props?.submission
+async function getSubmission(submissionId: string) {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/submissions/${submissionId}`,
+    {
+      method: 'GET',
+    }
+  )
+  if (!res) {
+    return null
+  }
+  const data = await res.json()
+  return data
+}
+
+async function getUser(userId: number) {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`,
+    {
+      method: 'GET',
+    }
+  )
+  if (!res) {
+    return null
+  }
+  const data = await res.json()
+  return data
+}
+
+async function getTask(taskId: string) {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/tasks/${taskId}`,
+    {
+      method: 'GET',
+    }
+  )
+  if (!res) {
+    return null
+  }
+  const data = await res.json()
+  return data
+}
+
+export default function SubmissionLayout({ id }: { id: string }) {
+  const [status, setStatus] = useState('')
+  const [submission, setSubmission] = useState<SubmissionData>({
+    id: 99999,
+    taskTitle: '',
+    taskId: '',
+    submittedAt: '',
+    status: '',
+    time: 0,
+    memory: 0,
+    code: '',
+    score: 0,
+    result: [],
+    language: 'c',
+    username: '',
+  })
+
+  const fetchSubmission = async () => {
+    const submission = await getSubmission(id)
+    if (submission) {
+      const [User, Task] = await Promise.all([
+        getUser(submission.userId),
+        getTask(submission.taskId),
+      ])
+      submission.username = User.username
+      submission.taskTitle = Task.title
+      setSubmission(submission)
+      setStatus(submission.status)
+    }
+  }
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null
+
+    const startFetching = async () => {
+      await fetchSubmission()
+      if (status === 'Pending' || status === 'Judging') {
+        interval = setInterval(fetchSubmission, 1000 * 5)
+      }
+    }
+
+    startFetching()
+
+    return () => {
+      if (interval) {
+        clearInterval(interval)
+      }
+    }
+  }, [id, status])
+
   const languageList = [
     {
       name: 'C',
@@ -43,9 +137,23 @@ export default function SubmissionLayout({ ...props }) {
   )
   const displayLanguage = findLanguage[0].name
 
+  let style = 'bg-yellow-500 dark:bg-yellow-900'
+
+  if (status === 'Completed') {
+    style = 'bg-green-500 dark:bg-green-900'
+  }
+
   return (
-    <div className="flex flex-col items-center justify-center py-10">
+    <div className="flex flex-col items-center justify-center">
       <p className="font-bold">Submission : {submission.id}</p>
+      <div className="inline">
+        <p className="inline font-bold">Status : </p>
+        <p
+          className={cx('px-2.5 py-0.5 rounded text-white w-fit inline', style)}
+        >
+          {submission.status}
+        </p>
+      </div>
       <div className="inline">
         <p className="inline font-bold">Task : </p>
         <Link href={`/tasks/${submission.taskId}`} className="underline inline">

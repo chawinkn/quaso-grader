@@ -1,14 +1,15 @@
+'use client'
+
 import { Suspense } from 'react'
-import { headers } from 'next/headers'
 import SubmissionLayout from '@/components/Submissionslayout'
 import { notFound } from 'next/navigation'
+import Resultlayout from '@/components/Resultlayout'
 
 async function getSubmission(submissionId: string) {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/submissions/${submissionId}`,
     {
       method: 'GET',
-      headers: new Headers(headers()),
     }
   )
   if (!res) {
@@ -21,36 +22,6 @@ async function getSubmission(submissionId: string) {
   return data
 }
 
-async function getUser(userId: number) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`,
-    {
-      method: 'GET',
-      headers: new Headers(headers()),
-    }
-  )
-  if (!res) {
-    return null
-  }
-  const data = await res.json()
-  return data
-}
-
-async function getTask(taskId: string) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/tasks/${taskId}`,
-    {
-      method: 'GET',
-      headers: new Headers(headers()),
-    }
-  )
-  if (!res) {
-    return null
-  }
-  const data = await res.json()
-  return data
-}
-
 export default async function Submission({
   params,
 }: {
@@ -58,18 +29,15 @@ export default async function Submission({
     id: string
   }
 }) {
-  const submission = await getSubmission(params.id)
-  const [User, Task] = await Promise.all([
-    getUser(submission.userId),
-    getTask(submission.taskId),
-  ])
-  submission.username = User.username
-  submission.taskTitle = Task.title
+  await getSubmission(params.id)
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen py-10 space-y-4">
       <Suspense fallback={null}>
-        <SubmissionLayout submission={submission} />
+        <SubmissionLayout id={params.id} />
+      </Suspense>
+      <Suspense fallback={null}>
+        <Resultlayout id={params.id} />
       </Suspense>
     </div>
   )
