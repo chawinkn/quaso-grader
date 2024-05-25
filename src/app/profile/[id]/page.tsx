@@ -1,5 +1,7 @@
 import { headers } from 'next/headers'
 import { notFound } from 'next/navigation'
+import { getServerUser } from '@/lib/session'
+import UserPanel from '@/components/UserPanel'
 
 async function getUser(userId: number) {
   const res = await fetch(
@@ -28,11 +30,19 @@ export default async function Profile({
 }) {
   if (isNaN(Number(params.id))) return notFound()
   const User = await getUser(Number(params.id))
+  const user = await getServerUser()
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <h1 className="font-bold text-4xl">{User.username}</h1>
-      <p className="mt-2 text-md">{User.name}</p>
+    <div className="flex flex-col items-center h-screen py-10">
+      <h1 className="text-3xl font-bold">PROFILE</h1>
+      <div className="flex flex-col justify-center items-center flex-grow space-y-4">
+        <h1 className="font-bold text-2xl">{User.username}</h1>
+        {User.username === user?.name ? (
+          <UserPanel {...User} />
+        ) : (
+          <p className="mt-2 text-md">{User.name}</p>
+        )}
+      </div>
     </div>
   )
 }

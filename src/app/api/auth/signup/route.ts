@@ -5,8 +5,8 @@ import prisma from '@/lib/prisma'
 
 export async function POST(req: NextRequest) {
   try {
-    const { username, password } = await req.json()
-    if (!username || !password) return badRequest()
+    const { username, name, password } = await req.json()
+    if (!username || !name || !password) return badRequest()
 
     const existingUser = await prisma.user.findUnique({
       where: {
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     const newUser = await prisma.user.create({
       data: {
         username,
-        name: username,
+        name,
         password: hashedPassword,
         approved: true,
       },

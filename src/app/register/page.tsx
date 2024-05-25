@@ -31,14 +31,18 @@ const formSchema = z
       .string()
       .min(5, { message: 'Username must be 5-15 characters.' })
       .max(15, { message: 'Username must be 5-15 characters.' }),
+    name: z
+      .string()
+      .min(3, { message: 'Username must be 5-15 characters.' })
+      .max(30, { message: 'Username must be 5-15 characters.' }),
     password: z
       .string()
-      .min(5, { message: 'Password must be 5-15 characters.' })
-      .max(15, { message: 'Password must be 5-15 characters.' }),
+      .min(8, { message: 'Password must be 5-15 characters.' })
+      .max(24, { message: 'Password must be 5-15 characters.' }),
     confirm_password: z
       .string()
-      .min(5, { message: 'Password must be 5-15 characters.' })
-      .max(15, { message: 'Password must be 5-15 characters.' }),
+      .min(8, { message: 'Password must be 5-15 characters.' })
+      .max(24, { message: 'Password must be 5-15 characters.' }),
   })
   .refine((data) => data.password === data.confirm_password, {
     message: 'Passwords do not match.',
@@ -51,6 +55,7 @@ export default function Register() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: '',
+      name: '',
       password: '',
       confirm_password: '',
     },
@@ -59,7 +64,7 @@ export default function Register() {
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setSubmit(true)
-    const { username, confirm_password, password } = data
+    const { username, name, confirm_password, password } = data
     try {
       const response = await fetch('/api/auth/signup', {
         method: 'POST',
@@ -68,6 +73,7 @@ export default function Register() {
         },
         body: JSON.stringify({
           username,
+          name,
           password,
         }),
       })
@@ -100,6 +106,18 @@ export default function Register() {
                   <FormItem>
                     <FormControl>
                       <Input placeholder="Username" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input placeholder="Display name" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
