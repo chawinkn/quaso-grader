@@ -19,12 +19,7 @@ import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { useRouter } from 'next/navigation'
 import { Textarea } from './ui/textarea'
-
-type UserData = {
-  name: string
-  id: number
-  role: string
-}
+import { UserData } from './Announcement'
 
 const formSchema = z.object({
   title: z
@@ -63,8 +58,13 @@ export default function CreateAnnouncementCard(props: UserData) {
           content,
         }),
       })
-      toast.success('Create successfully')
-      router.refresh()
+      const result = await response.json()
+      if (response?.ok) {
+        toast.success('Create successfully')
+        router.refresh()
+      } else {
+        toast.error(result.error)
+      }
     } catch (error) {
       toast.error('An unexpected error occurred. Please try again later.')
     }

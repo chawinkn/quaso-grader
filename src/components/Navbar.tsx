@@ -63,7 +63,7 @@ export function NavigationBar() {
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
-            {session?.user.role == 'ADMIN' ? (
+            {session?.user.role === 'ADMIN' ? (
               <NavigationMenuItem className="hidden md:flex">
                 <Link href="/dashboard" legacyBehavior passHref>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>
@@ -164,16 +164,14 @@ export function NavigationBar() {
               >
                 Profile
               </Link>
-              {
-                session?.user && session?.user.role == "ADMIN" ? (
-                  <>
-                    <Separator />
-                    <Link href="/dashboard">Dashboard</Link>
-                  </>
-                ) : (
-                  <></>
-                )
-              }
+              {session?.user && session?.user.role == 'ADMIN' ? (
+                <>
+                  <Separator />
+                  <Link href="/dashboard">Dashboard</Link>
+                </>
+              ) : (
+                <></>
+              )}
             </div>
             <div className="w-full mt-10">
               {session?.user ? (

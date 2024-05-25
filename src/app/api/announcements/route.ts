@@ -2,6 +2,7 @@ import prisma from '@/lib/prisma'
 import { json, unauthorized, badRequest } from '@/utils/apiResponse'
 import { getServerUser } from '@/lib/session'
 import { NextRequest } from 'next/server'
+import { revalidatePath } from 'next/cache'
 
 export async function GET() {
   const user = await getServerUser()
@@ -29,6 +30,26 @@ export async function POST(req: NextRequest) {
       createdById: userId,
     },
   })
+
+  revalidatePath('/')
+
+  return json({ success: true })
+}
+
+export async function DELETE(req: NextRequest) {
+  const user = await getServerUser()
+  if (!user) return unauthorized()
+
+  const { id } = await req.json()
+  if (!id) return badRequest()
+
+  await prisma.announcement.delete({
+    where: {
+      id,
+    },
+  })
+
+  revalidatePath('/')
 
   return json({ success: true })
 }

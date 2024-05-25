@@ -1,22 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { headers } from 'next/headers'
-import { Separator } from '@/components/ui/separator'
 import CreateAnnouncementCard from './CreateAnnouncementCard'
-import Markdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
-import rehypeSanitize from 'rehype-sanitize'
-import rehypeExternalLinks from 'rehype-external-links'
+import AnnouncementCard, { AdminAnnouncementCard } from './AnnouncementCard'
+import { AnnouncementData } from './AnnouncementCard'
 
-type AnnouncementData = {
-  title: string
-  content: string
-  createdById: number
-  author: string
-  createdAt: string
-}
-
-type UserData = {
+export type UserData = {
   name: string
   id: number
   role: string
@@ -49,39 +36,6 @@ async function getUser(userId: number) {
   return data
 }
 
-function AnnouncementCard(props: AnnouncementData) {
-  const createdDate = new Date(props.createdAt)
-
-  return (
-    <Card className="w-[350px] sm:w-[450px] md:w-[600px] xl:w-[700px]">
-      <CardHeader className="flex flex-col md:flex-row justify-between items-center bg-muted/40">
-        <CardTitle className="text-xl">{props.title}</CardTitle>
-        <div className="grow flex flex-row-reverse gap-2 items-center">
-          <Badge className="w-max">{props.author}</Badge>
-          <Badge variant="secondary" className="w-max">
-            {createdDate.toLocaleString()}
-          </Badge>
-        </div>
-      </CardHeader>
-      <Separator />
-      <CardContent className="p-6 break-all">
-        <Markdown
-          className={
-            'prose dark:prose-invert text-muted-foreground dark:text-muted-foreground'
-          }
-          remarkPlugins={[remarkGfm]}
-          rehypePlugins={[
-            rehypeSanitize,
-            [rehypeExternalLinks, { content: { type: 'text', value: '🔗' } }],
-          ]}
-        >
-          {props.content}
-        </Markdown>
-      </CardContent>
-    </Card>
-  )
-}
-
 export default async function Announcement(props: UserData) {
   const announcementList = await getAnnouncementList()
 
@@ -97,7 +51,13 @@ export default async function Announcement(props: UserData) {
       {props.role === 'ADMIN' ? <CreateAnnouncementCard {...props} /> : <></>}
       {announcementsWithAuthors.map((announcement: AnnouncementData) => {
         return (
-          <AnnouncementCard key={announcement.createdAt} {...announcement} />
+          <>
+            {props.role === 'ADMIN' ? (
+              <AdminAnnouncementCard key={announcement.id} {...announcement} />
+            ) : (
+              <AnnouncementCard key={announcement.id} {...announcement} />
+            )}
+          </>
         )
       })}
     </div>
