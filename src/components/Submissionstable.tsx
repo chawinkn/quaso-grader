@@ -61,10 +61,10 @@ export default function SubmissionsTable<TData, TValue>({
         <Input
           placeholder="Find user..."
           value={
-            (table.getColumn('username')?.getFilterValue() as string) ?? ''
+            (table.getColumn('name')?.getFilterValue() as string) ?? ''
           }
           onChange={(event) => {
-            table.getColumn('username')?.setFilterValue(event.target.value)
+            table.getColumn('name')?.setFilterValue(event.target.value)
           }}
           className="w-[250px] lg:w-[300px]"
         />

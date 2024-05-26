@@ -1,7 +1,7 @@
 import prisma from '@/lib/prisma'
 import { json, unauthorized } from '@/utils/apiResponse'
 import { getServerUser } from '@/lib/session'
-import { NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { badRequest } from '@/utils/apiResponse'
 import { revalidatePath } from 'next/cache'
 
@@ -21,19 +21,38 @@ export async function PUT(req: NextRequest) {
   const user = await getServerUser()
   if (!user) return unauthorized()
 
-  const { id, name } = await req.json()
+  const { id, name, role, approved } = await req.json()
   if (!id || !name) return badRequest()
+  if (user.role !== 'ADMIN' && user.id !== id) {
+    return unauthorized()
+  }
 
-  await prisma.user.update({
-    where: {
-      id,
-    },
-    data: {
-      name,
-    },
-  })
+  if (user.role === "ADMIN" && role && approved !== undefined) {
+    const update = await prisma.user.update({
+      where: {
+        id,
+      },
+      data: {
+        name,
+        role,
+        approved,
+      },
+    })
+    revalidatePath(`/dashboard`);
+    //return NextResponse.error()
+    return NextResponse.json({success: true, name: update.name, role: update.role, approved: update.approved})
+  } else {
+    await prisma.user.update({
+      where: {
+        id,
+      },
+      data: {
+        name,
+      },
+    })
 
-  revalidatePath(`/profile/${id}`)
+    revalidatePath(`/profile/${id}`)
+  }
 
   return json({ success: true })
 }

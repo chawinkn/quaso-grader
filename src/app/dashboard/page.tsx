@@ -9,7 +9,7 @@ export default function Admin() {
     <main className="flex min-h-screen flex-col gap-4 p-4 md:gap-8 md:p-10">
       <div className="text-center">
         <h1 className="text-3xl font-bold">DASHBOARD</h1>
-        <h2 className='text-md text-muted-foreground'>General</h2>
+        <h2 className='text-md text-muted-foreground'></h2>
       </div>
       <div className="flex grow justify-center">
         <Tabs

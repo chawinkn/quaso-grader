@@ -2,7 +2,7 @@
 
 import { Card, CardTitle, CardContent, CardHeader } from './ui/card'
 import { Separator } from './ui/separator'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
 import { Button } from './ui/button'
@@ -77,11 +77,13 @@ export function AdminAnnouncementCard(props: AnnouncementData) {
         >
           {props.content}
         </Markdown>
-        <Button onClick={onClick} disabled={isSubmit} className="w-full mt-4">
+        <Button onClick={onClick} variant={'destructive'} disabled={isSubmit} className="w-full mt-4">
           {isSubmit ? (
             <Loader2 className="w-5 h-5 mr-2 animate-spin" />
           ) : (
-            'Delete'
+            <div className="flex flex-row justify-center items-center">
+              Delete <span className='ml-2'><Trash2 /></span>
+            </div>
           )}
         </Button>
       </CardContent>
