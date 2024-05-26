@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 import { headers } from 'next/headers';
 import { columns } from './AdminUserColumns';
 import AdminUserTable from './AdminUserTable';
+import { useEffect, useState } from 'react';
 
 async function getUserList() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
@@ -17,9 +18,8 @@ async function getUserList() {
 }
 
 export default async function User() {
-
   const userList = await getUserList();
-
+  
   /*
   return (
     <Card className="w-full min-h-[250px] h-max">

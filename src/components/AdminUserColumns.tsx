@@ -23,7 +23,9 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Switch } from "@/components/ui/switch"
-
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import toast from 'react-hot-toast'
 
 export type UserData = {
     id: number
@@ -131,16 +133,46 @@ export const columns: ColumnDef<UserData>[] = [
       )
     },
     cell: ({ row }) => {
-      /*
-      return (
-        <>
-          <Badge variant={row.getValue("role") === "ADMIN" ? "default" : "outline"}>{row.getValue('role')}</Badge>
-        </>
-      )
-      */
+      const [ role, setRole ] = useState<string>(row.getValue('role'));
+      const [ isChanged, setIsChanged ] = useState<boolean>(false)
+      const handleChange = async (event: any) => {
+        setIsChanged(true);
+        setRole(role === "ADMIN" ? "USER" : "ADMIN");
+        const id = row.getValue('id');
+        const name = row.getValue('name');
+        const approved = row.getValue('approved');
+        try {
+          const request = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id: id,
+              name: name,
+              role: (role === "ADMIN" ? "USER" : "ADMIN"),
+              approved: approved,
+            }),
+          })
+
+          if (request.ok){
+            toast.success(`UserID: ${id} role changed successfully`);
+            const data = await request.json();
+            setRole(data.role);
+          } else {
+            setRole(row.getValue('role'));
+            toast.error(request.statusText);
+          }
+        } catch (error) {
+          setRole(row.getValue('role'));
+          console.error(error);
+          toast.error(`UserID: ${id} unchanged`);
+        }
+        setIsChanged(false);
+      }
       return (
         <div className="text-center">
-          <Switch checked={row.getValue('role') === 'ADMIN'} />
+          <Switch onClick={handleChange} disabled={isChanged} checked={role === "ADMIN"} />
         </div>
       )
     }
@@ -169,9 +201,47 @@ export const columns: ColumnDef<UserData>[] = [
       )
     },
     cell: ({ row }) => {
+      const router = useRouter();
+      const [ approved, setApproved ] = useState<boolean>(row.getValue('approved'));
+      const [ isChanged, setIsChanged ] = useState<boolean>(false)
+      const handleChange = async (event: any) => {
+        setIsChanged(true);
+        setApproved(!approved);
+        const id = row.getValue('id');
+        const name = row.getValue('name');
+        const role = row.getValue('role');
+        try {
+          const request = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id: id,
+              name: name,
+              role: role,
+              approved: !approved,
+            }),
+          })
+
+          if (request.ok){
+            toast.success(`UserID: ${id} ${!approved ? 'approved' : 'unapproved'} successfully`);
+            const data = await request.json();
+            setApproved(data.approved);
+          } else {
+            setApproved(row.getValue('approved'));
+            toast.error(request.statusText);
+          }
+        } catch (error) {
+          console.error(error);
+          setApproved(row.getValue('approved'));
+          toast.error(`UserID: ${id} unchanged`);
+        }
+        setIsChanged(false);
+      }
       return (
         <div className="text-center pr-4">
-          <Switch checked={row.getValue('approved')} />
+          <Switch disabled={isChanged} onClick={handleChange} checked={approved}/>
         </div>
       )
     }
@@ -201,7 +271,6 @@ export const columns: ColumnDef<UserData>[] = [
     },
     cell: ({ row }) => {
       const date = new Date(row.getValue('createdAt'))
-      console.log(date);
 
       return (
         <>
@@ -235,7 +304,6 @@ export const columns: ColumnDef<UserData>[] = [
     },
     cell: ({ row }) => {
       const date = new Date(row.getValue('updatedAt'))
-      console.log(date);
 
       return (
         <>

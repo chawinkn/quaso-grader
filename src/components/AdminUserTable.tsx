@@ -22,6 +22,7 @@ import {
 
 //import { useRouter } from "next/router"
 import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import * as React from "react"
  
@@ -55,6 +56,7 @@ export default function AdminUserTable<TData, TValue>({
   })
 
   //const router = useRouter()
+  const [ isChanged, setIsChanged ] = React.useState(false)
 
   return (
     <>
@@ -85,8 +87,9 @@ export default function AdminUserTable<TData, TValue>({
           }}
           className="w-[250px] lg:w-[300px]"
         />
+        <Button disabled={!isChanged} variant={isChanged ? "default" : "outline"}>Save changes</Button>
       </div>
-      <Card className="w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px] xl:min-w-max overflow-auto">
+      <Card className="w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px] xl:w-full overflow-auto">
         <Table>
           <TableHeader className="bg-muted/80">
             {table.getHeaderGroups().map((headerGroup) => (
