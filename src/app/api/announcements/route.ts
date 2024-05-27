@@ -12,6 +12,19 @@ export async function GET() {
     orderBy: {
       createdAt: 'desc',
     },
+    select: {
+      content: true,
+      createdAt: true,
+      createdBy: {
+        select: {
+          username: true,
+          name: true,
+        },
+      },
+      createdById: true,
+      id: true,
+      title: true,
+    },
   })
   return json(res)
 }

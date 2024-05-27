@@ -15,15 +15,8 @@ import { useState } from 'react'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 import { Loader2 } from 'lucide-react'
-import { revalidatePath } from 'next/cache'
+import { TaskData } from '@/app/tasks/columns'
 import StatementLayout from './Statementlayout'
-
-type TaskData = {
-  title: string
-  id: string
-  passCount: number
-  score: number
-}
 
 export default function TaskLayout({ ...props }) {
   const task: TaskData = props?.task
@@ -99,8 +92,31 @@ export default function TaskLayout({ ...props }) {
       })
       const result = await response.json()
       if (response?.ok) {
+        // try {
+        //   const backend_response = await fetch(`http://localhost:5000/submit`, {
+        //     method: 'POST',
+        //     headers: {
+        //       'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify({
+        //       task_id: task.id,
+        //       submission_id: result.id,
+        //       code: sourcecode,
+        //       language,
+        //     }),
+        //   })
+        //   if (backend_response?.ok) {
         toast.success('Submit successfully')
         router.push(`/submissions/${result.id}`)
+        //   } else {
+        //     toast.error(
+        //       'Grader not avaliable or internal error. Please try again later.'
+        //     )
+        //   }
+        // } catch (error) {
+        //   console.log(error)
+        //   toast.error('An unexpected error occurred. Please try again later.')
+        // }
       } else {
         toast.error(result.error)
       }
@@ -112,12 +128,13 @@ export default function TaskLayout({ ...props }) {
   }
 
   return (
-    <div className="grow flex flex-col items-center justify-center py-10">
+    <div className="flex flex-col items-center justify-center py-10 grow">
       <h2 className="text-3xl font-bold">{task.title}</h2>
+      <h2 className="text-lg">Full score : {task.fullScore}</h2>
       <div className="w-4/5 my-5 space-y-4 sm:space-x-4">
         <StatementLayout />
       </div>
-      <div className="grow flex flex-col lg:flex-row mt-10 space-y-4 lg:space-x-2">
+      <div className="flex flex-col mt-10 space-y-4 grow lg:flex-row lg:space-x-2">
         <Card className="w-[350px] sm:w-[500px] xl:w-[700px] 2xl:w-[800px] h-[500px] overflow-hidden my-4 lg:mx-8">
           <Editor
             language={language}

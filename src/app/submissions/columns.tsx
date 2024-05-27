@@ -3,11 +3,17 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { ArrowUpDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { cx } from 'class-variance-authority'
 
 export type SubmissionData = {
   id: number
   taskId: string
-  name: number
+  user: {
+    name: string
+  }
+  task: {
+    fullScore: number
+  }
   status: string
   score: number
   submittedAt: string
@@ -101,12 +107,12 @@ export const columns: ColumnDef<SubmissionData>[] = [
     },
   },
   {
-    accessorKey: 'name',
+    accessorKey: 'user',
     header: ({ column }) => {
       return (
         <div>
           <span className="flex items-center">
-            User
+            Name
             <Button
               variant="ghost"
               size="icon"
@@ -122,6 +128,12 @@ export const columns: ColumnDef<SubmissionData>[] = [
           </span>
         </div>
       )
+    },
+    accessorFn: (row: SubmissionData, index: number) => {
+      return row.user.name
+    },
+    cell: ({ row }) => {
+      return <div>{row.getValue('user')}</div>
     },
   },
   {
@@ -171,87 +183,31 @@ export const columns: ColumnDef<SubmissionData>[] = [
         </div>
       )
     },
+    accessorFn: (row: SubmissionData, index: number) => {
+      let style = 'bg-yellow-500 dark:bg-yellow-900'
+      let score = row.score
+      let fullScore = row.task.fullScore
+
+      if (score === fullScore) {
+        style = 'bg-green-500 dark:bg-green-900'
+      } else if (score === -1) {
+        score = 0
+        style = 'bg-primary dark:bg-muted/90'
+      }
+      return (
+        <div
+          className={cx(
+            'px-2.5 py-0.5 rounded text-white font-medium w-fit',
+            style
+          )}
+        >
+          <span>{score}</span>
+          <span className="hidden sm:inline"> / {fullScore}</span>
+        </div>
+      )
+    },
+    cell: ({ row }) => {
+      return row.getValue('score')
+    },
   },
-  // {
-  //   accessorKey: 'language',
-  //   header: ({ column }) => {
-  //     return (
-  //       <div className="hidden sm:flex">
-  //         <span className="flex items-center">
-  //           Language
-  //           <Button
-  //             variant="ghost"
-  //             size="icon"
-  //             className="border-0"
-  //             onClick={() =>
-  //               column.toggleSorting(
-  //                 column.getIsSorted() === 'asc' || !column.getIsSorted()
-  //               )
-  //             }
-  //           >
-  //             <ArrowUpDown className="w-4 h-4" />
-  //           </Button>
-  //         </span>
-  //       </div>
-  //     )
-  //   },
-  //   enableHiding: true,
-  //   cell: ({ row }) => {
-  //     return <div className="hidden sm:flex">{row.getValue('language')}</div>
-  //   },
-  // },
-  // {
-  //   accessorKey: 'time',
-  //   header: ({ column }) => {
-  //     return (
-  //       <div className="hidden sm:flex">
-  //         <span className="flex items-center">
-  //           Time
-  //           <Button
-  //             variant="ghost"
-  //             size="icon"
-  //             className="border-0"
-  //             onClick={() =>
-  //               column.toggleSorting(
-  //                 column.getIsSorted() === 'asc' || !column.getIsSorted()
-  //               )
-  //             }
-  //           >
-  //             <ArrowUpDown className="w-4 h-4" />
-  //           </Button>
-  //         </span>
-  //       </div>
-  //     )
-  //   },
-  //   cell: ({ row }) => {
-  //     return <div className="hidden sm:flex">{row.getValue('time')}</div>
-  //   },
-  // },
-  // {
-  //   accessorKey: 'memory',
-  //   header: ({ column }) => {
-  //     return (
-  //       <div className="hidden sm:flex">
-  //         <span className="flex items-center">
-  //           Memory
-  //           <Button
-  //             variant="ghost"
-  //             size="icon"
-  //             className="border-0"
-  //             onClick={() =>
-  //               column.toggleSorting(
-  //                 column.getIsSorted() === 'asc' || !column.getIsSorted()
-  //               )
-  //             }
-  //           >
-  //             <ArrowUpDown className="w-4 h-4" />
-  //           </Button>
-  //         </span>
-  //       </div>
-  //     )
-  //   },
-  //   cell: ({ row }) => {
-  //     return <div className="hidden sm:flex">{row.getValue('memory')} kB</div>
-  //   },
-  // },
 ]

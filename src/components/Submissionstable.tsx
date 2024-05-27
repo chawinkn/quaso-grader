@@ -7,6 +7,7 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
@@ -24,6 +25,20 @@ import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
+import { Button } from './ui/button'
+import {
+  ChevronFirst,
+  ChevronLeft,
+  ChevronRight,
+  ChevronLast,
+} from 'lucide-react'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './ui/select'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -47,6 +62,7 @@ export default function SubmissionsTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     state: {
       sorting,
       columnFilters,
@@ -60,11 +76,9 @@ export default function SubmissionsTable<TData, TValue>({
       <div className="flex flex-col items-center mb-5 space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
         <Input
           placeholder="Find user..."
-          value={
-            (table.getColumn('name')?.getFilterValue() as string) ?? ''
-          }
+          value={(table.getColumn('user')?.getFilterValue() as string) ?? ''}
           onChange={(event) => {
-            table.getColumn('name')?.setFilterValue(event.target.value)
+            table.getColumn('user')?.setFilterValue(event.target.value)
           }}
           className="w-[250px] lg:w-[300px]"
         />
@@ -131,6 +145,70 @@ export default function SubmissionsTable<TData, TValue>({
           </TableBody>
         </Table>
       </Card>
+      <div className="flex items-center mt-4 space-x-6 lg:space-x-8">
+        <div className="flex items-center space-x-2">
+          <p className="text-sm font-medium">Rows per page</p>
+          <Select
+            value={`${table.getState().pagination.pageSize}`}
+            onValueChange={(value) => {
+              table.setPageSize(Number(value))
+            }}
+          >
+            <SelectTrigger className="h-8 w-[65px]">
+              <SelectValue placeholder={table.getState().pagination.pageSize} />
+            </SelectTrigger>
+            <SelectContent side="top">
+              {[10, 20, 30, 40, 50].map((pageSize) => (
+                <SelectItem key={pageSize} value={`${pageSize}`}>
+                  {pageSize}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="text-sm font-medium">
+          Page {table.getState().pagination.pageIndex + 1} of{' '}
+          {table.getPageCount()}
+        </div>
+        <div className="flex items-center space-x-2">
+          <Button
+            variant="outline"
+            className="hidden p-0 h-9 w-9 sm:flex"
+            onClick={() => table.firstPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            <ChevronFirst className="w-5 h-5" />
+            <span className="sr-only">First page</span>
+          </Button>
+          <Button
+            variant="outline"
+            className="p-0 h-9 w-9 "
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            <ChevronLeft className="w-5 h-5" />
+            <span className="sr-only">Previous page</span>
+          </Button>
+          <Button
+            variant="outline"
+            className="p-0 h-9 w-9"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            <ChevronRight className="w-5 h-5" />
+            <span className="sr-only">Next page</span>
+          </Button>
+          <Button
+            variant="outline"
+            className="hidden p-0 h-9 w-9 sm:flex"
+            onClick={() => table.lastPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            <ChevronLast className="w-5 h-5" />
+            <span className="sr-only">Last page</span>
+          </Button>
+        </div>
+      </div>
     </>
   )
 }

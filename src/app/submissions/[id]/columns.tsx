@@ -31,7 +31,12 @@ export const columns: ColumnDef<ResultData>[] = [
       }
 
       return (
-        <div className={cx('px-2.5 py-0.5 rounded text-white w-fit', style)}>
+        <div
+          className={cx(
+            'px-2.5 py-0.5 rounded text-white font-medium w-fit',
+            style
+          )}
+        >
           {status}
         </div>
       )
