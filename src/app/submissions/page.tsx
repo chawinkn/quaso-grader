@@ -15,28 +15,8 @@ async function getSubmissionList() {
   return data
 }
 
-async function getUser(userId: number) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`,
-    {
-      method: 'GET',
-      headers: new Headers(headers()),
-    }
-  )
-  if (!res) {
-    return null
-  }
-  const data = await res.json()
-  return data
-}
-
 export default async function Submissions() {
   const submissionList = await getSubmissionList()
-
-  for (const submission of submissionList) {
-    const User = await getUser(submission.userId)
-    submission.name = User.name
-  }
 
   return (
     <div className="min-h-screen">

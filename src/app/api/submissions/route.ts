@@ -10,7 +10,27 @@ export async function GET() {
 
   const res = await prisma.submission.findMany({
     orderBy: {
-      submittedAt: 'desc',
+      id: 'desc',
+    },
+    select: {
+      taskId: true,
+      id: true,
+      score: true,
+      user: {
+        select: {
+          name: true,
+        },
+      },
+      language: true,
+      time: true,
+      memory: true,
+      submittedAt: true,
+      status: true,
+      task: {
+        select: {
+          fullScore: true,
+        },
+      },
     },
   })
   return json(res)

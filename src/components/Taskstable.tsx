@@ -7,6 +7,7 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
@@ -20,18 +21,25 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
+import { Card } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import * as React from 'react'
+import { useRouter } from 'next/navigation'
+
+import { Button } from './ui/button'
+import {
+  ChevronFirst,
+  ChevronLeft,
+  ChevronRight,
+  ChevronLast,
+} from 'lucide-react'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-
-import { Card } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import * as React from 'react'
-import { useRouter } from 'next/navigation'
+} from './ui/select'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -55,6 +63,7 @@ export default function TasksTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     state: {
       sorting,
       columnFilters,
@@ -137,83 +146,70 @@ export default function TasksTable<TData, TValue>({
           </TableBody>
         </Table>
       </Card>
+      <div className="flex items-center mt-4 space-x-6 lg:space-x-8">
+        <div className="flex items-center space-x-2">
+          <p className="text-sm font-medium">Rows per page</p>
+          <Select
+            value={`${table.getState().pagination.pageSize}`}
+            onValueChange={(value) => {
+              table.setPageSize(Number(value))
+            }}
+          >
+            <SelectTrigger className="h-8 w-[65px]">
+              <SelectValue placeholder={table.getState().pagination.pageSize} />
+            </SelectTrigger>
+            <SelectContent side="top">
+              {[10, 20, 30, 40, 50].map((pageSize) => (
+                <SelectItem key={pageSize} value={`${pageSize}`}>
+                  {pageSize}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="text-sm font-medium">
+          Page {table.getState().pagination.pageIndex + 1} of{' '}
+          {table.getPageCount()}
+        </div>
+        <div className="flex items-center space-x-2">
+          <Button
+            variant="outline"
+            className="hidden p-0 h-9 w-9 sm:flex"
+            onClick={() => table.firstPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            <ChevronFirst className="w-5 h-5" />
+            <span className="sr-only">First page</span>
+          </Button>
+          <Button
+            variant="outline"
+            className="p-0 h-9 w-9 "
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            <ChevronLeft className="w-5 h-5" />
+            <span className="sr-only">Previous page</span>
+          </Button>
+          <Button
+            variant="outline"
+            className="p-0 h-9 w-9"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            <ChevronRight className="w-5 h-5" />
+            <span className="sr-only">Next page</span>
+          </Button>
+          <Button
+            variant="outline"
+            className="hidden p-0 h-9 w-9 sm:flex"
+            onClick={() => table.lastPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            <ChevronLast className="w-5 h-5" />
+            <span className="sr-only">Last page</span>
+          </Button>
+        </div>
+      </div>
     </>
   )
 }
-
-// 'use client'
-
-// import { ColumnDef } from '@tanstack/react-table'
-// import {
-//   Table,
-//   TableBody,
-//   TableCell,
-//   TableHead,
-//   TableHeader,
-//   TableRow,
-// } from '@/components/ui/table'
-// import { Card } from '@/components/ui/card'
-// import { Button } from '@/components/ui/button'
-// import { FileUp } from 'lucide-react'
-// import Link from 'next/link'
-
-// type ProblemsData = [
-//   {
-//     name: string
-//     problemId: number
-//     passCount: number
-//     score: number
-//   }
-// ]
-
-// export default function ProblemsTable({ ...props }) {
-//   const problemList: ProblemsData = props?.problemList
-
-//   return (
-//     <></>
-//     // <Card className="w-[350px] sm:w-[550px] md:w-[700px]">
-//     //   <Table>
-//     //     <TableHeader>
-//     //       <TableRow>
-//     //         <TableHead>ID</TableHead>
-//     //         <TableHead>Name</TableHead>
-//     //         <TableHead className="hidden text-center sm:grid sm:items-center">
-//     //           Pass
-//     //         </TableHead>
-//     //         <TableHead className="text-center">Score</TableHead>
-//     //         <TableHead className="text-center">#</TableHead>
-//     //       </TableRow>
-//     //     </TableHeader>
-//     //     {problemList.length ? (
-//     //       <TableBody>
-//     //         {problemList.map((rows) => (
-//     //           <TableRow key={rows.problemId}>
-//     //             <TableCell>{rows.problemId}</TableCell>
-//     //             <TableCell>{rows.name}</TableCell>
-//     //             <TableCell className="hidden text-center sm:table-cell">
-//     //               {rows.passCount}
-//     //             </TableCell>
-//     //             <TableCell className="text-center">0 / {rows.score}</TableCell>
-//     //             <TableCell className="text-center">
-//     //               <Link href={`/problems/${rows.problemId}`}>
-//     //                 <Button variant="outline" size="icon">
-//     //                   <FileUp className="w-5 h-5" />
-//     //                 </Button>
-//     //               </Link>
-//     //             </TableCell>
-//     //           </TableRow>
-//     //         ))}
-//     //       </TableBody>
-//     //     ) : (
-//     //       <TableBody>
-//     //         <TableRow>
-//     //           <TableCell colSpan={5} className="text-center">
-//     //             No problems to display.
-//     //           </TableCell>
-//     //         </TableRow>
-//     //       </TableBody>
-//     //     )}
-//     //   </Table>
-//     // </Card>
-//   )
-// }

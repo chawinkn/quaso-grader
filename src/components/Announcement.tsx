@@ -21,35 +21,13 @@ async function getAnnouncementList() {
   return data
 }
 
-async function getUser(userId: number) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`,
-    {
-      method: 'GET',
-      headers: new Headers(headers()),
-    }
-  )
-  if (!res) {
-    return null
-  }
-  const data = await res.json()
-  return data
-}
-
 export default async function Announcement(props: UserData) {
   const announcementList = await getAnnouncementList()
 
-  const announcementsWithAuthors = await Promise.all(
-    announcementList.map(async (announcement: AnnouncementData) => {
-      const user = await getUser(announcement.createdById)
-      return { ...announcement, author: user.name }
-    })
-  )
-
   return (
-    <div className="flex flex-col h-full items-center justify-center gap-4">
+    <div className="flex flex-col items-center justify-center h-full gap-4">
       {props.role === 'ADMIN' ? <CreateAnnouncementCard {...props} /> : <></>}
-      {announcementsWithAuthors.map((announcement: AnnouncementData) => {
+      {announcementList.map((announcement: AnnouncementData) => {
         return (
           <>
             {props.role === 'ADMIN' ? (

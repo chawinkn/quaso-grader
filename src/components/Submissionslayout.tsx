@@ -148,15 +148,18 @@ export default function SubmissionLayout({ id }: { id: string }) {
       <p className="font-bold">Submission : {submission.id}</p>
       <div className="inline">
         <p className="inline font-bold">Status : </p>
-        <p
-          className={cx('px-2.5 py-0.5 rounded text-white w-fit inline', style)}
+        <div
+          className={cx(
+            'px-2.5 py-0.5 rounded text-white font-medium w-fit inline',
+            style
+          )}
         >
           {submission.status}
-        </p>
+        </div>
       </div>
       <div className="inline">
         <p className="inline font-bold">Task : </p>
-        <Link href={`/tasks/${submission.taskId}`} className="underline inline">
+        <Link href={`/tasks/${submission.taskId}`} className="inline underline">
           {submission.taskTitle}
         </Link>
       </div>

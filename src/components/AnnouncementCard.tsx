@@ -18,7 +18,9 @@ export type AnnouncementData = {
   title: string
   content: string
   createdById: number
-  author: string
+  createdBy: {
+    name: string
+  }
   createdAt: string
 }
 
@@ -54,10 +56,10 @@ export function AdminAnnouncementCard(props: AnnouncementData) {
 
   return (
     <Card className="w-[350px] sm:w-[450px] md:w-[600px] xl:w-[700px]">
-      <CardHeader className="flex flex-col md:flex-row justify-between items-center bg-muted/40">
+      <CardHeader className="flex flex-col items-center justify-between md:flex-row bg-muted/40">
         <CardTitle className="text-xl">{props.title}</CardTitle>
-        <div className="grow flex flex-row-reverse gap-2 items-center">
-          <Badge className="w-max">{props.author}</Badge>
+        <div className="flex flex-row-reverse items-center gap-2 grow">
+          <Badge className="w-max">{props.createdBy.name}</Badge>
           <Badge variant="secondary" className="w-max">
             {createdDate.toLocaleString()}
           </Badge>
@@ -77,12 +79,20 @@ export function AdminAnnouncementCard(props: AnnouncementData) {
         >
           {props.content}
         </Markdown>
-        <Button onClick={onClick} variant={'destructive'} disabled={isSubmit} className="w-full mt-4">
+        <Button
+          onClick={onClick}
+          variant={'destructive'}
+          disabled={isSubmit}
+          className="w-full mt-4"
+        >
           {isSubmit ? (
             <Loader2 className="w-5 h-5 mr-2 animate-spin" />
           ) : (
-            <div className="flex flex-row justify-center items-center">
-              Delete <span className='ml-2'><Trash2 /></span>
+            <div className="flex flex-row items-center justify-center">
+              Delete{' '}
+              <span className="ml-2">
+                <Trash2 />
+              </span>
             </div>
           )}
         </Button>
@@ -96,10 +106,10 @@ export default function AnnouncementCard(props: AnnouncementData) {
 
   return (
     <Card className="w-[350px] sm:w-[450px] md:w-[600px] xl:w-[700px]">
-      <CardHeader className="flex flex-col md:flex-row justify-between items-center bg-muted/40">
+      <CardHeader className="flex flex-col items-center justify-between md:flex-row bg-muted/40">
         <CardTitle className="text-xl">{props.title}</CardTitle>
-        <div className="grow flex flex-row-reverse gap-2 items-center">
-          <Badge className="w-max">{props.author}</Badge>
+        <div className="flex flex-row-reverse items-center gap-2 grow">
+          <Badge className="w-max">{props.createdBy.name}</Badge>
           <Badge variant="secondary" className="w-max">
             {createdDate.toLocaleString()}
           </Badge>
