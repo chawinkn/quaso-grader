@@ -12,6 +12,14 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu'
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 import { useSession, signOut } from 'next-auth/react'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
@@ -34,7 +42,7 @@ export function NavigationBar() {
 
   return (
     <>
-      <div className="z-50 flex items-center px-8 py-2 text-sm font-medium border-b md:px-16 lg:px-24">
+      <div className="z-50 sticky top-0 bg-background flex items-center px-8 py-2 text-sm font-medium border-b md:px-16 lg:px-24">
         <NavigationMenu>
           <NavigationMenuList>
             <NavigationMenuItem>
@@ -120,72 +128,55 @@ export function NavigationBar() {
                     </Button>
                   </Link>
                 )}
-                <Button
-                  onClick={toggleMenu}
-                  variant="outline"
-                  size="icon"
-                  className="border-0 md:hidden"
-                >
-                  {!isMenuOpen ? (
-                    <Menu className="h-[1.5rem] w-[1.5rem] scale-100" />
-                  ) : (
-                    <X className="h-[1.5rem] w-[1.5rem] scale-100" />
-                  )}
-                  <span className="sr-only">Toggle menu</span>
-                </Button>
+              </NavigationMenuItem>
+              <NavigationMenuItem className="visible md:hidden">
+                <Sheet>
+                  <SheetTrigger>
+                    <Button className="p-2" variant={'ghost'}>
+                      <Menu />
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent className="flex flex-col gap-6">
+                    <Link href="/">Home</Link>
+                    <Link href="/tasks">Tasks</Link>
+                    <Link href="/submissions">Submissions</Link>
+                    <Link href="/scoreboard">Scoreboard</Link>
+                    {session?.user.role === 'ADMIN' ? (
+                      <Link href="/dashboard" className="text-">
+                        Dashboard
+                      </Link>
+                    ) : (
+                      <></>
+                    )}
+                    <Link
+                      href={`/profile/${session?.user.id}`}
+                      legacyBehavior
+                      passHref
+                    >
+                      Profile
+                    </Link>
+                    <div className="w-full font-bold">
+                      {session?.user ? (
+                        <Button
+                          variant="ghost"
+                          className="p-0 text-md text-left text-red-500"
+                          onClick={logOut}
+                        >
+                          Logout
+                        </Button>
+                      ) : (
+                        <Link href="/login" className="w-full">
+                          Login
+                        </Link>
+                      )}
+                    </div>
+                  </SheetContent>
+                </Sheet>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
         </div>
       </div>
-      {isMenuOpen && (
-        <>
-          <div className="fixed inset-0 z-40 bg-background"></div>
-          <div className="z-50 flex flex-col items-start py-8 text-sm px-9">
-            <div className="flex flex-col w-full space-y-3">
-              <Link href="/tasks">Tasks</Link>
-              <Separator />
-              <Link href="/submissions">Submissions</Link>
-              <Separator />
-              <Link href="/scoreboard">Scoreboard</Link>
-              {session?.user.role === 'ADMIN' ? (
-                <>
-                  <Separator />
-                  <Link href="/dashboard">Dashboard</Link>
-                </>
-              ) : (
-                <></>
-              )}
-              <Separator />
-              <Link
-                href={`/profile/${session?.user.id}`}
-                legacyBehavior
-                passHref
-              >
-                Profile
-              </Link>
-            </div>
-            <div className="w-full mt-10">
-              {session?.user ? (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full text-red-500"
-                  onClick={logOut}
-                >
-                  Logout
-                </Button>
-              ) : (
-                <Link href="/login" className="w-full">
-                  <Button variant="outline" size="sm" className="w-full">
-                    Login
-                  </Button>
-                </Link>
-              )}
-            </div>
-          </div>
-        </>
-      )}
     </>
   )
 }
