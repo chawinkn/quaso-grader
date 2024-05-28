@@ -12,27 +12,15 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu'
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { useSession, signOut } from 'next-auth/react'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
-import { Separator } from '@/components/ui/separator'
 
 export function NavigationBar() {
-  const [isMenuOpen, setMenuOpen] = useState(false)
+  const [open, setOpen] = useState(false)
   const { status, data: session } = useSession()
   const router = useRouter()
-
-  const toggleMenu = () => {
-    setMenuOpen(!isMenuOpen)
-  }
 
   const logOut = (event: React.MouseEvent<HTMLButtonElement>) => {
     toast.success('Logout successfully')
@@ -130,19 +118,53 @@ export function NavigationBar() {
                 )}
               </NavigationMenuItem>
               <NavigationMenuItem className="visible md:hidden">
-                <Sheet>
-                  <SheetTrigger>
+                <Sheet open={open} onOpenChange={setOpen}>
+                  <SheetTrigger asChild>
                     <Button className="p-2" variant={'ghost'}>
                       <Menu />
                     </Button>
                   </SheetTrigger>
                   <SheetContent className="flex flex-col gap-6">
-                    <Link href="/">Home</Link>
-                    <Link href="/tasks">Tasks</Link>
-                    <Link href="/submissions">Submissions</Link>
-                    <Link href="/scoreboard">Scoreboard</Link>
+                    <Link
+                      href="/"
+                      onClick={() => {
+                        setOpen(!open)
+                      }}
+                    >
+                      Home
+                    </Link>
+                    <Link
+                      href="/tasks"
+                      onClick={() => {
+                        setOpen(!open)
+                      }}
+                    >
+                      Tasks
+                    </Link>
+                    <Link
+                      href="/submissions"
+                      onClick={() => {
+                        setOpen(!open)
+                      }}
+                    >
+                      Submissions
+                    </Link>
+                    <Link
+                      href="/scoreboard"
+                      onClick={() => {
+                        setOpen(!open)
+                      }}
+                    >
+                      Scoreboard
+                    </Link>
                     {session?.user.role === 'ADMIN' ? (
-                      <Link href="/dashboard" className="text-">
+                      <Link
+                        href="/dashboard"
+                        onClick={() => {
+                          setOpen(!open)
+                        }}
+                        className="text-"
+                      >
                         Dashboard
                       </Link>
                     ) : (
@@ -150,8 +172,9 @@ export function NavigationBar() {
                     )}
                     <Link
                       href={`/profile/${session?.user.id}`}
-                      legacyBehavior
-                      passHref
+                      onClick={() => {
+                        setOpen(!open)
+                      }}
                     >
                       Profile
                     </Link>
@@ -165,7 +188,13 @@ export function NavigationBar() {
                           Logout
                         </Button>
                       ) : (
-                        <Link href="/login" className="w-full">
+                        <Link
+                          href="/login"
+                          onClick={() => {
+                            setOpen(!open)
+                          }}
+                          className="w-full"
+                        >
                           Login
                         </Link>
                       )}
