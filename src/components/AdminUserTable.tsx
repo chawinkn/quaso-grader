@@ -59,8 +59,9 @@ export default function AdminUserTable<TData, TValue>({
   const [ isChanged, setIsChanged ] = React.useState(false)
 
   return (
-    <>
-      <div className="flex flex-col items-center mb-5 space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
+    <div className='flex flex-col justify-center items-center'>
+      <div className="flex flex-col items-center mb-5 space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0
+                      w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px] xl:w-full ">
         <Input
           placeholder="Find username..."
           value={
@@ -69,7 +70,6 @@ export default function AdminUserTable<TData, TValue>({
           onChange={(event) => {
             table.getColumn('username')?.setFilterValue(event.target.value)
           }}
-          className="w-[250px] lg:w-[300px]"
         />
         <Input
           placeholder="Find name..."
@@ -77,7 +77,6 @@ export default function AdminUserTable<TData, TValue>({
           onChange={(event) => {
             table.getColumn('name')?.setFilterValue(event.target.value)
           }}
-          className="w-[250px] lg:w-[300px]"
         />
         <Input
           placeholder="Find id..."
@@ -85,10 +84,10 @@ export default function AdminUserTable<TData, TValue>({
           onChange={(event) => {
             table.getColumn('id')?.setFilterValue(event.target.value)
           }}
-          className="w-[250px] lg:w-[300px]"
         />
-        <Button disabled={!isChanged} variant={isChanged ? "default" : "outline"}>Save changes</Button>
+        {/*<Button disabled={!isChanged} variant={isChanged ? "default" : "outline"}>Save changes</Button>*/}
       </div>
+      <div className="flex"></div>
       <Card className="w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px] xl:w-full overflow-auto">
         <Table>
           <TableHeader className="bg-muted/80">
@@ -140,6 +139,6 @@ export default function AdminUserTable<TData, TValue>({
           </TableBody>
         </Table>
       </Card>
-    </>
+    </div>
   )
 }
