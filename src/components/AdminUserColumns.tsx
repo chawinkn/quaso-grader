@@ -26,6 +26,24 @@ import { Switch } from "@/components/ui/switch"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import toast from 'react-hot-toast'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+
+import { MoreHorizontal } from "lucide-react"
+ 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+
 
 export type UserData = {
     id: number
@@ -273,9 +291,16 @@ export const columns: ColumnDef<UserData>[] = [
       const date = new Date(row.getValue('createdAt'))
 
       return (
-        <>
-          {date.toLocaleString()}
-        </>
+        <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger>
+            {date.toLocaleDateString()}
+          </TooltipTrigger>
+          <TooltipContent>
+            {date.toLocaleTimeString()}
+          </TooltipContent>
+        </Tooltip>
+        </TooltipProvider>
       )
     },
   },
@@ -306,9 +331,61 @@ export const columns: ColumnDef<UserData>[] = [
       const date = new Date(row.getValue('updatedAt'))
 
       return (
-        <>
-          {date.toLocaleString()}
-        </>
+        <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger>
+            {date.toLocaleDateString()}
+          </TooltipTrigger>
+          <TooltipContent>
+            {date.toLocaleTimeString()}
+          </TooltipContent>
+        </Tooltip>
+        </TooltipProvider>
+      )
+    },
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const payment = row.original
+      const router = useRouter()
+      const handleDelete = async () => {
+        const id = row.getValue('id')
+        try {
+          const request = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+
+          if (request.ok){
+            toast.success(`UserID: ${id} deleted successfully`);
+            router.refresh();
+          } else {
+            toast.error(request.statusText);
+          }
+        } catch (error) {
+          console.error(error);
+          toast.error(`UserID: ${id} deletion failed`);
+        }
+      }
+ 
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem className="text-red-500"
+              onClick={handleDelete}>
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       )
     },
   },
