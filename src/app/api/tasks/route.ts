@@ -6,10 +6,22 @@ export async function GET() {
   const user = await getServerUser()
   if (!user) return unauthorized()
 
-  const res = await prisma.task.findMany({
-    orderBy: {
-      id: 'asc',
-    },
-  })
-  return json(res)
+  if (user.role !== 'ADMIN') {
+    const res = await prisma.task.findMany({
+      orderBy: {
+        id: 'asc',
+      },
+      where: {
+        private: false,
+      }
+    })
+    return json(res)
+  } else {
+    const res = await prisma.task.findMany({
+      orderBy: {
+        id: 'asc',
+      },
+    })
+    return json(res)
+  }
 }

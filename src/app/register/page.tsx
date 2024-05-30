@@ -33,16 +33,16 @@ const formSchema = z
       .max(15, { message: 'Username must be 5-15 characters.' }),
     name: z
       .string()
-      .min(3, { message: 'Username must be 5-15 characters.' })
-      .max(30, { message: 'Username must be 5-15 characters.' }),
+      .min(3, { message: 'Username must be 3-30 characters.' })
+      .max(30, { message: 'Username must be 3-30 characters.' }),
     password: z
       .string()
-      .min(8, { message: 'Password must be 5-15 characters.' })
-      .max(24, { message: 'Password must be 5-15 characters.' }),
+      .min(8, { message: 'Password must be 8-24 characters.' })
+      .max(24, { message: 'Password must be 8-24 characters.' }),
     confirm_password: z
       .string()
-      .min(8, { message: 'Password must be 5-15 characters.' })
-      .max(24, { message: 'Password must be 5-15 characters.' }),
+      .min(8, { message: 'Password must be 8-24 characters.' })
+      .max(24, { message: 'Password must be 8-24 characters.' }),
   })
   .refine((data) => data.password === data.confirm_password, {
     message: 'Passwords do not match.',
