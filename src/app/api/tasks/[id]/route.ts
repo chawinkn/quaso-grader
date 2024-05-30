@@ -23,3 +23,27 @@ export async function GET(
   })
   return json(res)
 }
+
+export async function PUT(
+  req: NextRequest,
+  {
+    params,
+  }: {
+    params: {
+      id: string
+    }
+  }
+) {
+  const user = await getServerUser()
+  if (!user) return unauthorized()
+  if (user.role !== 'ADMIN') return unauthorized()
+
+  const data = await req.json()
+  const res = await prisma.task.update({
+    where: {
+      id: params.id,
+    },
+    data,
+  })
+  return json(res)
+}
