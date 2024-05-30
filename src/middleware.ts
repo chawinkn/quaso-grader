@@ -22,8 +22,12 @@ export async function middleware(req: NextRequest) {
     (path === '/login' || path === '/register')
   ) {
     return NextResponse.redirect(new URL('/', req.url))
-  } else if (path === '/dashboard' && user?.role !== 'ADMIN') {
-    return NextResponse.error()
+  } else if (path.startsWith('/dashboard')) {
+    if (!user || user.role !== 'ADMIN') {
+      return NextResponse.error()
+    } else if (path === '/dashboard') {
+      return NextResponse.redirect(new URL('/dashboard/general', req.url))
+    }
   }
   return NextResponse.next()
 }
