@@ -8,6 +8,7 @@ import { getServerSession } from 'next-auth'
 import { Toaster } from 'react-hot-toast'
 import Footer from '@/components/common/Footer'
 import { NavigationBar } from '@/components/common/Navbar'
+import { authOptions } from '@/lib/auth'
 
 export const revalidate = 3600
 
@@ -33,7 +34,8 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const session = await getServerSession()
+  const session = await getServerSession(authOptions)
+
   return (
     <html
       lang="th"
