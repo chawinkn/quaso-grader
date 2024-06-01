@@ -1,6 +1,6 @@
 'use client'
 
-import ResultsTable from '@/components/Resultstable'
+import ResultsTable from '@/components/result/Resultstable'
 import { columns, ResultData } from '@/app/submissions/[id]/columns'
 import { useEffect, useState } from 'react'
 

@@ -1,9 +1,9 @@
-import User from "@/components/AdminUserPanel"
+import User from '@/components/admin/AdminUserPanel'
 
-export default function AdminUsers(){
-    return (
-        <>
-            <User />
-        </>
-    )
+export default function AdminUsers() {
+  return (
+    <>
+      <User />
+    </>
+  )
 }

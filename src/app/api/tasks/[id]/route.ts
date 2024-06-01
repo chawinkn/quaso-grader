@@ -16,12 +16,22 @@ export async function GET(
   const user = await getServerUser()
   if (!user) return unauthorized()
 
-  const res = await prisma.task.findFirst({
-    where: {
-      id: params.id,
-    },
-  })
-  return json(res)
+  if (user.role !== 'ADMIN') {
+    const res = await prisma.task.findFirst({
+      where: {
+        id: params.id,
+      },
+    })
+    return json(res)
+  } else {
+    const res = await prisma.task.findFirst({
+      where: {
+        id: params.id,
+        private: false,
+      },
+    })
+    return json(res)
+  }
 }
 
 export async function PUT(

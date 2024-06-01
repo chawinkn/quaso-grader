@@ -25,7 +25,8 @@ import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
-import { Button } from './ui/button'
+
+import { Button } from '../ui/button'
 import {
   ChevronFirst,
   ChevronLeft,
@@ -38,14 +39,14 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from './ui/select'
+} from '../ui/select'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
 }
 
-export default function SubmissionsTable<TData, TValue>({
+export default function TasksTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -73,27 +74,27 @@ export default function SubmissionsTable<TData, TValue>({
 
   return (
     <>
-      <div className="flex flex-col items-center mb-5 space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
+      <div className="flex flex-col items-center justify-center mb-5 space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
         <Input
-          placeholder="Find user..."
-          value={(table.getColumn('user')?.getFilterValue() as string) ?? ''}
+          placeholder="Find id..."
+          value={(table.getColumn('id')?.getFilterValue() as string) ?? ''}
           onChange={(event) => {
-            table.getColumn('user')?.setFilterValue(event.target.value)
+            table.getColumn('id')?.setFilterValue(event.target.value)
           }}
           className="w-[250px] lg:w-[300px]"
         />
         <Input
-          placeholder="Find task id..."
-          value={(table.getColumn('taskId')?.getFilterValue() as string) ?? ''}
+          placeholder="Find title..."
+          value={(table.getColumn('title')?.getFilterValue() as string) ?? ''}
           onChange={(event) => {
-            table.getColumn('taskId')?.setFilterValue(event.target.value)
+            table.getColumn('title')?.setFilterValue(event.target.value)
           }}
           className="w-[250px] lg:w-[300px]"
         />
       </div>
       <Card className="w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px]">
         <Table>
-          <TableHeader className="bg-muted/80">
+          <TableHeader className="bg-muted/70">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
@@ -117,9 +118,9 @@ export default function SubmissionsTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
-                  className={index % 2 ? 'bg-muted/30' : ''}
+                  className={index % 2 === 1 ? 'bg-muted/30' : ''}
                   onClick={() => {
-                    router.push(`/submissions/${row.getValue('id')}`)
+                    //router.push(`/tasks/${row.getValue('id')}`)
                   }}
                 >
                   {row.getVisibleCells().map((cell) => (
@@ -138,7 +139,7 @@ export default function SubmissionsTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No submissions.
+                  No tasks.
                 </TableCell>
               </TableRow>
             )}

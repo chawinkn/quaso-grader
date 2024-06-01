@@ -6,8 +6,8 @@ import { ThemeProvider } from '@/components/Themeprovider'
 import SessionProvider from '@/components/SessionProvider'
 import { getServerSession } from 'next-auth'
 import { Toaster } from 'react-hot-toast'
-import Footer from '@/components/Footer'
-import { NavigationBar } from '@/components/Navbar'
+import Footer from '@/components/common/Footer'
+import { NavigationBar } from '@/components/common/Navbar'
 
 export const revalidate = 3600
 

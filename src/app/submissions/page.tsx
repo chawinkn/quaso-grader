@@ -1,6 +1,6 @@
 import { columns } from './columns'
 import { Suspense } from 'react'
-import SubmissionsTable from '@/components/Submissionstable'
+import SubmissionsTable from '@/components/submission/Submissionstable'
 import { headers } from 'next/headers'
 
 async function getSubmissionList() {

@@ -1,12 +1,11 @@
 'use client'
 
 import Editor from '@monaco-editor/react'
-import { Card } from './ui/card'
+import { Card } from '../ui/card'
 import Link from 'next/link'
 import { formatDateTime } from '@/app/submissions/columns'
 import { useEffect, useState } from 'react'
 import { cx } from 'class-variance-authority'
-import { ResultData } from '@/app/submissions/[id]/columns'
 
 export type SubmissionData = {
   id: number

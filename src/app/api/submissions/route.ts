@@ -8,32 +8,66 @@ export async function GET() {
   const user = await getServerUser()
   if (!user) return unauthorized()
 
-  const res = await prisma.submission.findMany({
-    orderBy: {
-      id: 'desc',
-    },
-    select: {
-      taskId: true,
-      id: true,
-      score: true,
-      user: {
-        select: {
-          name: true,
+  if (user.role !== 'ADMIN') {
+    const res = await prisma.submission.findMany({
+      where: {
+        task: {
+          private: false,
         },
       },
-      language: true,
-      time: true,
-      memory: true,
-      submittedAt: true,
-      status: true,
-      task: {
-        select: {
-          fullScore: true,
+      orderBy: {
+        id: 'desc',
+      },
+      select: {
+        taskId: true,
+        id: true,
+        score: true,
+        user: {
+          select: {
+            name: true,
+          },
+        },
+        language: true,
+        time: true,
+        memory: true,
+        submittedAt: true,
+        status: true,
+        task: {
+          select: {
+            fullScore: true,
+          },
         },
       },
-    },
-  })
-  return json(res)
+    })
+    return json(res)
+  } else {
+    const res = await prisma.submission.findMany({
+      orderBy: {
+        id: 'desc',
+      },
+      select: {
+        taskId: true,
+        id: true,
+        score: true,
+        user: {
+          select: {
+            name: true,
+          },
+        },
+        language: true,
+        time: true,
+        memory: true,
+        submittedAt: true,
+        status: true,
+        task: {
+          select: {
+            fullScore: true,
+          },
+        },
+      },
+    })
+    return json(res)
+  }
 }
 
 export async function POST(req: NextRequest) {

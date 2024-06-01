@@ -1,7 +1,7 @@
 import { headers } from 'next/headers'
 import { notFound } from 'next/navigation'
 import { getServerUser } from '@/lib/session'
-import UserPanel from '@/components/UserPanel'
+import UserPanel from '@/components/profile/UserPanel'
 
 async function getUser(userId: number) {
   const res = await fetch(

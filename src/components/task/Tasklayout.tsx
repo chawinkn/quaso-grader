@@ -10,13 +10,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Card } from './ui/card'
+import { Card } from '../ui/card'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 import { Loader2 } from 'lucide-react'
 import { TaskData } from '@/app/tasks/columns'
-import StatementLayout from './Statementlayout'
+import StatementLayout from '../Statementlayout'
 
 export default function TaskLayout({ ...props }) {
   const task: TaskData = props?.task

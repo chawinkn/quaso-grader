@@ -1,4 +1,4 @@
-import TasksTable from '@/components/Taskstable'
+import TasksTable from '@/components/task/Taskstable'
 import { TaskData, columns } from './columns'
 import { headers } from 'next/headers'
 import { Prisma } from '@prisma/client'
@@ -29,18 +29,21 @@ async function getScore() {
   return data
 }
 
-async function getPassCount() {
+export async function getPassCount() {
   const passCount = await prisma.$queryRaw(
     Prisma.sql`
       SELECT 
         submission.task_id,
         COUNT(DISTINCT submission.user_id) 
       FROM 
-        submission 
+        submission
       INNER JOIN 
         task ON submission.task_id = task.id 
+      INNER JOIN
+        "user" ON submission.user_id = "user".id
       WHERE 
-        submission.score = task.full_score 
+        submission.score = task.full_score
+        AND "user".role != 'ADMIN'
       GROUP BY 
         submission.task_id`
   )

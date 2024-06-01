@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { getServerUser } from '@/lib/session'
-import Announcement from '@/components/Announcement'
+import Announcement from '@/components/announcement/Announcement'
 import { Badge } from '@/components/ui/badge'
 import { cx } from 'class-variance-authority'
 

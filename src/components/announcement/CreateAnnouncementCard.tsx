@@ -1,6 +1,6 @@
 'use client'
 
-import { Card, CardTitle, CardContent, CardHeader } from './ui/card'
+import { Card, CardTitle, CardContent, CardHeader } from '../ui/card'
 import {
   Form,
   FormControl,
@@ -8,17 +8,17 @@ import {
   FormItem,
   FormMessage,
 } from '@/components/ui/form'
-import { Separator } from './ui/separator'
+import { Separator } from '../ui/separator'
 import { Loader2 } from 'lucide-react'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
-import { Button } from './ui/button'
-import { Input } from './ui/input'
+import { Button } from '../ui/button'
+import { Input } from '../ui/input'
 import { useRouter } from 'next/navigation'
-import { Textarea } from './ui/textarea'
+import { Textarea } from '../ui/textarea'
 import { UserData } from './Announcement'
 
 const formSchema = z.object({

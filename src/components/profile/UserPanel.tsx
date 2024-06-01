@@ -28,8 +28,8 @@ export type UserData = {
 const formSchema = z.object({
   name: z
     .string()
-    .min(3, { message: 'Username must be 5-15 characters.' })
-    .max(30, { message: 'Username must be 5-15 characters.' }),
+    .min(3, { message: 'Username must be 3-30 characters.' })
+    .max(30, { message: 'Username must be 3-30 characters.' }),
 })
 
 export default function UserPanel(props: UserData) {

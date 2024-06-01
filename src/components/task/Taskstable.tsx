@@ -26,7 +26,7 @@ import { Input } from '@/components/ui/input'
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
 
-import { Button } from './ui/button'
+import { Button } from '../ui/button'
 import {
   ChevronFirst,
   ChevronLeft,
@@ -39,7 +39,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from './ui/select'
+} from '../ui/select'
+import clsx from 'clsx'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -74,7 +75,7 @@ export default function TasksTable<TData, TValue>({
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center mb-5 space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
+      <div className="flex flex-col items-center mb-5 space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
         <Input
           placeholder="Find id..."
           value={(table.getColumn('id')?.getFilterValue() as string) ?? ''}
@@ -118,9 +119,12 @@ export default function TasksTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
-                  className={index % 2 === 1 ? 'bg-muted/30' : ''}
+                  className={clsx(
+                    'cursor-pointer',
+                    index % 2 === 1 ? 'bg-muted/30' : ''
+                  )}
                   onClick={() => {
-                    //router.push(`/tasks/${row.getValue('id')}`)
+                    router.push(`/tasks/${row.getValue('id')}`)
                   }}
                 >
                   {row.getVisibleCells().map((cell) => (

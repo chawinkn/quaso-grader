@@ -1,26 +1,7 @@
-'use client'
-
 import { Suspense } from 'react'
-import SubmissionLayout from '@/components/Submissionslayout'
+import SubmissionLayout from '@/components/submission/Submissionslayout'
 import { notFound } from 'next/navigation'
-import Resultlayout from '@/components/Resultlayout'
-
-async function getSubmission(submissionId: string) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/submissions/${submissionId}`,
-    {
-      method: 'GET',
-    }
-  )
-  if (!res) {
-    return null
-  }
-  const data = await res.json()
-  if (!data) {
-    return notFound()
-  }
-  return data
-}
+import Resultlayout from '@/components/result/Resultlayout'
 
 export default async function Submission({
   params,
@@ -29,8 +10,6 @@ export default async function Submission({
     id: string
   }
 }) {
-  await getSubmission(params.id)
-
   return (
     <div className="min-h-screen py-10 space-y-4">
       <Suspense fallback={null}>
