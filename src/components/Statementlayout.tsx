@@ -1,12 +1,12 @@
 import Link from 'next/link'
 import { ExternalLink } from 'lucide-react'
 
-export default function StatementLayout() {
+export default function StatementLayout({ id }: { id: string }) {
   return (
     <article className="h-screen">
       <div className="flex justify-center space-x-1 pb-5">
         <Link
-          href="https://qccwwndtp6owt1wz.public.blob.vercel-storage.com/a_mul_b-qmwk2kuHbRIECVuas5knSlRQkFiMRe.pdf"
+          href={`/api/desc/${id}`}
           target="_blank"
           className="underline inline"
         >
@@ -14,11 +14,7 @@ export default function StatementLayout() {
         </Link>
         <ExternalLink />
       </div>
-      <iframe
-        src="https://qccwwndtp6owt1wz.public.blob.vercel-storage.com/a_mul_b-qmwk2kuHbRIECVuas5knSlRQkFiMRe.pdf"
-        width="100%"
-        height="100%"
-      />
+      <iframe src={`/api/desc/${id}`} width="100%" height="100%" />
     </article>
   )
 }

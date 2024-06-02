@@ -1,11 +1,11 @@
 'use client'
 
 import { ColumnDef } from '@tanstack/react-table'
-import { ArrowUpDown, Router } from 'lucide-react'
+import { ArrowUpDown, Router, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
-import { cx } from 'class-variance-authority'
 import toast from 'react-hot-toast'
+import { PenSquare } from 'lucide-react'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
@@ -116,44 +116,117 @@ export const columns: ColumnDef<TaskData>[] = [
       )
     },
     cell: ({ row }) => {
-      const router = useRouter();
+      const router = useRouter()
       const initialPrivate = row.getValue('private')
-      const [isPrivate, setIsPrivate] = useState(initialPrivate);
+      const [isPrivate, setIsPrivate] = useState(initialPrivate)
       const [loading, setLoading] = useState(false)
-      const id = row.getValue('id');
+      const id = row.getValue('id')
       const handlePrivate = async () => {
-        setLoading(true);
+        setLoading(true)
         try {
-          const request = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks/${id}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-            body: JSON.stringify({
-              private: !isPrivate,
-            }),
-          })
+          const request = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/tasks/${id}`,
+            {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+              },
+              body: JSON.stringify({
+                private: !isPrivate,
+              }),
+            }
+          )
 
           if (request.ok) {
             toast.success('Task updated')
-            setIsPrivate(!isPrivate);
-            router.refresh();
+            setIsPrivate(!isPrivate)
+            router.refresh()
           } else {
             console.log(request.text())
             toast.error('Task update failed')
           }
-          
-        } catch (error:any) {
-          console.error(error);
-          toast.error(error.message);
+        } catch (error: any) {
+          console.error(error)
+          toast.error(error.message)
         }
-        setLoading(false);
+        setLoading(false)
       }
       return (
         <div className="hidden sm:flex">
-          <Switch onClick={handlePrivate} checked={!isPrivate} disabled={loading}></Switch>
+          <Switch
+            onClick={handlePrivate}
+            checked={!isPrivate}
+            disabled={loading}
+          ></Switch>
         </div>
+      )
+    },
+  },
+  {
+    id: 'edit',
+    header: 'Edit',
+    cell: ({ row }) => {
+      const router = useRouter()
+      return (
+        <Button
+          variant="outline"
+          className="hidden p-0 h-9 w-9 sm:flex"
+          onClick={() => {
+            router.push(`/dashboard/tasks/edit/${row.getValue('id')}`)
+          }}
+        >
+          <PenSquare className="w-5 h-5" />
+        </Button>
+      )
+    },
+  },
+  {
+    id: 'actions',
+    cell: ({ row }) => {
+      const payment = row.original
+      const router = useRouter()
+      const handleDelete = async () => {
+        const id = row.getValue('id')
+
+        try {
+          await fetch('http://localhost:5000/', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+        } catch (error: any) {
+          return toast.error(error.message)
+        }
+
+        try {
+          const request = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/tasks/${id}`,
+            { method: 'DELETE' }
+          )
+          const deleted = await fetch(`http://localhost:5000/task/${id}`, {
+            method: 'DELETE',
+          })
+          if (!deleted?.ok) {
+            toast.error('Internal Server Error')
+            return
+          }
+          toast.success(`TaskID: ${id} deleted successfully`)
+          router.refresh()
+        } catch (error) {
+          toast.error(`TaskID: ${id} deletion failed`)
+        }
+      }
+
+      return (
+        <Button
+          onClick={handleDelete}
+          variant={'destructive'}
+          className="hidden p-0 h-9 w-9 sm:flex"
+        >
+          <Trash2 />
+        </Button>
       )
     },
   },

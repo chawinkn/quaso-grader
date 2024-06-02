@@ -82,7 +82,19 @@ export default function TaskLayout({ ...props }) {
   const handleSubmit = async () => {
     setSubmit(true)
     try {
-      const response = await fetch('/api/submissions', {
+      await fetch('http://localhost:5000/', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+    } catch (error: any) {
+      setSubmit(false)
+      return toast.error(error.message)
+    }
+
+    try {
+      const res = await fetch('/api/submissions', {
         method: 'POST',
         body: JSON.stringify({
           taskId: task.id,
@@ -90,39 +102,29 @@ export default function TaskLayout({ ...props }) {
           language,
         }),
       })
-      const result = await response.json()
-      if (response?.ok) {
-        // try {
-        //   const backend_response = await fetch(`http://localhost:5000/submit`, {
-        //     method: 'POST',
-        //     headers: {
-        //       'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify({
-        //       task_id: task.id,
-        //       submission_id: result.id,
-        //       code: sourcecode,
-        //       language,
-        //     }),
-        //   })
-        //   if (backend_response?.ok) {
-        toast.success('Submit successfully')
-        router.push(`/submissions/${result.id}`)
-        //   } else {
-        //     toast.error(
-        //       'Grader not avaliable or internal error. Please try again later.'
-        //     )
-        //   }
-        // } catch (error) {
-        //   console.log(error)
-        //   toast.error('An unexpected error occurred. Please try again later.')
-        // }
-      } else {
-        toast.error(result.error)
+      const result = await res.json()
+      const submitRes = await fetch(`http://localhost:5000/submit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          task_id: task.id,
+          submission_id: result.id,
+          code: sourcecode,
+          language,
+        }),
+      })
+      if (!submitRes?.ok) {
+        setSubmit(false)
+        toast.error('Internal Server Error')
+        return
       }
-    } catch (error) {
-      console.log(error)
-      toast.error('An unexpected error occurred. Please try again later.')
+      toast.success('Submit successfully')
+      router.push(`/submissions/${result.id}`)
+    } catch (error: any) {
+      setSubmit(false)
+      return toast.error(error.message)
     }
     setSubmit(false)
   }
@@ -132,7 +134,7 @@ export default function TaskLayout({ ...props }) {
       <h2 className="text-3xl font-bold">{task.title}</h2>
       <h2 className="text-lg">Full score : {task.fullScore}</h2>
       <div className="w-4/5 my-5 space-y-4 sm:space-x-4">
-        <StatementLayout />
+        <StatementLayout id={task.id} />
       </div>
       <div className="flex flex-col mt-10 space-y-4 grow lg:flex-row lg:space-x-2">
         <Card className="w-[350px] sm:w-[500px] xl:w-[700px] 2xl:w-[800px] h-[500px] overflow-hidden my-4 lg:mx-8">

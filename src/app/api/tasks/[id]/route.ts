@@ -20,6 +20,7 @@ export async function GET(
     const res = await prisma.task.findFirst({
       where: {
         id: params.id,
+        private: false,
       },
     })
     return json(res)
@@ -27,7 +28,6 @@ export async function GET(
     const res = await prisma.task.findFirst({
       where: {
         id: params.id,
-        private: false,
       },
     })
     return json(res)
@@ -56,4 +56,26 @@ export async function PUT(
     data,
   })
   return json(res)
+}
+
+export async function DELETE(
+  req: NextRequest,
+  {
+    params,
+  }: {
+    params: {
+      id: string
+    }
+  }
+) {
+  const user = await getServerUser()
+  if (!user || user.role !== 'ADMIN') return unauthorized()
+
+  await prisma.task.delete({
+    where: {
+      id: params.id,
+    },
+  })
+
+  return json({ success: true })
 }

@@ -4,6 +4,8 @@ import TasksTable from '@/components/admin/AdminTaskTable'
 import { TaskData } from './columns'
 import { headers } from 'next/headers'
 import { getPassCount } from '@/app/tasks/page'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 async function getTaskList() {
   // await new Promise((resolve) => setTimeout(resolve, 3000))
@@ -33,6 +35,11 @@ export default async function AdminTasks() {
 
   return (
     <div className="flex flex-col">
+      <div className="flex justify-center mb-6  ">
+        <Link href={'/dashboard/tasks/create'}>
+          <Button>Create Task</Button>
+        </Link>
+      </div>
       <Suspense fallback={null}>
         <TasksTable columns={columns} data={taskList} />
       </Suspense>

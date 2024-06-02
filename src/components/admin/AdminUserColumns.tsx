@@ -1,40 +1,21 @@
-/*
-User schema, กุลืมไอน้อง
+'use client'
 
-  id            Int            @id @default(autoincrement())
-  username      String?        @unique
-  name          String?
-  password      String
-  role          UserRole       @default(USER)
-  submissions   Submission[]
-  createdAt     DateTime       @default(now()) @map("created_at")
-  updatedAt     DateTime       @updatedAt @map("updated_at")
-  announcements Announcement[]
-  accounts      Account[]
-  sessions      Session[]
-  approved      Boolean        @default(false)
-*/
-
-"use client"
-
-import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Switch } from "@/components/ui/switch"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { ColumnDef } from '@tanstack/react-table'
+import { ArrowUpDown } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Switch } from '@/components/ui/switch'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
+} from '@/components/ui/tooltip'
 
-import { MoreHorizontal } from "lucide-react"
- 
+import { MoreHorizontal } from 'lucide-react'
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,17 +23,16 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-
+} from '@/components/ui/dropdown-menu'
 
 export type UserData = {
-    id: number
-    username: string
-    name: string
-    role: string
-    createdAt: string
-    updatedAt: string
-    approved: boolean
+  id: number
+  username: string
+  name: string
+  role: string
+  createdAt: string
+  updatedAt: string
+  approved: boolean
 }
 
 // ก็อปมาเลย ไอ่น้อง
@@ -151,49 +131,56 @@ export const columns: ColumnDef<UserData>[] = [
       )
     },
     cell: ({ row }) => {
-      const [ role, setRole ] = useState<string>(row.getValue('role'));
-      const [ isChanged, setIsChanged ] = useState<boolean>(false)
+      const [role, setRole] = useState<string>(row.getValue('role'))
+      const [isChanged, setIsChanged] = useState<boolean>(false)
       const handleChange = async (event: any) => {
-        setIsChanged(true);
-        setRole(role === "ADMIN" ? "USER" : "ADMIN");
-        const id = row.getValue('id');
-        const name = row.getValue('name');
-        const approved = row.getValue('approved');
+        setIsChanged(true)
+        setRole(role === 'ADMIN' ? 'USER' : 'ADMIN')
+        const id = row.getValue('id')
+        const name = row.getValue('name')
+        const approved = row.getValue('approved')
         try {
-          const request = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              id: id,
-              name: name,
-              role: (role === "ADMIN" ? "USER" : "ADMIN"),
-              approved: approved,
-            }),
-          })
+          const request = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/users`,
+            {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                id: id,
+                name: name,
+                role: role === 'ADMIN' ? 'USER' : 'ADMIN',
+                approved: approved,
+              }),
+            }
+          )
 
-          if (request.ok){
-            toast.success(`UserID: ${id} role changed successfully`);
-            const data = await request.json();
-            setRole(data.role);
+          if (request.ok) {
+            toast.success(`UserID: ${id} role changed successfully`)
+            const data = await request.json()
+            setRole(data.role)
           } else {
-            setRole(row.getValue('role'));
-            toast.error(request.statusText);
+            setRole(row.getValue('role'))
+            toast.error(request.statusText)
           }
         } catch (error) {
-          setRole(row.getValue('role'));
-          console.error(error);
-          toast.error(`UserID: ${id} unchanged`);
+          setRole(row.getValue('role'))
+          console.error(error)
+          toast.error(`UserID: ${id} unchanged`)
         }
-        setIsChanged(false);
+        setIsChanged(false)
       }
       return (
         <div className="text-center">
-          <Switch onClick={handleChange} disabled={isChanged} checked={role === "ADMIN"} />
+          <Switch
+            onClick={handleChange}
+            disabled={isChanged}
+            checked={role === 'ADMIN'}
+          />
         </div>
       )
-    }
+    },
   },
   {
     accessorKey: 'approved',
@@ -219,50 +206,63 @@ export const columns: ColumnDef<UserData>[] = [
       )
     },
     cell: ({ row }) => {
-      const router = useRouter();
-      const [ approved, setApproved ] = useState<boolean>(row.getValue('approved'));
-      const [ isChanged, setIsChanged ] = useState<boolean>(false)
+      const router = useRouter()
+      const [approved, setApproved] = useState<boolean>(
+        row.getValue('approved')
+      )
+      const [isChanged, setIsChanged] = useState<boolean>(false)
       const handleChange = async (event: any) => {
-        setIsChanged(true);
-        setApproved(!approved);
-        const id = row.getValue('id');
-        const name = row.getValue('name');
-        const role = row.getValue('role');
+        setIsChanged(true)
+        setApproved(!approved)
+        const id = row.getValue('id')
+        const name = row.getValue('name')
+        const role = row.getValue('role')
         try {
-          const request = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              id: id,
-              name: name,
-              role: role,
-              approved: !approved,
-            }),
-          })
+          const request = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/users`,
+            {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                id: id,
+                name: name,
+                role: role,
+                approved: !approved,
+              }),
+            }
+          )
 
-          if (request.ok){
-            toast.success(`UserID: ${id} ${!approved ? 'approved' : 'unapproved'} successfully`);
-            const data = await request.json();
-            setApproved(data.approved);
+          if (request.ok) {
+            toast.success(
+              `UserID: ${id} ${
+                !approved ? 'approved' : 'unapproved'
+              } successfully`
+            )
+            const data = await request.json()
+            setApproved(data.approved)
           } else {
-            setApproved(row.getValue('approved'));
-            toast.error(request.statusText);
+            setApproved(row.getValue('approved'))
+            toast.error(request.statusText)
           }
         } catch (error) {
-          console.error(error);
-          setApproved(row.getValue('approved'));
-          toast.error(`UserID: ${id} unchanged`);
+          console.error(error)
+          setApproved(row.getValue('approved'))
+          toast.error(`UserID: ${id} unchanged`)
         }
-        setIsChanged(false);
+        setIsChanged(false)
       }
       return (
         <div className="text-center pr-4">
-          <Switch disabled={isChanged} onClick={handleChange} checked={approved}/>
+          <Switch
+            disabled={isChanged}
+            onClick={handleChange}
+            checked={approved}
+          />
         </div>
       )
-    }
+    },
   },
   {
     accessorKey: 'createdAt',
@@ -292,14 +292,10 @@ export const columns: ColumnDef<UserData>[] = [
 
       return (
         <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger>
-            {date.toLocaleDateString()}
-          </TooltipTrigger>
-          <TooltipContent>
-            {date.toLocaleTimeString()}
-          </TooltipContent>
-        </Tooltip>
+          <Tooltip>
+            <TooltipTrigger>{date.toLocaleDateString()}</TooltipTrigger>
+            <TooltipContent>{date.toLocaleTimeString()}</TooltipContent>
+          </Tooltip>
         </TooltipProvider>
       )
     },
@@ -332,45 +328,38 @@ export const columns: ColumnDef<UserData>[] = [
 
       return (
         <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger>
-            {date.toLocaleDateString()}
-          </TooltipTrigger>
-          <TooltipContent>
-            {date.toLocaleTimeString()}
-          </TooltipContent>
-        </Tooltip>
+          <Tooltip>
+            <TooltipTrigger>{date.toLocaleDateString()}</TooltipTrigger>
+            <TooltipContent>{date.toLocaleTimeString()}</TooltipContent>
+          </Tooltip>
         </TooltipProvider>
       )
     },
   },
   {
-    id: "actions",
+    id: 'actions',
     cell: ({ row }) => {
-      const payment = row.original
       const router = useRouter()
       const handleDelete = async () => {
         const id = row.getValue('id')
         try {
-          const request = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`, {
-            method: 'DELETE',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          })
+          const request = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/users/${id}`,
+            { method: 'DELETE' }
+          )
 
-          if (request.ok){
-            toast.success(`UserID: ${id} deleted successfully`);
-            router.refresh();
+          if (request.ok) {
+            toast.success(`UserID: ${id} deleted successfully`)
+            router.refresh()
           } else {
-            toast.error(request.statusText);
+            toast.error(request.statusText)
           }
         } catch (error) {
-          console.error(error);
-          toast.error(`UserID: ${id} deletion failed`);
+          console.error(error)
+          toast.error(`UserID: ${id} deletion failed`)
         }
       }
- 
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -380,8 +369,7 @@ export const columns: ColumnDef<UserData>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem className="text-red-500"
-              onClick={handleDelete}>
+            <DropdownMenuItem className="text-red-500" onClick={handleDelete}>
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
