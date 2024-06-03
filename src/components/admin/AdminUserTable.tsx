@@ -21,7 +21,6 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
-//import { useRouter } from "next/router"
 import { Input } from '@/components/ui/input'
 import { Button } from '../ui/button'
 import {
@@ -69,9 +68,6 @@ export default function AdminUserTable<TData, TValue>({
     },
   })
 
-  //const router = useRouter()
-  const [isChanged, setIsChanged] = React.useState(false)
-
   return (
     <div className="flex flex-col justify-center items-center">
       <div
@@ -101,7 +97,6 @@ export default function AdminUserTable<TData, TValue>({
             table.getColumn('id')?.setFilterValue(event.target.value)
           }}
         />
-        {/*<Button disabled={!isChanged} variant={isChanged ? "default" : "outline"}>Save changes</Button>*/}
       </div>
       <div className="flex"></div>
       <Card className="w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px] xl:w-full overflow-auto">

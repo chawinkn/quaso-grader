@@ -19,11 +19,21 @@ export async function GET(
 
   if (isNaN(Number(params.id))) return json(null)
 
-  const submission = await prisma.submission.findFirst({
-    where: {
-      id: Number(params.id),
-    },
-  })
+  let submission
+  if (user.role !== 'ADMIN') {
+    submission = await prisma.submission.findFirst({
+      where: {
+        id: Number(params.id),
+        userId: user.id,
+      },
+    })
+  } else {
+    submission = await prisma.submission.findFirst({
+      where: {
+        id: Number(params.id),
+      },
+    })
+  }
   if (submission) {
     const res = { ...submission, code: await decompressCode(submission.code) }
     return json(res)

@@ -1,4 +1,4 @@
-import CreateTaskLayout from '@/components/admin/CreateTask'
+import CreateTaskLayout from '@/components/admin/AdminCreateTask'
 import { Suspense } from 'react'
 
 export default function CreateTask() {

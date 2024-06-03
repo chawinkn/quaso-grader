@@ -1,5 +1,4 @@
 import { notFound } from 'next/navigation'
-import TaskLayout from '@/components/task/Tasklayout'
 import { Suspense } from 'react'
 import { headers } from 'next/headers'
 import EditTaskLayout from '@/components/admin/AdminEditTask'
@@ -9,7 +8,7 @@ async function getTask(id: string) {
     method: 'GET',
     headers: new Headers(headers()),
   })
-  if (!res) {
+  if (!res.ok) {
     return null
   }
   const data = await res.json()

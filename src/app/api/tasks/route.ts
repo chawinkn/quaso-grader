@@ -1,12 +1,8 @@
 import prisma from '@/lib/prisma'
-import {
-  badRequest,
-  internalServerError,
-  json,
-  unauthorized,
-} from '@/utils/apiResponse'
+import { badRequest, json, unauthorized } from '@/utils/apiResponse'
 import { getServerUser } from '@/lib/session'
 import { NextRequest } from 'next/server'
+import { revalidatePath } from 'next/cache'
 
 export async function GET() {
   const user = await getServerUser()
@@ -39,12 +35,12 @@ export async function POST(req: NextRequest) {
   const user = await getServerUser()
   if (!user || user.role !== 'ADMIN') return unauthorized()
 
-  // const existingTask = await prisma.task.findFirst({
-  //   where: {
-  //     id,
-  //   },
-  // })
-  // if (existingTask) return badRequest('Task already exists')
+  const existingTask = await prisma.task.findFirst({
+    where: {
+      id,
+    },
+  })
+  if (existingTask) return badRequest('Task already exists')
 
   await prisma.task.create({
     data: {
@@ -54,6 +50,8 @@ export async function POST(req: NextRequest) {
       private: true,
     },
   })
+
+  revalidatePath('/dashboard/tasks')
 
   return json({ success: true })
 }

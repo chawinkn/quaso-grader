@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
         username,
         name,
         password: hashedPassword,
-        approved: true,
+        approved: process.env.NEXT_PUBLIC_PUBLIC_APPROVED === 'TRUE',
       },
     })
 
