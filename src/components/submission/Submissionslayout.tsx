@@ -29,7 +29,7 @@ async function getSubmission(submissionId: string) {
       method: 'GET',
     }
   )
-  if (!res) {
+  if (!res.ok) {
     return null
   }
   const data = await res.json()
@@ -43,7 +43,7 @@ async function getUser(userId: number) {
       method: 'GET',
     }
   )
-  if (!res) {
+  if (!res.ok) {
     return null
   }
   const data = await res.json()
@@ -57,7 +57,7 @@ async function getTask(taskId: string) {
       method: 'GET',
     }
   )
-  if (!res) {
+  if (!res.ok) {
     return null
   }
   const data = await res.json()
@@ -181,7 +181,7 @@ export default function SubmissionLayout({ id }: { id: string }) {
         <p className="inline font-bold">Time : </p>
         <p className="inline">{submission.time} ms </p>
         <p className="inline font-bold">Memory : </p>
-        <p className="inline">{submission.memory} kB</p>
+        <p className="inline">{submission.memory} KB</p>
       </div>
       <div className="flex flex-col mt-5 space-y-4 lg:flex-row sm:space-x-4">
         <Card className="w-[350px] sm:w-[500px] xl:w-[700px] 2xl:w-[800px] h-[600px] overflow-hidden">

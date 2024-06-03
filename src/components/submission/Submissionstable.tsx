@@ -41,15 +41,17 @@ import {
 } from '../ui/select'
 import clsx from 'clsx'
 
-interface DataTableProps<TData, TValue> {
+interface DataTableProps<TData, TValue, TUsername> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  username: TUsername
 }
 
-export default function SubmissionsTable<TData, TValue>({
+export default function SubmissionsTable<TData, TValue, TUsername>({
   columns,
   data,
-}: DataTableProps<TData, TValue>) {
+  username,
+}: DataTableProps<TData, TValue, TUsername>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -119,11 +121,13 @@ export default function SubmissionsTable<TData, TValue>({
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
                   className={clsx(
-                    'cursor-pointer',
+                    username === row.getValue('user') && 'cursor-pointer',
                     index % 2 ? 'bg-muted/30' : ''
                   )}
                   onClick={() => {
-                    router.push(`/submissions/${row.getValue('id')}`)
+                    if (username === row.getValue('user')) {
+                      router.push(`/submissions/${row.getValue('id')}`)
+                    }
                   }}
                 >
                   {row.getVisibleCells().map((cell) => (

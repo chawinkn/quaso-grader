@@ -14,7 +14,7 @@ async function getAnnouncementList() {
     method: 'GET',
     headers: new Headers(headers()),
   })
-  if (!res) {
+  if (!res.ok) {
     return null
   }
   const data = await res.json()

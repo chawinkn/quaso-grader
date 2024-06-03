@@ -82,7 +82,7 @@ export default function TaskLayout({ ...props }) {
   const handleSubmit = async () => {
     setSubmit(true)
     try {
-      await fetch('http://localhost:5000/', {
+      await fetch('${process.env.NEXT_PUBLIC_BACKEND_API_URL}', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -103,18 +103,21 @@ export default function TaskLayout({ ...props }) {
         }),
       })
       const result = await res.json()
-      const submitRes = await fetch(`http://localhost:5000/submit`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          task_id: task.id,
-          submission_id: result.id,
-          code: sourcecode,
-          language,
-        }),
-      })
+      const submitRes = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/submit`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            task_id: task.id,
+            submission_id: result.id,
+            code: sourcecode,
+            language,
+          }),
+        }
+      )
       if (!submitRes?.ok) {
         setSubmit(false)
         toast.error('Internal Server Error')

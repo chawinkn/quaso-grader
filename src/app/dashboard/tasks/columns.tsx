@@ -1,13 +1,19 @@
 'use client'
 
 import { ColumnDef } from '@tanstack/react-table'
-import { ArrowUpDown, Router, Trash2 } from 'lucide-react'
+import { ArrowUpDown, MoreHorizontal, Router, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
 import toast from 'react-hot-toast'
 import { PenSquare } from 'lucide-react'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 
 export type TaskData = {
   id: string
@@ -190,7 +196,7 @@ export const columns: ColumnDef<TaskData>[] = [
         const id = row.getValue('id')
 
         try {
-          await fetch('http://localhost:5000/', {
+          await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -205,9 +211,12 @@ export const columns: ColumnDef<TaskData>[] = [
             `${process.env.NEXT_PUBLIC_API_URL}/tasks/${id}`,
             { method: 'DELETE' }
           )
-          const deleted = await fetch(`http://localhost:5000/task/${id}`, {
-            method: 'DELETE',
-          })
+          const deleted = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${id}`,
+            {
+              method: 'DELETE',
+            }
+          )
           if (!deleted?.ok) {
             toast.error('Internal Server Error')
             return
@@ -220,13 +229,19 @@ export const columns: ColumnDef<TaskData>[] = [
       }
 
       return (
-        <Button
-          onClick={handleDelete}
-          variant={'destructive'}
-          className="hidden p-0 h-9 w-9 sm:flex"
-        >
-          <Trash2 />
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem className="text-red-500" onClick={handleDelete}>
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       )
     },
   },

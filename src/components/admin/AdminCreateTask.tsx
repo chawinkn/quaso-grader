@@ -38,6 +38,9 @@ import { useRouter } from 'next/navigation'
 const formSchema = z.object({
   id: z
     .string()
+    .regex(/^[\w]+$/, {
+      message: 'Only alphabets, numbers and underscore',
+    })
     .min(3, { message: 'Task id must be 3-20 characters.' })
     .max(20, { message: 'Task id must be 3-20 characters.' }),
   title: z
@@ -200,7 +203,7 @@ export default function CreateTaskLayout() {
     }
 
     try {
-      await fetch('http://localhost:5000/', {
+      await fetch('${process.env.NEXT_PUBLIC_BACKEND_API_URL}', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -224,17 +227,25 @@ export default function CreateTaskLayout() {
         method: 'POST',
         body: JSON.stringify({ id, title, fullScore: full_score }),
       })
-      const upload = await fetch(`http://localhost:5000/task/${id}`, {
-        method: 'POST',
-        body: formData,
-      })
+      if (!res?.ok) {
+        setSubmit(false)
+        const result = await res.json()
+        return toast.error(result.error)
+      }
+      const upload = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${id}`,
+        {
+          method: 'POST',
+          body: formData,
+        }
+      )
       if (!upload?.ok) {
         setSubmit(false)
-        toast.error('Internal Server Error')
-        return
+        return toast.error('Internal Server Error')
       }
       toast.success('Create successfully')
       router.push(`/dashboard/tasks`)
+      router.refresh()
     } catch (error: any) {
       setSubmit(false)
       return toast.error(error.message)
@@ -260,6 +271,9 @@ export default function CreateTaskLayout() {
                     <Input placeholder="Task id" {...field} />
                   </FormControl>
                   <FormMessage />
+                  <FormDescription>
+                    Only only alphabets, numbers and underscore
+                  </FormDescription>
                 </FormItem>
               )}
             />

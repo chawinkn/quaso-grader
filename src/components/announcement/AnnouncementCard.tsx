@@ -12,6 +12,7 @@ import remarkGfm from 'remark-gfm'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 export type AnnouncementData = {
   id: string
@@ -59,7 +60,11 @@ export function AdminAnnouncementCard(props: AnnouncementData) {
       <CardHeader className="flex flex-col items-center justify-between md:flex-row bg-muted/40">
         <CardTitle className="text-xl">{props.title}</CardTitle>
         <div className="flex flex-row-reverse items-center gap-2 grow">
-          <Badge className="w-max">{props.createdBy.name}</Badge>
+          <Badge className="w-max">
+            <Link href={`/profile/${props.createdById}`} target="_blank">
+              {props.createdBy.name}
+            </Link>
+          </Badge>
           <Badge variant="secondary" className="w-max">
             {createdDate.toLocaleString()}
           </Badge>
@@ -109,7 +114,11 @@ export default function AnnouncementCard(props: AnnouncementData) {
       <CardHeader className="flex flex-col items-center justify-between md:flex-row bg-muted/40">
         <CardTitle className="text-xl">{props.title}</CardTitle>
         <div className="flex flex-row-reverse items-center gap-2 grow">
-          <Badge className="w-max">{props.createdBy.name}</Badge>
+          <Badge className="w-max">
+            <Link href={`/profile/${props.createdById}`} target="_blank">
+              {props.createdBy.name}
+            </Link>
+          </Badge>
           <Badge variant="secondary" className="w-max">
             {createdDate.toLocaleString()}
           </Badge>

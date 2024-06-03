@@ -5,12 +5,11 @@ import { Prisma } from '@prisma/client'
 import prisma from '@/lib/prisma'
 
 async function getTaskList() {
-  // await new Promise((resolve) => setTimeout(resolve, 3000))
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks`, {
     method: 'GET',
     headers: new Headers(headers()),
   })
-  if (!res) {
+  if (!res.ok) {
     return null
   }
   const data = await res.json()
@@ -22,7 +21,7 @@ async function getScore() {
     method: 'GET',
     headers: new Headers(headers()),
   })
-  if (!res) {
+  if (!res.ok) {
     return null
   }
   const data = await res.json()

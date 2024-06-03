@@ -7,7 +7,7 @@ export default function Footer() {
       <div className="flex flex-col items-center justify-center md:flex-row md:justify-between">
         <p>Crafted by 🧑‍💻🤓👾</p>
         <div className="flex flex-row items-center mt-5 space-x-5 md:mt-0">
-          <Link href="https://github.com/chawinkn/grader-project">
+          <Link href="https://github.com/chawinkn/quaso-grader">
             <GithubIcon />
           </Link>
         </div>

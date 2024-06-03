@@ -71,6 +71,11 @@ export async function DELETE(
   const user = await getServerUser()
   if (!user || user.role !== 'ADMIN') return unauthorized()
 
+  await prisma.submission.deleteMany({
+    where: {
+      taskId: params.id,
+    },
+  })
   await prisma.task.delete({
     where: {
       id: params.id,

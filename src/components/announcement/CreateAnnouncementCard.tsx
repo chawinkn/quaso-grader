@@ -4,6 +4,7 @@ import { Card, CardTitle, CardContent, CardHeader } from '../ui/card'
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormMessage,
@@ -106,6 +107,7 @@ export default function CreateAnnouncementCard(props: UserData) {
                     />
                   </FormControl>
                   <FormMessage />
+                  <FormDescription>In markdown</FormDescription>
                 </FormItem>
               )}
             />
