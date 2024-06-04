@@ -47,6 +47,7 @@ export default async function RootLayout({
           <Toaster />
           <ThemeProvider
             attribute="class"
+            themes={['light', 'dark', 'quaso', 'salad']}
             defaultTheme="system"
             disableTransitionOnChange
           >

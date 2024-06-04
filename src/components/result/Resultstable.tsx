@@ -39,8 +39,8 @@ export default function ResultsTable<TData, TValue>({
   })
 
   return (
-    <div className="flex flex-col items-center justify-center">
-      <Card className="w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px]">
+    <div className="flex flex-col w-full items-center justify-center h-max">
+      <Card className="w-10/12 lg:w-[950px] min-h-max">
         <Table>
           <TableHeader className="bg-muted/80">
             {table.getHeaderGroups().map((headerGroup) => (
