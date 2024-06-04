@@ -41,17 +41,19 @@ import {
 } from '../ui/select'
 import clsx from 'clsx'
 
-interface DataTableProps<TData, TValue, TUsername> {
+interface DataTableProps<TData, TValue, TUsername, TRole> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   username: TUsername
+  role: TRole
 }
 
-export default function SubmissionsTable<TData, TValue, TUsername>({
+export default function SubmissionsTable<TData, TValue, TUsername, TRole>({
   columns,
   data,
   username,
-}: DataTableProps<TData, TValue, TUsername>) {
+  role,
+}: DataTableProps<TData, TValue, TUsername, TRole>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -121,11 +123,11 @@ export default function SubmissionsTable<TData, TValue, TUsername>({
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
                   className={clsx(
-                    username === row.getValue('user') && 'cursor-pointer',
+                    (username === row.getValue('user') || role === 'ADMIN') && 'cursor-pointer',
                     index % 2 ? 'bg-muted/30' : ''
                   )}
                   onClick={() => {
-                    if (username === row.getValue('user')) {
+                    if (username === row.getValue('user') || role === 'ADMIN') {
                       router.push(`/submissions/${row.getValue('id')}`)
                     }
                   }}

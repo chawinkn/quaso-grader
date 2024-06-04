@@ -18,7 +18,13 @@ async function getSubmission(submissionId: string) {
   return data
 }
 
-export default function Resultlayout({ id }: { id: string }) {
+export default function Resultlayout({
+  id,
+  result_interval,
+}: {
+  id: string
+  result_interval: number
+}) {
   const [status, setStatus] = useState('')
   const [data, setData] = useState<Array<ResultData>>([])
 
@@ -36,7 +42,7 @@ export default function Resultlayout({ id }: { id: string }) {
     const startFetching = async () => {
       await fetchSubmission()
       if (status === 'Pending' || status === 'Judging') {
-        interval = setInterval(fetchSubmission, 1000 * 5)
+        interval = setInterval(fetchSubmission, 1000 * result_interval)
       }
     }
 
@@ -49,7 +55,5 @@ export default function Resultlayout({ id }: { id: string }) {
     }
   }, [id, status])
 
-  return (
-    <ResultsTable columns={columns} data={data} />
-  ) 
+  return <ResultsTable columns={columns} data={data} />
 }

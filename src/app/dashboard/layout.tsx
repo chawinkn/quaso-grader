@@ -17,6 +17,9 @@ export default async function RootLayout({
                       min-w-max w-[350px] sm:w-[450px] md:w-[600px] xl:w-[700px]"
       >
         <Button variant={'outline'} className="w-full" asChild>
+          <Link href={'/dashboard/general'}>General</Link>
+        </Button>
+        <Button variant={'outline'} className="w-full" asChild>
           <Link href={'/dashboard/users'}>Users</Link>
         </Button>
         <Button variant={'outline'} className="w-full" asChild>

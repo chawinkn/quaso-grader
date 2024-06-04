@@ -17,6 +17,7 @@ import { useRouter } from 'next/navigation'
 import { Loader2 } from 'lucide-react'
 import { TaskData } from '@/app/tasks/columns'
 import StatementLayout from '../Statementlayout'
+import { Config } from '../admin/AdminGeneralPanel'
 
 export default function TaskLayout({ ...props }) {
   const task: TaskData = props?.task
@@ -25,24 +26,17 @@ export default function TaskLayout({ ...props }) {
   const [fileInputColor, setfileInputColor] = useState('')
   const [isSubmit, setSubmit] = useState(false)
   const router = useRouter()
-  const languageList = [
-    {
-      name: 'C',
-      language: 'c',
-      ext: 'c',
-    },
-    {
-      name: 'C++',
-      language: 'cpp',
-      ext: 'cpp',
-    },
-    {
-      name: 'Python',
-      language: 'python',
-      ext: 'py',
-    },
-  ]
-
+  const config: Config = props?.config
+  const languageList: Array<{ name: string; language: string; ext: string }> =
+    []
+  for (let i = 0; i < config.languages.length; i++) {
+    if (config.languages[i].available)
+      languageList.push({
+        name: config.languages[i].name,
+        language: config.languages[i].language,
+        ext: config.languages[i].ext,
+      })
+  }
   const handleLanguage = (value: string) => {
     setLanguauge(value)
   }
@@ -68,11 +62,12 @@ export default function TaskLayout({ ...props }) {
     }
     reader.readAsText(file)
 
-    if (ext == 'py') {
-      setLanguauge('python')
-    } else {
-      setLanguauge(ext)
-    }
+    setLanguauge(ext)
+    // if (ext == 'py') {
+    //   setLanguauge('python')
+    // } else {
+    //   setLanguauge(ext)
+    // }
   }
 
   const handleEditorChange = (value: string | any) => {
@@ -82,7 +77,7 @@ export default function TaskLayout({ ...props }) {
   const handleSubmit = async () => {
     setSubmit(true)
     try {
-      await fetch('${process.env.NEXT_PUBLIC_BACKEND_API_URL}', {
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

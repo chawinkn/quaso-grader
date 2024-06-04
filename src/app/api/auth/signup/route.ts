@@ -2,6 +2,7 @@ import { badRequest, internalServerError, json } from '@/utils/apiResponse'
 import { NextRequest } from 'next/server'
 import bcrypt from 'bcrypt'
 import prisma from '@/lib/prisma'
+import { promises as fs } from 'fs'
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,12 +17,17 @@ export async function POST(req: NextRequest) {
     if (existingUser) return badRequest('Username already exists')
 
     const hashedPassword = bcrypt.hashSync(password, 10)
+
+    // 💀
+    const file = await fs.readFile(process.cwd() + '/config.json', 'utf8')
+    const config = JSON.parse(file)
+
     const newUser = await prisma.user.create({
       data: {
         username,
         name,
         password: hashedPassword,
-        approved: process.env.NEXT_PUBLIC_PUBLIC_APPROVED === 'TRUE',
+        approved: config.auto_approve,
       },
     })
 

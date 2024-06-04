@@ -102,7 +102,7 @@ export const columns: ColumnDef<TaskData>[] = [
     accessorKey: 'private',
     header: ({ column }) => {
       return (
-        <div className="hidden sm:flex">
+        <div>
           <span className="flex items-center">
             Available
             <Button
@@ -159,7 +159,7 @@ export const columns: ColumnDef<TaskData>[] = [
         setLoading(false)
       }
       return (
-        <div className="hidden sm:flex">
+        <div>
           <Switch
             onClick={handlePrivate}
             checked={!isPrivate}
@@ -177,7 +177,7 @@ export const columns: ColumnDef<TaskData>[] = [
       return (
         <Button
           variant="outline"
-          className="hidden p-0 h-9 w-9 sm:flex"
+          className="p-0 h-9 w-9"
           onClick={() => {
             router.push(`/dashboard/tasks/edit/${row.getValue('id')}`)
           }}

@@ -45,21 +45,22 @@ const formSchema = z.object({
     .max(20, { message: 'Task id must be 3-20 characters.' }),
   title: z
     .string()
-    .min(3, { message: 'Task title must be 3-20 characters.' })
-    .max(20, { message: 'Task title must be 3-20 characters.' }),
+    .min(3, { message: 'Task title must be 3-25 characters.' })
+    .max(25, { message: 'Task title must be 3-25 characters.' }),
   time_limit: z.preprocess(
     (x) => (x ? x : undefined),
     z.coerce
       .number()
-      .min(0.5, { message: 'Time limit must be at least 0.5 seconds.' })
+      .min(0.25, { message: 'Time limit must be 0.25-5 seconds.' })
+      .max(5, { message: 'Time limit must be 0.25-5 seconds.' })
   ),
   memory_limit: z.preprocess(
     (x) => (x ? x : undefined),
     z.coerce
       .number()
       .int()
-      .min(16, { message: 'Memory limit must be 16-512 MB.' })
-      .max(512, { message: 'Memory limit must be 16-512 MB.' })
+      .min(4, { message: 'Memory limit must be 4-512 MB.' })
+      .max(512, { message: 'Memory limit must be 4-512 MB.' })
   ),
   num_testcases: z.preprocess(
     (x) => (x ? x : undefined),
@@ -203,7 +204,7 @@ export default function CreateTaskLayout() {
     }
 
     try {
-      await fetch('${process.env.NEXT_PUBLIC_BACKEND_API_URL}', {
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -254,7 +255,7 @@ export default function CreateTaskLayout() {
   }
 
   return (
-    <Card className="w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px]">
+    <Card className="w-[350px] sm:w-[450px] md:w-[600px] xl:w-[700px]">
       <CardHeader>
         <CardTitle>Create Task</CardTitle>
       </CardHeader>
@@ -272,7 +273,7 @@ export default function CreateTaskLayout() {
                   </FormControl>
                   <FormMessage />
                   <FormDescription>
-                    Only only alphabets, numbers and underscore
+                    Only alphabets, numbers and underscore
                   </FormDescription>
                 </FormItem>
               )}
@@ -345,7 +346,9 @@ export default function CreateTaskLayout() {
                     {...descriptionRef}
                   />
                   <FormMessage />
-                  <FormDescription>In .pdf</FormDescription>
+                  <FormDescription>
+                    In .pdf (Max file size is 5 MB)
+                  </FormDescription>
                 </FormItem>
               )}
             />
@@ -364,8 +367,8 @@ export default function CreateTaskLayout() {
                   />
                   <FormMessage />
                   <FormDescription>
-                    In .zip. It must include inputs and solutions (eg. 1.in,
-                    1.sol, 2.in, 2.sol)
+                    In .zip (Max file size is 10 MB). It must include inputs and
+                    solutions (eg. 1.in, 1.sol, 2.in, 2.sol)
                   </FormDescription>
                 </FormItem>
               )}

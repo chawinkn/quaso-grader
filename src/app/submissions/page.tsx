@@ -49,6 +49,7 @@ export default async function Submissions() {
             columns={columns}
             data={submissionList}
             username={user.name}
+            role={User?.role}
           />
         </Suspense>
       </div>

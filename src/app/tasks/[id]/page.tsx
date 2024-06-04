@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import TaskLayout from '@/components/task/Tasklayout'
 import { Suspense } from 'react'
 import { headers } from 'next/headers'
+import { getConfig } from '@/app/dashboard/general/page'
 
 async function getTask(id: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks/${id}`, {
@@ -26,11 +27,12 @@ export default async function Task({
   }
 }) {
   const task = await getTask(params.id)
+  const config = await getConfig()
 
   return (
     <div className="min-h-screen flex">
       <Suspense fallback={null}>
-        <TaskLayout task={task} />
+        <TaskLayout task={task} config={config} />
       </Suspense>
     </div>
   )

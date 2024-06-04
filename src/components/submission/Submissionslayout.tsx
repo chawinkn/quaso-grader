@@ -8,14 +8,15 @@ import { useEffect, useState, useMemo } from 'react'
 import { cx } from 'class-variance-authority'
 import { Progress } from '@/components/ui/progress'
 import Resultlayout from '@/components/result/Resultlayout'
-import Particles, { initParticlesEngine } from "@tsparticles/react";
+import Particles, { initParticlesEngine } from '@tsparticles/react'
 import { loadSlim } from '@tsparticles/slim'
 import {
   type Container,
   type ISourceOptions,
   MoveDirection,
   OutMode,
-} from "@tsparticles/engine";
+} from '@tsparticles/engine'
+import { Config } from '../admin/AdminGeneralPanel'
 
 export type SubmissionData = {
   id: number
@@ -75,15 +76,22 @@ async function getTask(taskId: string) {
   return data
 }
 
-export default function SubmissionLayout({ id }: { id: string }) {
-
+export default function SubmissionLayout({
+  id,
+  config,
+}: {
+  id: string
+  config: Config
+}) {
   // Confetti
   const [playConfetti, setPlayConfetti] = useState(false)
-  const [canvasInit, setCanvasInit] = useState(false);
+  const [canvasInit, setCanvasInit] = useState(false)
   useEffect(() => {
     initParticlesEngine(async (engine) => {
-      await loadSlim(engine);
-    }).then(() => {setCanvasInit(true);});
+      await loadSlim(engine)
+    }).then(() => {
+      setCanvasInit(true)
+    })
   }, [])
 
   const options: ISourceOptions = useMemo(
@@ -91,87 +99,82 @@ export default function SubmissionLayout({ id }: { id: string }) {
       fpsLimit: 45,
       particles: {
         color: {
-          "value": [
-            "#1E00FF",
-            "#FF0061",
-            "#E1FF00",
-            "#00FF9E"
-          ]
+          value: ['#1E00FF', '#FF0061', '#E1FF00', '#00FF9E'],
         },
         zIndex: {
           value: 0,
         },
-        "move": {
-          "decay": 0.05,
-          "direction": "top",
-          "enable": true,
-          "gravity": {
-            "enable": true
+        move: {
+          decay: 0.05,
+          direction: 'top',
+          enable: true,
+          gravity: {
+            enable: true,
           },
-          "outModes": {
-            "top": "none",
-            "default": "destroy"
+          outModes: {
+            top: 'none',
+            default: 'destroy',
           },
-          "speed": {
-            "min": 50,
-            "max": 100
-          }
+          speed: {
+            min: 50,
+            max: 100,
+          },
         },
-        "rotate": {
-          "value": {
-            "min": 0,
-            "max": 360
+        rotate: {
+          value: {
+            min: 0,
+            max: 360,
           },
-          "direction": "random",
-          "animation": {
-            "enable": true,
-            "speed": 30
-          }
-        },
-        "tilt": {
-          "direction": "random",
-          "enable": true,
-          "value": {
-            "min": 0,
-            "max": 360
+          direction: 'random',
+          animation: {
+            enable: true,
+            speed: 30,
           },
-          "animation": {
-            "enable": true,
-            "speed": 30
-          }
         },
-        "size": {
-          "value": 3,
-          "animation": {
-            "enable": true,
-            "startValue": "min",
-            "count": 1,
-            "speed": 16,
-            "sync": true
-          }
-        },
-        "roll": {
-          "darken": {
-            "enable": true,
-            "value": 25
+        tilt: {
+          direction: 'random',
+          enable: true,
+          value: {
+            min: 0,
+            max: 360,
           },
-          "enlighten": {
-            "enable": true,
-            "value": 25
+          animation: {
+            enable: true,
+            speed: 30,
           },
-          "enable": true,
-          "speed": {
-            "min": 5,
-            "max": 15
-          }
         },
-        "wobble": {
-          "distance": 30,
-          "enable": true,
-          "speed": {
-            "min": -7,
-            "max": 7
-          }
+        size: {
+          value: 3,
+          animation: {
+            enable: true,
+            startValue: 'min',
+            count: 1,
+            speed: 16,
+            sync: true,
+          },
+        },
+        roll: {
+          darken: {
+            enable: true,
+            value: 25,
+          },
+          enlighten: {
+            enable: true,
+            value: 25,
+          },
+          enable: true,
+          speed: {
+            min: 5,
+            max: 15,
+          },
+        },
+        wobble: {
+          distance: 30,
+          enable: true,
+          speed: {
+            min: -7,
+            max: 7,
+          },
         },
         number: {
           density: {
@@ -183,28 +186,24 @@ export default function SubmissionLayout({ id }: { id: string }) {
           value: 1,
         },
         shape: {
-          type: [
-            "circle",
-            "square",
-          ]
+          type: ['circle', 'square'],
         },
-        "emitters": {
-          "position": {
-            "x": 50,
-            "y": 200
+        emitters: {
+          position: {
+            x: 50,
+            y: 200,
           },
-          "rate": {
-            "quantity": 5,
-            "delay": 0.15
-          }
+          rate: {
+            quantity: 5,
+            delay: 0.15,
+          },
         },
       },
     }),
-    [],
-  );
+    []
+  )
   /*
-  */
-
+   */
 
   const [status, setStatus] = useState('')
   const [submission, setSubmission] = useState<SubmissionData>({
@@ -245,9 +244,14 @@ export default function SubmissionLayout({ id }: { id: string }) {
     const startFetching = async () => {
       await fetchSubmission()
       if (status === 'Pending' || status === 'Judging') {
-        interval = setInterval(fetchSubmission, 1000 * 5)
-        setPrevStatus(status);
-      } else if (status === 'Completed' && prevStatus === 'Judging' && submission.score === submission.fullScore && !playConfetti) {
+        interval = setInterval(fetchSubmission, 1000 * config.result_interval)
+        setPrevStatus(status)
+      } else if (
+        status === 'Completed' &&
+        prevStatus === 'Judging' &&
+        submission.score === submission.fullScore &&
+        !playConfetti
+      ) {
         setPlayConfetti(true)
         setTimeout(() => {
           setPlayConfetti(false)
@@ -264,23 +268,10 @@ export default function SubmissionLayout({ id }: { id: string }) {
     }
   }, [id, status])
 
-  const languageList = [
-    {
-      name: 'C',
-      language: 'c',
-      ext: 'c',
-    },
-    {
-      name: 'C++',
-      language: 'cpp',
-      ext: 'cpp',
-    },
-    {
-      name: 'Python',
-      language: 'python',
-      ext: 'py',
-    },
-  ]
+  const languageList: Array<{ name: string; language: string; ext: string }> =
+    config.languages.map((i) => {
+      return { name: i.name, language: i.language, ext: i.ext }
+    })
   const findLanguage = languageList.filter(
     (lang) => lang.language === submission.language
   )
@@ -329,16 +320,22 @@ export default function SubmissionLayout({ id }: { id: string }) {
         <p className="text-lg text-center font-bold">
           Score: {submission.score}/{submission.fullScore}
         </p>
-        <Progress value={submission.score} max={submission.fullScore} className=''/>
+        <Progress
+          value={submission.score}
+          max={submission.fullScore}
+          className=""
+        />
       </div>
-      {canvasInit && playConfetti && <Particles id="tsparticles" options={options} />}
+      {canvasInit && playConfetti && (
+        <Particles id="tsparticles" options={options} />
+      )}
       <div className="inline mb-6">
         <p className="inline font-bold">Time : </p>
         <p className="inline">{submission.time} ms </p>
         <p className="inline font-bold">Memory : </p>
         <p className="inline">{submission.memory} KB</p>
       </div>
-      <Resultlayout id={id} />
+      <Resultlayout id={id} result_interval={config.result_interval} />
       <div className="flex flex-col items-center w-full mt-6">
         <Card className="w-10/12 lg:w-[950px] h-[600px] overflow-hidden">
           <Editor

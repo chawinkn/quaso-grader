@@ -40,8 +40,8 @@ import { Badge } from '../ui/badge'
 const formDBSchema = z.object({
   title: z
     .string()
-    .min(3, { message: 'Task title must be 3-20 characters.' })
-    .max(20, { message: 'Task title must be 3-20 characters.' }),
+    .min(3, { message: 'Task title must be 3-25 characters.' })
+    .max(25, { message: 'Task title must be 3-25 characters.' }),
 })
 
 const formDescSchema = z.object({
@@ -63,15 +63,16 @@ const formSchema = z.object({
     (x) => (x ? x : undefined),
     z.coerce
       .number()
-      .min(0.5, { message: 'Time limit must be at least 0.5 seconds.' })
+      .min(0.25, { message: 'Time limit must be 0.25-5 seconds.' })
+      .max(5, { message: 'Time limit must be 0.25-5 seconds.' })
   ),
   memory_limit: z.preprocess(
     (x) => (x ? x : undefined),
     z.coerce
       .number()
       .int()
-      .min(16, { message: 'Memory limit must be 16-512 MB.' })
-      .max(512, { message: 'Memory limit must be 16-512 MB.' })
+      .min(4, { message: 'Memory limit must be 4-512 MB.' })
+      .max(512, { message: 'Memory limit must be 4-512 MB.' })
   ),
   num_testcases: z.preprocess(
     (x) => (x ? x : undefined),
@@ -274,7 +275,7 @@ export default function EditTaskLayout({ ...props }) {
     }
 
     try {
-      await fetch('${process.env.NEXT_PUBLIC_BACKEND_API_URL}', {
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -323,7 +324,7 @@ export default function EditTaskLayout({ ...props }) {
   }
 
   return (
-    <Card className="w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px]">
+    <Card className="w-[350px] sm:w-[450px] md:w-[600px] xl:w-[700px]">
       <CardHeader className="space-y-4">
         <CardTitle>Edit Task</CardTitle>
         <Badge variant="secondary" className="w-fit text-base">
@@ -377,7 +378,9 @@ export default function EditTaskLayout({ ...props }) {
                     {...descriptionRef}
                   />
                   <FormMessage />
-                  <FormDescription>In .pdf</FormDescription>
+                  <FormDescription>
+                    In .pdf (Max file size is 5 MB)
+                  </FormDescription>
                 </FormItem>
               )}
             />
@@ -448,8 +451,8 @@ export default function EditTaskLayout({ ...props }) {
                   />
                   <FormMessage />
                   <FormDescription>
-                    In .zip. It must include inputs and solutions (eg. 1.in,
-                    1.sol, 2.in, 2.sol)
+                    In .zip (Max file size is 10 MB). It must include inputs and
+                    solutions (eg. 1.in, 1.sol, 2.in, 2.sol)
                   </FormDescription>
                 </FormItem>
               )}

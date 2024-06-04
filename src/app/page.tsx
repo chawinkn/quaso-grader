@@ -4,6 +4,7 @@ import { getServerUser } from '@/lib/session'
 import Announcement from '@/components/announcement/Announcement'
 import { Badge } from '@/components/ui/badge'
 import { cx } from 'class-variance-authority'
+import { promises as fs } from 'fs'
 
 function Landing() {
   return (
