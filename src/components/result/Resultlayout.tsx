@@ -49,5 +49,7 @@ export default function Resultlayout({ id }: { id: string }) {
     }
   }, [id, status])
 
-  return <ResultsTable columns={columns} data={data} />
+  return (
+    <ResultsTable columns={columns} data={data} />
+  ) 
 }

@@ -6,6 +6,8 @@ import Link from 'next/link'
 import { formatDateTime } from '@/app/submissions/columns'
 import { useEffect, useState } from 'react'
 import { cx } from 'class-variance-authority'
+import { Progress } from '@/components/ui/progress'
+import Resultlayout from '@/components/result/Resultlayout'
 
 export type SubmissionData = {
   id: number
@@ -16,6 +18,7 @@ export type SubmissionData = {
   time: number
   memory: number
   code: string
+  fullScore: number
   score: number
   result: Array<Object>
   language: string
@@ -75,6 +78,7 @@ export default function SubmissionLayout({ id }: { id: string }) {
     time: 0,
     memory: 0,
     code: '',
+    fullScore: 99999,
     score: 0,
     result: [],
     language: 'c',
@@ -90,6 +94,7 @@ export default function SubmissionLayout({ id }: { id: string }) {
       ])
       submission.username = User.username
       submission.taskTitle = Task.title
+      submission.fullScore = Task.fullScore
       setSubmission(submission)
       setStatus(submission.status)
     }
@@ -175,16 +180,21 @@ export default function SubmissionLayout({ id }: { id: string }) {
         <p className="inline font-bold">Language : </p>
         <p className="inline">{displayLanguage}</p>
       </div>
-      <div className="inline">
-        <p className="inline font-bold">Score : </p>
-        <p className="inline">{submission.score} </p>
+      <div className="w-11/12 sm:w-[350px] md:w-[500px] p-4 py-2">
+        <p className="text-lg text-center font-bold">
+          Score: {submission.score}/{submission.fullScore}
+        </p>
+        <Progress value={submission.score} max={100} className=''/>
+      </div>
+      <div className="inline mb-6">
         <p className="inline font-bold">Time : </p>
         <p className="inline">{submission.time} ms </p>
         <p className="inline font-bold">Memory : </p>
         <p className="inline">{submission.memory} KB</p>
       </div>
-      <div className="flex flex-col mt-5 space-y-4 lg:flex-row sm:space-x-4">
-        <Card className="w-[350px] sm:w-[500px] xl:w-[700px] 2xl:w-[800px] h-[600px] overflow-hidden">
+      <Resultlayout id={id} />
+      <div className="flex flex-col items-center w-full mt-6">
+        <Card className="w-10/12 lg:w-[950px] h-[600px] overflow-hidden">
           <Editor
             language={submission.language}
             value={submission.code}

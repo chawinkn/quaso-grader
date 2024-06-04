@@ -1,7 +1,6 @@
 import { Suspense } from 'react'
 import SubmissionLayout from '@/components/submission/Submissionslayout'
 import { notFound } from 'next/navigation'
-import Resultlayout from '@/components/result/Resultlayout'
 import { headers } from 'next/headers'
 
 async function getSubmission(submissionId: string) {
@@ -35,9 +34,6 @@ export default async function Submission({
     <div className="min-h-screen py-10 space-y-4">
       <Suspense fallback={null}>
         <SubmissionLayout id={params.id} />
-      </Suspense>
-      <Suspense fallback={null}>
-        <Resultlayout id={params.id} />
       </Suspense>
     </div>
   )
