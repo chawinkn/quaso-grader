@@ -329,7 +329,7 @@ export default function SubmissionLayout({ id }: { id: string }) {
         <p className="text-lg text-center font-bold">
           Score: {submission.score}/{submission.fullScore}
         </p>
-        <Progress value={submission.score} max={100} className=''/>
+        <Progress value={submission.score} max={submission.fullScore} className=''/>
       </div>
       {canvasInit && playConfetti && <Particles id="tsparticles" options={options} />}
       <div className="inline mb-6">
