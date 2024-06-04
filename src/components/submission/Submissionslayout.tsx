@@ -4,10 +4,18 @@ import Editor from '@monaco-editor/react'
 import { Card } from '../ui/card'
 import Link from 'next/link'
 import { formatDateTime } from '@/app/submissions/columns'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { cx } from 'class-variance-authority'
 import { Progress } from '@/components/ui/progress'
 import Resultlayout from '@/components/result/Resultlayout'
+import Particles, { initParticlesEngine } from "@tsparticles/react";
+import { loadSlim } from '@tsparticles/slim'
+import {
+  type Container,
+  type ISourceOptions,
+  MoveDirection,
+  OutMode,
+} from "@tsparticles/engine";
 
 export type SubmissionData = {
   id: number
@@ -68,6 +76,136 @@ async function getTask(taskId: string) {
 }
 
 export default function SubmissionLayout({ id }: { id: string }) {
+
+  // Confetti
+  const [playConfetti, setPlayConfetti] = useState(false)
+  const [canvasInit, setCanvasInit] = useState(false);
+  useEffect(() => {
+    initParticlesEngine(async (engine) => {
+      await loadSlim(engine);
+    }).then(() => {setCanvasInit(true);});
+  }, [])
+
+  const options: ISourceOptions = useMemo(
+    () => ({
+      fpsLimit: 45,
+      particles: {
+        color: {
+          "value": [
+            "#1E00FF",
+            "#FF0061",
+            "#E1FF00",
+            "#00FF9E"
+          ]
+        },
+        zIndex: {
+          value: 0,
+        },
+        "move": {
+          "decay": 0.05,
+          "direction": "top",
+          "enable": true,
+          "gravity": {
+            "enable": true
+          },
+          "outModes": {
+            "top": "none",
+            "default": "destroy"
+          },
+          "speed": {
+            "min": 50,
+            "max": 100
+          }
+        },
+        "rotate": {
+          "value": {
+            "min": 0,
+            "max": 360
+          },
+          "direction": "random",
+          "animation": {
+            "enable": true,
+            "speed": 30
+          }
+        },
+        "tilt": {
+          "direction": "random",
+          "enable": true,
+          "value": {
+            "min": 0,
+            "max": 360
+          },
+          "animation": {
+            "enable": true,
+            "speed": 30
+          }
+        },
+        "size": {
+          "value": 3,
+          "animation": {
+            "enable": true,
+            "startValue": "min",
+            "count": 1,
+            "speed": 16,
+            "sync": true
+          }
+        },
+        "roll": {
+          "darken": {
+            "enable": true,
+            "value": 25
+          },
+          "enlighten": {
+            "enable": true,
+            "value": 25
+          },
+          "enable": true,
+          "speed": {
+            "min": 5,
+            "max": 15
+          }
+        },
+        "wobble": {
+          "distance": 30,
+          "enable": true,
+          "speed": {
+            "min": -7,
+            "max": 7
+          }
+        },
+        number: {
+          density: {
+            enable: true,
+          },
+          value: 80,
+        },
+        opacity: {
+          value: 1,
+        },
+        shape: {
+          type: [
+            "circle",
+            "square",
+          ]
+        },
+        "emitters": {
+          "position": {
+            "x": 50,
+            "y": 200
+          },
+          "rate": {
+            "quantity": 5,
+            "delay": 0.15
+          }
+        },
+      },
+    }),
+    [],
+  );
+  /*
+  */
+
+
   const [status, setStatus] = useState('')
   const [submission, setSubmission] = useState<SubmissionData>({
     id: 99999,
@@ -100,6 +238,7 @@ export default function SubmissionLayout({ id }: { id: string }) {
     }
   }
 
+  const [prevStatus, setPrevStatus] = useState('')
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null
 
@@ -107,6 +246,12 @@ export default function SubmissionLayout({ id }: { id: string }) {
       await fetchSubmission()
       if (status === 'Pending' || status === 'Judging') {
         interval = setInterval(fetchSubmission, 1000 * 5)
+        setPrevStatus(status);
+      } else if (status === 'Completed' && prevStatus === 'Judging' && submission.score === submission.fullScore && !playConfetti) {
+        setPlayConfetti(true)
+        setTimeout(() => {
+          setPlayConfetti(false)
+        }, 22000)
       }
     }
 
@@ -186,6 +331,7 @@ export default function SubmissionLayout({ id }: { id: string }) {
         </p>
         <Progress value={submission.score} max={100} className=''/>
       </div>
+      {canvasInit && playConfetti && <Particles id="tsparticles" options={options} />}
       <div className="inline mb-6">
         <p className="inline font-bold">Time : </p>
         <p className="inline">{submission.time} ms </p>
