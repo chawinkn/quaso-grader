@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     const hashedPassword = bcrypt.hashSync(password, 10)
 
     // 💀
-    const file = await fs.readFile(process.cwd() + '/config.json', 'utf8')
+    const file = await fs.readFile(process.cwd() + '/tmp/config.json', 'utf8')
     const config = JSON.parse(file)
 
     const newUser = await prisma.user.create({

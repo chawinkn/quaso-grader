@@ -13,7 +13,7 @@ export async function GET() {
   const user = await getServerUser()
   if (!user) return unauthorized()
 
-  const file = await fs.readFile(process.cwd() + '/config.json', 'utf8')
+  const file = await fs.readFile(process.cwd() + '/tmp/config.json', 'utf8')
   const data = JSON.parse(file)
   return json(data)
 }
@@ -27,7 +27,7 @@ export async function PUT(req: NextRequest) {
 
   try {
     await fs.writeFile(
-      process.cwd() + '/config.json',
+      process.cwd() + '/tmp/config.json',
       JSON.stringify(data, null, 2),
       'utf-8'
     )

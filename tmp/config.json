@@ -25,6 +25,6 @@
       "available": true
     }
   ],
-  "auto_approve": false,
+  "auto_approve": true,
   "result_interval": 5
 }
