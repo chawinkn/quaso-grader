@@ -77,7 +77,7 @@ export default function TaskLayout({ ...props }) {
   const handleSubmit = async () => {
     setSubmit(true)
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

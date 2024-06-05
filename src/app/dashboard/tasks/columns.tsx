@@ -196,12 +196,15 @@ export const columns: ColumnDef<TaskData>[] = [
         const id = row.getValue('id')
 
         try {
-          await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          })
+          await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker`,
+            {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            }
+          )
         } catch (error: any) {
           return toast.error(error.message)
         }

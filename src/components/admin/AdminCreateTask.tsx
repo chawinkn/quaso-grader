@@ -204,7 +204,7 @@ export default function CreateTaskLayout() {
     }
 
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -337,7 +337,7 @@ export default function CreateTaskLayout() {
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>Statement</FormLabel>
                   <Input
                     id="description"
                     type="file"
