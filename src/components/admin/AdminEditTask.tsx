@@ -129,9 +129,21 @@ type Manifest = {
   subtasks: Array<{ full_score: number; num_testcases: number }>
 }
 
-export default function EditTaskLayout({ ...props }) {
-  const task: TaskData = props?.task
-  const manifest: Manifest = props?.manifest
+export default function EditTaskLayout({
+  task,
+  manifest,
+  status,
+}: {
+  task: TaskData
+  manifest: Manifest
+  status: string
+}) {
+  if (task.private === false) {
+    return toast.error('To edit a task, it must be marked as unavailable', {
+      id: 'status_error',
+    })
+  }
+
   const [isSave, setSave] = useState(false)
   const [numSubtasks, setnumSubtasks] = useState(manifest.subtasks.length)
   const router = useRouter()
@@ -363,6 +375,12 @@ export default function EditTaskLayout({ ...props }) {
     setDownload(false)
   }
 
+  if (status !== 'OK') {
+    toast.error('Failed to fetch backend api', {
+      id: 'status_error',
+    })
+  }
+
   return (
     <>
       <Card className="w-[350px] sm:w-[450px] md:w-[600px] xl:w-[700px]">
@@ -430,6 +448,7 @@ export default function EditTaskLayout({ ...props }) {
                     <FormLabel>Statement</FormLabel>
                     <Input
                       id="description"
+                      disabled={status !== 'OK'}
                       type="file"
                       accept=".pdf"
                       className="transition-transform active:scale-95 cursor-pointer"
@@ -442,7 +461,11 @@ export default function EditTaskLayout({ ...props }) {
                   </FormItem>
                 )}
               />
-              <Button disabled={isSaveDesc} className="w-full" type="submit">
+              <Button
+                disabled={isSaveDesc || status !== 'OK'}
+                className="w-full"
+                type="submit"
+              >
                 {isSaveDesc ? (
                   <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                 ) : (
@@ -455,6 +478,7 @@ export default function EditTaskLayout({ ...props }) {
             <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
               <FormField
                 control={form.control}
+                disabled={status !== 'OK'}
                 name="full_score"
                 render={({ field }) => (
                   <FormItem>
@@ -468,6 +492,7 @@ export default function EditTaskLayout({ ...props }) {
               />
               <FormField
                 control={form.control}
+                disabled={status !== 'OK'}
                 name="time_limit"
                 render={({ field }) => (
                   <FormItem>
@@ -482,6 +507,7 @@ export default function EditTaskLayout({ ...props }) {
               />
               <FormField
                 control={form.control}
+                disabled={status !== 'OK'}
                 name="memory_limit"
                 render={({ field }) => (
                   <FormItem>
@@ -502,6 +528,7 @@ export default function EditTaskLayout({ ...props }) {
                     <FormLabel>Testcases</FormLabel>
                     <Input
                       id="testcases"
+                      disabled={status !== 'OK'}
                       type="file"
                       accept=".zip"
                       className="transition-transform active:scale-95 cursor-pointer"
@@ -517,6 +544,7 @@ export default function EditTaskLayout({ ...props }) {
               />
               <FormField
                 control={form.control}
+                disabled={status !== 'OK'}
                 name="num_testcases"
                 render={({ field }) => (
                   <FormItem>
@@ -530,6 +558,7 @@ export default function EditTaskLayout({ ...props }) {
               />
               <FormField
                 control={form.control}
+                disabled={status !== 'OK'}
                 name="checker"
                 render={({ field }) => (
                   <FormItem>
@@ -537,6 +566,7 @@ export default function EditTaskLayout({ ...props }) {
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
+                      disabled={status !== 'OK'}
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -563,6 +593,7 @@ export default function EditTaskLayout({ ...props }) {
                     <FormLabel>Skip</FormLabel>
                     <Select
                       onValueChange={field.onChange}
+                      disabled={status !== 'OK'}
                       defaultValue={field.value}
                     >
                       <FormControl>
@@ -582,6 +613,7 @@ export default function EditTaskLayout({ ...props }) {
                 <Label>Subtasks</Label>
                 <Input
                   id="num_subtasks"
+                  disabled={status !== 'OK'}
                   type="number"
                   placeholder="Num subtasks"
                   defaultValue={numSubtasks}
@@ -641,7 +673,11 @@ export default function EditTaskLayout({ ...props }) {
                   </div>
                 ))}
               </div>
-              <Button disabled={isSave} className="w-full" type="submit">
+              <Button
+                disabled={isSave || status !== 'OK'}
+                className="w-full"
+                type="submit"
+              >
                 {isSave ? (
                   <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                 ) : (

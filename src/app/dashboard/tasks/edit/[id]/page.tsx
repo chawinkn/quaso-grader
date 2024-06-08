@@ -39,12 +39,12 @@ async function getManifest(id: string) {
       }
     )
     if (!res.ok) {
-      return null_manifest
+      return { manifest: null_manifest, status: 'NULL' }
     }
     const data = await res.json()
-    return data
+    return { manifest: data, status: 'OK' }
   } catch {
-    return null_manifest
+    return { manifest: null_manifest, status: 'NULL' }
   }
 }
 
@@ -56,12 +56,12 @@ export default async function EditTask({
   }
 }) {
   const task = await getTask(params.id)
-  const manifest = await getManifest(params.id)
+  const { manifest, status } = await getManifest(params.id)
 
   return (
     <div className="min-h-screen flex flex-col space-y-4">
       <Suspense fallback={null}>
-        <EditTaskLayout task={task} manifest={manifest} />
+        <EditTaskLayout task={task} manifest={manifest} status={status} />
       </Suspense>
     </div>
   )

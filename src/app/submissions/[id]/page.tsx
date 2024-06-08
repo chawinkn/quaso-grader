@@ -30,7 +30,7 @@ export default async function Submission({
   }
 }) {
   await getSubmission(params.id)
-  const config = await getConfig()
+  const { config, status } = await getConfig()
 
   return (
     <div className="min-h-screen py-10 space-y-4">

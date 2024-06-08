@@ -145,12 +145,12 @@ export const columns: ColumnDef<TaskData>[] = [
           )
 
           if (request.ok) {
-            toast.success('Task updated')
+            toast.success(`TaskID: ${id} updated successfully`)
             setIsPrivate(!isPrivate)
             router.refresh()
           } else {
             console.log(request.text())
-            toast.error('Task update failed')
+            toast.success(`TaskID: ${id} update failed`)
           }
         } catch (error: any) {
           console.error(error)
@@ -178,6 +178,7 @@ export const columns: ColumnDef<TaskData>[] = [
         <Button
           variant="outline"
           className="p-0 h-9 w-9"
+          disabled={row.getValue('private') === false}
           onClick={() => {
             router.push(`/dashboard/tasks/edit/${row.getValue('id')}`)
           }}

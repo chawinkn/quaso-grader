@@ -14,6 +14,6 @@ export async function getConfig() {
 }
 
 export default async function AdminGeneral() {
-  const config = await getConfig()
-  return <AdminGeneralPanel config={config} />
+  const { config, status } = await getConfig()
+  return <AdminGeneralPanel config={config} status={status} />
 }

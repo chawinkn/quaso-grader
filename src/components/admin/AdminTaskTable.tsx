@@ -40,6 +40,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select'
+import { Label } from '../ui/label'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -91,6 +92,9 @@ export default function TasksTable<TData, TValue>({
           }}
           className="w-[250px] lg:w-[300px]"
         />
+      </div>
+      <div className="my-2 flex justify-center">
+        <Label>* To edit a task, it must be marked as unavailable</Label>
       </div>
       <Card className="w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px]">
         <Table>

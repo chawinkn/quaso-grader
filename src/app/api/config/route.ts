@@ -13,9 +13,46 @@ export async function GET() {
   const user = await getServerUser()
   if (!user) return unauthorized()
 
-  const file = await fs.readFile(process.cwd() + '/tmp/config.json', 'utf8')
-  const data = JSON.parse(file)
-  return json(data)
+  try {
+    const file = await fs.readFile(process.cwd() + '/tmp/config.json', 'utf8')
+    const data = JSON.parse(file)
+
+    return json({ config: data, status: 'OK' })
+  } catch {
+    return json({
+      config: {
+        languages: [
+          {
+            name: 'C',
+            language: 'c',
+            ext: 'c',
+            compile: 'gcc --std=c11 -O2 {source_file} -o {output}',
+            run: './{source}',
+            available: true,
+          },
+          {
+            name: 'C++',
+            language: 'cpp',
+            ext: 'cpp',
+            compile: 'g++ --std=c++20 -O2 {source_file} -o {output}',
+            run: './{source}',
+            available: true,
+          },
+          {
+            name: 'Python',
+            language: 'python',
+            ext: 'py',
+            compile: 'python3 -m compileall {source_file} -b',
+            run: '/usr/bin/python3 {source}.py',
+            available: true,
+          },
+        ],
+        auto_approve: true,
+        result_interval: 5,
+      },
+      status: 'NULL',
+    })
+  }
 }
 
 export async function PUT(req: NextRequest) {

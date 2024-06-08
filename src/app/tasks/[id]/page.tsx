@@ -27,7 +27,7 @@ export default async function Task({
   }
 }) {
   const task = await getTask(params.id)
-  const config = await getConfig()
+  const { config, status } = await getConfig()
 
   return (
     <div className="min-h-screen flex">

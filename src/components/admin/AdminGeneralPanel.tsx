@@ -76,7 +76,19 @@ export type Config = {
   result_interval: number
 }
 
-export default function AdminGeneralPanel({ config }: { config: Config }) {
+export default function AdminGeneralPanel({
+  config,
+  status,
+}: {
+  config: Config
+  status: string
+}) {
+  if (status !== 'OK') {
+    return toast.error('Config file not found', {
+      id: 'config_error',
+    })
+  }
+
   const [isSaveLang, setSaveLang] = useState(false)
   const [isSaveApprove, setSaveApprove] = useState(false)
   const [isSaveInterval, setSaveInterval] = useState(false)
