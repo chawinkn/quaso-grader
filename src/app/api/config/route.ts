@@ -10,9 +10,6 @@ import { revalidatePath } from 'next/cache'
 import { NextRequest } from 'next/server'
 
 export async function GET() {
-  const user = await getServerUser()
-  if (!user) return unauthorized()
-
   try {
     const file = await fs.readFile(process.cwd() + '/tmp/config.json', 'utf8')
     const data = JSON.parse(file)

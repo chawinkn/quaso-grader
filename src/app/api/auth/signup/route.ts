@@ -2,7 +2,6 @@ import { badRequest, internalServerError, json } from '@/utils/apiResponse'
 import { NextRequest } from 'next/server'
 import bcrypt from 'bcrypt'
 import prisma from '@/lib/prisma'
-import { promises as fs } from 'fs'
 
 export async function POST(req: NextRequest) {
   try {
@@ -18,9 +17,13 @@ export async function POST(req: NextRequest) {
 
     const hashedPassword = bcrypt.hashSync(password, 10)
 
-    // 💀
-    const file = await fs.readFile(process.cwd() + '/tmp/config.json', 'utf8')
-    const config = JSON.parse(file)
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/config`, {
+      method: 'GET',
+    })
+    if (!res.ok) {
+      return internalServerError()
+    }
+    const { config, status } = await res.json()
 
     const newUser = await prisma.user.create({
       data: {
