@@ -617,7 +617,6 @@ export default function EditTaskLayout({
                   type="number"
                   placeholder="Num subtasks"
                   defaultValue={numSubtasks}
-                  min={0}
                   onChange={(event) => {
                     const value = Number(event.currentTarget.value)
                     setnumSubtasks(value)

@@ -36,6 +36,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "geist": "^1.2.0",
+    "jszip": "^3.10.1",
     "lucide-react": "^0.294.0",
     "monaco-editor": "^0.44.0",
     "next": "^14.2.3",
