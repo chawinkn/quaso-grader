@@ -61,12 +61,12 @@ export default function CreateTaskLayout() {
       .regex(/^[\w]+$/, {
         message: 'Only alphabets, numbers and underscore',
       })
-      .min(3, { message: 'Task id must be 3-20 characters.' })
-      .max(20, { message: 'Task id must be 3-20 characters.' }),
+      .min(3, { message: 'Task id must be 3-25 characters.' })
+      .max(20, { message: 'Task id must be 3-25 characters.' }),
     title: z
       .string()
-      .min(3, { message: 'Task title must be 3-25 characters.' })
-      .max(25, { message: 'Task title must be 3-25 characters.' }),
+      .min(3, { message: 'Task title must be 3-45 characters.' })
+      .max(40, { message: 'Task title must be 3-45 characters.' }),
     time_limit: z.preprocess(
       (x) => (x ? x : undefined),
       z.coerce
@@ -319,7 +319,7 @@ export default function CreateTaskLayout() {
                   </FormControl>
                   <FormMessage />
                   <FormDescription>
-                    Only alphabets, numbers and underscore
+                    Only alphabets, numbers and underscore (Cannot change later)
                   </FormDescription>
                 </FormItem>
               )}

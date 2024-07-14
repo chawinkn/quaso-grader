@@ -41,8 +41,8 @@ import Link from 'next/link'
 const formDBSchema = z.object({
   title: z
     .string()
-    .min(3, { message: 'Task title must be 3-25 characters.' })
-    .max(25, { message: 'Task title must be 3-25 characters.' }),
+    .min(3, { message: 'Task title must be 3-45 characters.' })
+    .max(40, { message: 'Task title must be 3-45 characters.' }),
 })
 
 const formDescSchema = z.object({
