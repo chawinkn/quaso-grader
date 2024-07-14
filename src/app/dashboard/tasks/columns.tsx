@@ -178,7 +178,6 @@ export const columns: ColumnDef<TaskData>[] = [
         <Button
           variant="outline"
           className="p-0 h-9 w-9"
-          disabled={row.getValue('private') === false}
           onClick={() => {
             router.push(`/dashboard/tasks/edit/${row.getValue('id')}`)
           }}

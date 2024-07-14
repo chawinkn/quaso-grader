@@ -138,12 +138,6 @@ export default function EditTaskLayout({
   manifest: Manifest
   status: string
 }) {
-  if (task.private === false) {
-    return toast.error('To edit a task, it must be marked as unavailable', {
-      id: 'status_error',
-    })
-  }
-
   const [isSave, setSave] = useState(false)
   const [numSubtasks, setnumSubtasks] = useState(manifest.subtasks.length)
   const router = useRouter()
@@ -426,7 +420,11 @@ export default function EditTaskLayout({
                   </FormItem>
                 )}
               />
-              <Button disabled={isSaveDB} className="w-full" type="submit">
+              <Button
+                disabled={isSaveDB || task.private === false}
+                className="w-full"
+                type="submit"
+              >
                 {isSaveDB ? (
                   <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                 ) : (
@@ -462,7 +460,9 @@ export default function EditTaskLayout({
                 )}
               />
               <Button
-                disabled={isSaveDesc || status !== 'OK'}
+                disabled={
+                  isSaveDesc || status !== 'OK' || task.private === false
+                }
                 className="w-full"
                 type="submit"
               >
@@ -673,7 +673,7 @@ export default function EditTaskLayout({
                 ))}
               </div>
               <Button
-                disabled={isSave || status !== 'OK'}
+                disabled={isSave || status !== 'OK' || task.private === false}
                 className="w-full"
                 type="submit"
               >

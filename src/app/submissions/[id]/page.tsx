@@ -2,7 +2,7 @@ import { Suspense } from 'react'
 import SubmissionLayout from '@/components/submission/Submissionslayout'
 import { notFound } from 'next/navigation'
 import { headers } from 'next/headers'
-import { getConfig } from '@/app/dashboard/general/page'
+import { getConfig } from '@/utils/generalConfig'
 
 async function getSubmission(submissionId: string) {
   const res = await fetch(
@@ -30,7 +30,7 @@ export default async function Submission({
   }
 }) {
   await getSubmission(params.id)
-  const { config, status } = await getConfig()
+  const config = getConfig()
 
   return (
     <div className="min-h-screen py-10 space-y-4">

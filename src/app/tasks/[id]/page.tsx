@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import TaskLayout from '@/components/task/Tasklayout'
 import { Suspense } from 'react'
 import { headers } from 'next/headers'
-import { getConfig } from '@/app/dashboard/general/page'
+import { getConfig } from '@/utils/generalConfig'
 
 async function getTask(id: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks/${id}`, {
@@ -27,7 +27,7 @@ export default async function Task({
   }
 }) {
   const task = await getTask(params.id)
-  const { config, status } = await getConfig()
+  const config = getConfig()
 
   return (
     <div className="min-h-screen flex">

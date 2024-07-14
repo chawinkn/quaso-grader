@@ -2,6 +2,7 @@
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -65,8 +66,6 @@ export type Languages = {
   name: string
   language: string
   ext: string
-  compile: string
-  run: string
   available: boolean
 }
 
@@ -76,24 +75,7 @@ export type Config = {
   result_interval: number
 }
 
-export default function AdminGeneralPanel({
-  config,
-  status,
-}: {
-  config: Config
-  status: string
-}) {
-  if (status !== 'OK') {
-    return toast.error('Config file not found', {
-      id: 'config_error',
-    })
-  }
-
-  const [isSaveLang, setSaveLang] = useState(false)
-  const [isSaveApprove, setSaveApprove] = useState(false)
-  const [isSaveInterval, setSaveInterval] = useState(false)
-  const router = useRouter()
-
+export default function AdminGeneralPanel({ config }: { config: Config }) {
   const items: Array<{ id: string; label: string }> = config.languages.map(
     (i) => {
       return { id: i.language, label: i.name }
@@ -126,94 +108,15 @@ export default function AdminGeneralPanel({
     },
   })
 
-  const onSubmit = async (data: z.infer<typeof formApproveSchema>) => {
-    setSaveApprove(true)
-    const { auto_approve } = data
-    config.auto_approve = auto_approve === 'YES'
-    try {
-      const res = await fetch('/api/config', {
-        method: 'PUT',
-        body: JSON.stringify({ data: config }),
-      })
-      if (!res?.ok) {
-        setSaveApprove(false)
-        const result = await res.json()
-        return toast.error(result.error)
-      }
-      toast.success('Auto approve save successfully')
-      router.refresh()
-    } catch (error: any) {
-      setSaveApprove(false)
-      return toast.error(error.message)
-    }
-    setSaveApprove(false)
-  }
-
-  const onSubmitLang = async (data: z.infer<typeof formLangSchema>) => {
-    setSaveLang(true)
-    const { items } = data
-    for (let i = 0; i < config.languages.length; i++)
-      config.languages[i].available = false
-    items.map((it) => {
-      for (let i = 0; i < config.languages.length; i++) {
-        if (config.languages[i].language === it) {
-          config.languages[i].available = true
-        }
-      }
-    })
-    try {
-      const res = await fetch('/api/config', {
-        method: 'PUT',
-        body: JSON.stringify({ data: config }),
-      })
-      if (!res?.ok) {
-        setSaveLang(false)
-        const result = await res.json()
-        return toast.error(result.error)
-      }
-      toast.success('Languages save successfully')
-      router.refresh()
-    } catch (error: any) {
-      setSaveLang(false)
-      return toast.error(error.message)
-    }
-    setSaveLang(false)
-  }
-
-  const onSubmitInterval = async (data: z.infer<typeof formIntervalSchema>) => {
-    setSaveInterval(true)
-    const { result_interval } = data
-    config.result_interval = result_interval
-    try {
-      const res = await fetch('/api/config', {
-        method: 'PUT',
-        body: JSON.stringify({ data: config }),
-      })
-      if (!res?.ok) {
-        setSaveInterval(false)
-        const result = await res.json()
-        return toast.error(result.error)
-      }
-      toast.success('Result interval save successfully')
-      router.refresh()
-    } catch (error: any) {
-      setSaveInterval(false)
-      return toast.error(error.message)
-    }
-    setSaveInterval(false)
-  }
-
   return (
     <Card className="min-w-max w-[350px] sm:w-[450px] md:w-[600px] xl:w-[700px] h-max">
       <CardHeader>
         <CardTitle>General</CardTitle>
+        <CardDescription>Edit your general config in .env</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <Form {...formApprove}>
-          <form
-            className="space-y-4"
-            onSubmit={formApprove.handleSubmit(onSubmit)}
-          >
+          <form className="space-y-4">
             <FormField
               control={formApprove.control}
               name="auto_approve"
@@ -223,6 +126,7 @@ export default function AdminGeneralPanel({
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
+                    disabled
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -234,24 +138,16 @@ export default function AdminGeneralPanel({
                       <SelectItem value="NO">NO</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormDescription>Auto approve new login user</FormDescription>
+                  <FormDescription>
+                    Auto approve new register user
+                  </FormDescription>
                 </FormItem>
               )}
             />
-            <Button disabled={isSaveApprove} type="submit">
-              {isSaveApprove ? (
-                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-              ) : (
-                'Save'
-              )}
-            </Button>
           </form>
         </Form>
         <Form {...formLang}>
-          <form
-            className="space-y-4"
-            onSubmit={formLang.handleSubmit(onSubmitLang)}
-          >
+          <form className="space-y-4">
             <FormField
               control={formLang.control}
               name="items"
@@ -259,9 +155,6 @@ export default function AdminGeneralPanel({
                 <FormItem>
                   <div className="mb-4">
                     <FormLabel>Languages</FormLabel>
-                    <FormDescription>
-                      Select the language you want to available
-                    </FormDescription>
                   </div>
                   {items.map((item) => (
                     <FormField
@@ -277,6 +170,7 @@ export default function AdminGeneralPanel({
                             <FormControl>
                               <Checkbox
                                 checked={field.value?.includes(item.id)}
+                                disabled
                                 onCheckedChange={(checked) => {
                                   return checked
                                     ? field.onChange([...field.value, item.id])
@@ -300,20 +194,10 @@ export default function AdminGeneralPanel({
                 </FormItem>
               )}
             />
-            <Button disabled={isSaveLang} type="submit">
-              {isSaveLang ? (
-                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-              ) : (
-                'Save'
-              )}
-            </Button>
           </form>
         </Form>
         <Form {...formInterval}>
-          <form
-            className="space-y-4"
-            onSubmit={formInterval.handleSubmit(onSubmitInterval)}
-          >
+          <form className="space-y-4">
             <FormField
               control={formInterval.control}
               name="result_interval"
@@ -321,7 +205,7 @@ export default function AdminGeneralPanel({
                 <FormItem>
                   <FormLabel>Result interval</FormLabel>
                   <FormControl>
-                    <Input placeholder="Result interval" {...field} />
+                    <Input placeholder="Result interval" disabled {...field} />
                   </FormControl>
                   <FormMessage />
                   <FormDescription>
@@ -330,13 +214,6 @@ export default function AdminGeneralPanel({
                 </FormItem>
               )}
             />
-            <Button disabled={isSaveInterval} type="submit">
-              {isSaveInterval ? (
-                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-              ) : (
-                'Save'
-              )}
-            </Button>
           </form>
         </Form>
       </CardContent>
