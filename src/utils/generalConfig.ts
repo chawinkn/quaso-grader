@@ -26,7 +26,7 @@ export function getConfig() {
       ...language,
       available: availableLanguages.includes(language.language),
     })),
-    auto_approve: process.env.AUTO_APPROVE === 'true',
-    result_interval: Number(process.env.RESULT_INTERVAL) || 5,
+    auto_approve: process.env.NEXT_PUBLIC_AUTO_APPROVE === 'true',
+    result_interval: Number(process.env.NEXT_PUBLIC_RESULT_INTERVAL) || 5,
   }
 }
