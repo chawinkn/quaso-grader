@@ -59,7 +59,7 @@ export default async function EditTask({
   const { manifest, status } = await getManifest(params.id)
 
   return (
-    <div className="min-h-screen flex flex-col space-y-4">
+    <div className="min-h-[calc(100vh-57px)] flex flex-col space-y-4">
       <Suspense fallback={null}>
         <EditTaskLayout task={task} manifest={manifest} status={status} />
       </Suspense>

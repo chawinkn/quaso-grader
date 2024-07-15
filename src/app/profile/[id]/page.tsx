@@ -33,7 +33,7 @@ export default async function Profile({
   const user = await getServerUser()
 
   return (
-    <div className="flex flex-col items-center h-screen py-10">
+    <div className="flex flex-col items-center min-h-[calc(100vh-57px)] py-10">
       <h1 className="text-3xl font-bold">PROFILE</h1>
       <div className="flex flex-col items-center justify-center flex-grow space-y-4">
         <h1 className="text-2xl font-bold">{User.username}</h1>
