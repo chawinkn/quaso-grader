@@ -3,7 +3,7 @@ import { ExternalLink } from 'lucide-react'
 
 export default function StatementLayout({ id }: { id: string }) {
   return (
-    <article className="h-screen">
+    <article className="min-h-[calc(100vh-57px)]">
       <div className="flex justify-center space-x-1 pb-5">
         <Link
           href={`/api/statement/${id}`}
