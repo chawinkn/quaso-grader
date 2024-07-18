@@ -30,7 +30,7 @@ export default async function Home() {
   return (
     <div
       className={cx(
-        'flex flex-col items-center min-h-screen py-10 gap-8',
+        'flex flex-col items-center min-h-[calc(100vh-57px)] py-10 gap-8',
         !user ? 'justify-center' : ''
       )}
     >

@@ -33,7 +33,7 @@ export default async function Submission({
   const config = getConfig()
 
   return (
-    <div className="min-h-screen py-10 space-y-4">
+    <div className="min-h-[calc(100vh-57px)] py-10 space-y-4">
       <Suspense fallback={null}>
         <SubmissionLayout id={params.id} config={config} />
       </Suspense>

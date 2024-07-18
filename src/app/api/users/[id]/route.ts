@@ -23,6 +23,11 @@ export async function GET(
     where: {
       id: Number(params.id),
     },
+    select: {
+      id: true,
+      name: true,
+      username: true,
+    },
   })
 
   return json(User)
@@ -39,7 +44,7 @@ export async function DELETE(
   }
 ) {
   const user = await getServerUser()
-  if (!user || user.role !== "ADMIN") return unauthorized()
+  if (!user || user.role !== 'ADMIN') return unauthorized()
 
   if (isNaN(Number(params.id))) return json(null)
 
@@ -63,7 +68,7 @@ export async function PUT(
   }
 ) {
   const user = await getServerUser()
-  if (!user || user.role !== "ADMIN") return unauthorized()
+  if (!user || user.role !== 'ADMIN') return unauthorized()
 
   if (isNaN(Number(params.id))) return json(null)
 
@@ -79,7 +84,7 @@ export async function PUT(
     },
   })
 
-  revalidatePath(`/dashboard`);
+  revalidatePath(`/dashboard`)
 
   return json(User)
 }

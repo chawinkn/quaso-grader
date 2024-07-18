@@ -42,6 +42,7 @@ export async function getPassCount() {
         "user" ON submission.user_id = "user".id
       WHERE 
         submission.score = task.full_score
+        AND "user".approved = true
         AND "user".role != 'ADMIN'
       GROUP BY 
         submission.task_id`
@@ -77,7 +78,7 @@ export default async function Tasks() {
   })
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-[calc(100vh-57px)]">
       <div className="flex flex-col items-center justify-center py-10">
         <div className="mb-5 md:mb-8">
           <h1 className="text-3xl font-bold">TASKS</h1>

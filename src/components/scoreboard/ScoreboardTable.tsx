@@ -127,7 +127,7 @@ export default function ScoreboardTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No submissions.
+                  No entries on the scoreboard.
                 </TableCell>
               </TableRow>
             )}

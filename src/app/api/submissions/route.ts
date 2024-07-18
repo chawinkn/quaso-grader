@@ -14,6 +14,9 @@ export async function GET() {
         task: {
           private: false,
         },
+        user: {
+          approved: true,
+        },
       },
       orderBy: {
         id: 'desc',
