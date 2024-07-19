@@ -16,6 +16,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { useSession, signOut } from 'next-auth/react'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 
 export function NavigationBar() {
   const [open, setOpen] = useState(false)
@@ -35,7 +36,9 @@ export function NavigationBar() {
           <NavigationMenuList>
             <NavigationMenuItem>
               <Link href="/" legacyBehavior passHref>
-                <NavigationMenuLink className="px-2">Home</NavigationMenuLink>
+                <NavigationMenuLink className="flex flex-row items-center">
+                  <Image src="/quawaii_navbar.webp" className='grow' alt="Home" width={115} height={35} quality={100}/>
+                </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
             <NavigationMenuItem className="hidden md:flex">
