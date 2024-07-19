@@ -12,8 +12,8 @@ function Landing() {
     <div className="text-center flex flex-col mt-16 items-center">
       <Image
         src="/quawaii.webp"
-        width={500}
-        height={100}
+        width={600}
+        height={150}
         quality={100}
         alt=""
         style={{margin: '20px 0px'}}
