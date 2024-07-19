@@ -11,10 +11,8 @@ export async function middleware(req: NextRequest) {
 
   if (
     !user &&
-    (path.startsWith('/tasks') ||
-      path.startsWith('/submissions') ||
-      path.startsWith('/scoreboard') ||
-      path.startsWith('/profile') ||
+    (path.startsWith('/tasks/') ||
+      path.startsWith('/submissions/') ||
       path.startsWith('/dashboard'))
   ) {
     return NextResponse.redirect(new URL('/login', req.url))

@@ -48,7 +48,7 @@ export default async function Submissions() {
           <SubmissionsTable
             columns={columns}
             data={submissionList}
-            username={user.name}
+            username={user?.name}
             role={User?.role}
           />
         </Suspense>

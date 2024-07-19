@@ -5,9 +5,8 @@ import { Prisma } from '@prisma/client'
 
 export async function GET() {
   const user = await getServerUser()
-  if (!user) return unauthorized()
 
-  if (user.role !== 'ADMIN') {
+  if (user?.role !== 'ADMIN') {
     const score = (await prisma.$queryRaw(
       Prisma.sql`
         SELECT 

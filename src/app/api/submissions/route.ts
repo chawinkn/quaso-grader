@@ -6,9 +6,8 @@ import { getServerUser } from '@/lib/session'
 
 export async function GET() {
   const user = await getServerUser()
-  if (!user) return unauthorized()
 
-  if (user.role !== 'ADMIN') {
+  if (user?.role !== 'ADMIN') {
     const res = await prisma.submission.findMany({
       where: {
         task: {
