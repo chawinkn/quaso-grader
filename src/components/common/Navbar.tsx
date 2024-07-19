@@ -37,7 +37,14 @@ export function NavigationBar() {
             <NavigationMenuItem>
               <Link href="/" legacyBehavior passHref>
                 <NavigationMenuLink className="flex flex-row items-center">
-                  <Image src="/quawaii_navbar.webp" className='grow' alt="Home" width={115} height={35} quality={100}/>
+                  <Image
+                    src="/quawaii_navbar.webp"
+                    className="grow"
+                    alt="Home"
+                    width={115}
+                    height={35}
+                    quality={100}
+                  />
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
@@ -173,14 +180,18 @@ export function NavigationBar() {
                     ) : (
                       <></>
                     )}
-                    <Link
-                      href={`/profile/${session?.user.id}`}
-                      onClick={() => {
-                        setOpen(!open)
-                      }}
-                    >
-                      Profile
-                    </Link>
+                    {session?.user ? (
+                      <Link
+                        href={`/profile/${session?.user.id}`}
+                        onClick={() => {
+                          setOpen(!open)
+                        }}
+                      >
+                        Profile
+                      </Link>
+                    ) : (
+                      <></>
+                    )}
                     <div className="w-full font-bold">
                       {session?.user ? (
                         <Button
