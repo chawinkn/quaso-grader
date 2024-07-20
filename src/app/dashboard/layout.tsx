@@ -7,7 +7,7 @@ export default async function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <main className="flex flex-col min-h-[calc(100vh-57px)] items-center gap-4 p-4 md:gap-8 md:p-10">
+    <main className="flex flex-col min-h-[calc(100vh-57px)] items-center gap-4 md:gap-8 p-10">
       <div className="text-center">
         <h1 className="text-3xl font-bold">DASHBOARD</h1>
         <h2 className="text-md text-muted-foreground"></h2>
