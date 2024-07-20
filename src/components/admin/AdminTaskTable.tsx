@@ -150,7 +150,7 @@ export default function TasksTable<TData, TValue>({
           </TableBody>
         </Table>
       </Card>
-      <div className="flex items-center mt-4 space-x-6 lg:space-x-8">
+      <div className="flex flex-row justify-center items-center mt-4 space-x-6 lg:space-x-8">
         <div className="flex items-center space-x-2">
           <p className="text-sm font-medium">Rows per page</p>
           <Select

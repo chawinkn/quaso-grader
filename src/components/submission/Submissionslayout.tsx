@@ -11,6 +11,17 @@ import Resultlayout from '@/components/result/Resultlayout'
 import Particles, { initParticlesEngine } from '@tsparticles/react'
 import { loadSlim } from '@tsparticles/slim'
 import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import {
   type Container,
   type ISourceOptions,
   MoveDirection,
@@ -276,6 +287,7 @@ export default function SubmissionLayout({
     (lang) => lang.language === submission.language
   )
   const displayLanguage = findLanguage[0].name
+  const submissionDate = new Date(submission.submittedAt);
 
   let style = 'bg-yellow-500 dark:bg-yellow-900'
 
@@ -285,58 +297,85 @@ export default function SubmissionLayout({
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <p className="font-bold">Submission : {submission.id}</p>
-      <div className="inline">
-        <p className="inline font-bold">Status : </p>
-        <div
-          className={cx(
-            'px-2.5 py-0.5 rounded text-white font-medium w-fit inline',
-            style
-          )}
-        >
-          {submission.status}
-        </div>
-      </div>
-      <div className="inline">
-        <p className="inline font-bold">Task : </p>
-        <Link href={`/tasks/${submission.taskId}`} className="inline underline">
-          {submission.taskTitle}
-        </Link>
-      </div>
-      <div className="inline pt-2">
-        <p className="inline font-bold">Submitted At : </p>
-        <p className="inline">
-          {formatDateTime(submission.submittedAt).formattedDate}{' '}
-          {formatDateTime(submission.submittedAt).formattedTime}
-        </p>
-      </div>
-      <div className="inline">
-        <p className="inline font-bold">User : </p>
-        <p className="inline">{submission.username} </p>
-        <p className="inline font-bold">Language : </p>
-        <p className="inline">{displayLanguage}</p>
-      </div>
-      <div className="w-11/12 sm:w-[350px] md:w-[500px] p-4 py-2">
-        <p className="text-lg text-center font-bold">
-          Score: {submission.score}/{submission.fullScore}
-        </p>
-        <Progress
-          value={submission.score}
-          max={submission.fullScore}
-          className=""
-        />
+      <h2 className="font-bold text-3xl lg:text-4xl">
+        Submission #{submission.id}
+      </h2>
+      <div className="flex flex-col items-center justify-center my-4 w-10/12 lg:w-[950px] ">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Task</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Time</TableHead>
+              <TableHead>Memory</TableHead>
+              <TableHead>User</TableHead>
+              <TableHead>At</TableHead>
+              <TableHead>Language</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow>
+              <TableCell>
+                <Link
+                  className="hover:underline"
+                  href={`/tasks/${submission.taskId}`}
+                >
+                  {submission.taskTitle}
+                </Link>
+              </TableCell>
+              <TableCell>
+                <div
+                  className={cx(
+                    'px-2.5 py-0.5 rounded text-white font-medium w-fit inline',
+                    style
+                  )}
+                >
+                  {submission.status}
+                </div>
+              </TableCell>
+              <TableCell>{submission.time} ms</TableCell>
+              <TableCell>{submission.memory} KB</TableCell>
+              <TableCell>{submission.username}</TableCell>
+              <TableCell>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      {submissionDate.toLocaleDateString()}
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      {submissionDate.toLocaleTimeString()}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </TableCell>
+              <TableCell>{displayLanguage}</TableCell>
+            </TableRow>
+          </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TableCell colSpan={7}>
+                <div className="flex flex-col md:items-center">
+                  <div className="w-[270px] md:w-[350px] lg:w-[650px]">
+                    <p className="text-center text-base">
+                      Score: {submission.score}/{submission.fullScore}
+                    </p>
+                    <Progress
+                      value={submission.score}
+                      max={submission.fullScore}
+                      className="border hover:border-2 transition-all ease-in-out duration-300"
+                    />
+                  </div>
+                </div>
+              </TableCell>
+            </TableRow>
+          </TableFooter>
+        </Table>
       </div>
       {canvasInit && playConfetti && (
         <Particles id="tsparticles" options={options} />
       )}
-      <div className="inline mb-6">
-        <p className="inline font-bold">Time : </p>
-        <p className="inline">{submission.time} ms </p>
-        <p className="inline font-bold">Memory : </p>
-        <p className="inline">{submission.memory} KB</p>
-      </div>
       <Resultlayout id={id} result_interval={config.result_interval} />
-      <div className="flex flex-col items-center w-full mt-6">
+      <div className="flex flex-col items-center w-full mt-4">
         <Card className="w-10/12 lg:w-[950px] h-[600px] overflow-hidden">
           <Editor
             language={submission.language}
