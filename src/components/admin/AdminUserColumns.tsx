@@ -22,6 +22,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import Link from 'next/link'
 
 export type UserData = {
   id: number
@@ -80,6 +81,17 @@ export const columns: ColumnDef<UserData>[] = [
         </div>
       )
     },
+    cell: ({ row }) => {
+      return (
+        <Link
+          className="hover:underline"
+          href={`/profile/${row.getValue('id')}`}
+          target="_blank"
+        >
+          {row.getValue('username')}
+        </Link>
+      )
+    },
   },
   {
     accessorKey: 'name',
@@ -102,6 +114,17 @@ export const columns: ColumnDef<UserData>[] = [
             </Button>
           </span>
         </div>
+      )
+    },
+    cell: ({ row }) => {
+      return (
+        <Link
+          className="hover:underline"
+          href={`/profile/${row.getValue('id')}`}
+          target="_blank"
+        >
+          {row.getValue('name')}
+        </Link>
       )
     },
   },

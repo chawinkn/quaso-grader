@@ -4,12 +4,14 @@ import { ColumnDef } from '@tanstack/react-table'
 import { ArrowUpDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cx } from 'class-variance-authority'
+import Link from 'next/link'
 
 export type SubmissionData = {
   id: number
   taskId: string
   user: {
     name: string
+    id: number
   }
   task: {
     fullScore: number
@@ -130,10 +132,18 @@ export const columns: ColumnDef<SubmissionData>[] = [
       )
     },
     accessorFn: (row: SubmissionData, index: number) => {
-      return row.user.name
+      return (
+        <Link
+          className="hover:underline"
+          href={`/profile/${row.user.id}`}
+          target="_blank"
+        >
+          {row.user.name}
+        </Link>
+      )
     },
     cell: ({ row }) => {
-      return <div>{row.getValue('user')}</div>
+      return row.getValue('user')
     },
   },
   {

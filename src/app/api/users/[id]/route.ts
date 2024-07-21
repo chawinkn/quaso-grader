@@ -45,13 +45,19 @@ export async function DELETE(
 
   if (isNaN(Number(params.id))) return json(null)
 
-  const User = await prisma.user.delete({
+  await prisma.submission.deleteMany({
+    where: {
+      userId: Number(params.id),
+    },
+  })
+
+  await prisma.user.delete({
     where: {
       id: Number(params.id),
     },
   })
 
-  return json(User)
+  return json({ success: true })
 }
 
 export async function PUT(

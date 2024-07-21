@@ -27,6 +27,7 @@ export async function GET() {
         user: {
           select: {
             name: true,
+            id: true,
           },
         },
         language: true,
@@ -54,6 +55,7 @@ export async function GET() {
         user: {
           select: {
             name: true,
+            id: true,
           },
         },
         language: true,
