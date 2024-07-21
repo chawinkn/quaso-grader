@@ -3,13 +3,8 @@
 import Editor from '@monaco-editor/react'
 import { Card } from '../ui/card'
 import Link from 'next/link'
-import { formatDateTime } from '@/app/submissions/columns'
-import { useEffect, useState, useMemo } from 'react'
 import { cx } from 'class-variance-authority'
 import { Progress } from '@/components/ui/progress'
-import Resultlayout from '@/components/result/Resultlayout'
-import Particles, { initParticlesEngine } from '@tsparticles/react'
-import { loadSlim } from '@tsparticles/slim'
 import {
   Table,
   TableBody,
@@ -19,15 +14,18 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+} from '@/components/ui/table'
 import {
-  type Container,
-  type ISourceOptions,
-  MoveDirection,
-  OutMode,
-} from '@tsparticles/engine'
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { Config } from '../admin/AdminGeneralPanel'
+import usePollingSubmissionData from '@/lib/usePollingSubmissionData'
+import Loading from '@/app/loading'
+import ResultsTable from '../result/Resultstable'
+import { columns, ResultData } from '@/app/submissions/[id]/columns'
 
 export type SubmissionData = {
   id: number
@@ -45,239 +43,31 @@ export type SubmissionData = {
   username: string
 }
 
-async function getSubmission(submissionId: string) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/submissions/${submissionId}`,
-    {
-      method: 'GET',
-    }
-  )
-  if (!res.ok) {
-    return null
-  }
-  const data = await res.json()
-  return data
-}
-
-async function getUser(userId: number) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`,
-    {
-      method: 'GET',
-    }
-  )
-  if (!res.ok) {
-    return null
-  }
-  const data = await res.json()
-  return data
-}
-
-async function getTask(taskId: string) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/tasks/${taskId}`,
-    {
-      method: 'GET',
-    }
-  )
-  if (!res.ok) {
-    return null
-  }
-  const data = await res.json()
-  return data
-}
-
 export default function SubmissionLayout({
   id,
   config,
+  username,
+  userId,
+  task,
 }: {
   id: string
   config: Config
+  username: string
+  userId: number
+  task: {
+    title: string
+    fullScore: number
+  }
 }) {
-  // Confetti
-  const [playConfetti, setPlayConfetti] = useState(false)
-  const [canvasInit, setCanvasInit] = useState(false)
-  useEffect(() => {
-    initParticlesEngine(async (engine) => {
-      await loadSlim(engine)
-    }).then(() => {
-      setCanvasInit(true)
-    })
-  }, [])
+  const { submission, isLoading } = usePollingSubmissionData(id)
 
-  const options: ISourceOptions = useMemo(
-    () => ({
-      fpsLimit: 45,
-      particles: {
-        color: {
-          value: ['#1E00FF', '#FF0061', '#E1FF00', '#00FF9E'],
-        },
-        zIndex: {
-          value: 0,
-        },
-        move: {
-          decay: 0.05,
-          direction: 'top',
-          enable: true,
-          gravity: {
-            enable: true,
-          },
-          outModes: {
-            top: 'none',
-            default: 'destroy',
-          },
-          speed: {
-            min: 50,
-            max: 100,
-          },
-        },
-        rotate: {
-          value: {
-            min: 0,
-            max: 360,
-          },
-          direction: 'random',
-          animation: {
-            enable: true,
-            speed: 30,
-          },
-        },
-        tilt: {
-          direction: 'random',
-          enable: true,
-          value: {
-            min: 0,
-            max: 360,
-          },
-          animation: {
-            enable: true,
-            speed: 30,
-          },
-        },
-        size: {
-          value: 3,
-          animation: {
-            enable: true,
-            startValue: 'min',
-            count: 1,
-            speed: 16,
-            sync: true,
-          },
-        },
-        roll: {
-          darken: {
-            enable: true,
-            value: 25,
-          },
-          enlighten: {
-            enable: true,
-            value: 25,
-          },
-          enable: true,
-          speed: {
-            min: 5,
-            max: 15,
-          },
-        },
-        wobble: {
-          distance: 30,
-          enable: true,
-          speed: {
-            min: -7,
-            max: 7,
-          },
-        },
-        number: {
-          density: {
-            enable: true,
-          },
-          value: 80,
-        },
-        opacity: {
-          value: 1,
-        },
-        shape: {
-          type: ['circle', 'square'],
-        },
-        emitters: {
-          position: {
-            x: 50,
-            y: 200,
-          },
-          rate: {
-            quantity: 5,
-            delay: 0.15,
-          },
-        },
-      },
-    }),
-    []
-  )
-  /*
-   */
-
-  const [status, setStatus] = useState('')
-  const [submission, setSubmission] = useState<SubmissionData>({
-    id: 99999,
-    taskTitle: '',
-    taskId: '',
-    submittedAt: '',
-    status: '',
-    time: 0,
-    memory: 0,
-    code: '',
-    fullScore: 99999,
-    score: 0,
-    result: [],
-    language: 'c',
-    username: '',
-  })
-
-  const fetchSubmission = async () => {
-    const submission = await getSubmission(id)
-    if (submission) {
-      const [User, Task] = await Promise.all([
-        getUser(submission.userId),
-        getTask(submission.taskId),
-      ])
-      submission.username = User.username
-      submission.taskTitle = Task.title
-      submission.fullScore = Task.fullScore
-      setSubmission(submission)
-      setStatus(submission.status)
-    }
+  if (isLoading || !submission) {
+    return <Loading />
   }
 
-  const [prevStatus, setPrevStatus] = useState('')
-  useEffect(() => {
-    let interval: NodeJS.Timeout | null = null
-
-    const startFetching = async () => {
-      await fetchSubmission()
-      if (status === 'Pending' || status === 'Judging') {
-        interval = setInterval(fetchSubmission, 1000 * config.result_interval)
-        setPrevStatus(status)
-      } else if (
-        status === 'Completed' &&
-        prevStatus === 'Judging' &&
-        submission.score === submission.fullScore &&
-        !playConfetti
-      ) {
-        setPlayConfetti(true)
-        setTimeout(() => {
-          setPlayConfetti(false)
-        }, 22000)
-      }
-    }
-
-    startFetching()
-
-    return () => {
-      if (interval) {
-        clearInterval(interval)
-      }
-    }
-  }, [id, status])
+  submission.taskTitle = task.title
+  submission.fullScore = task.fullScore
+  submission.username = username
 
   const languageList: Array<{ name: string; language: string; ext: string }> =
     config.languages.map((i) => {
@@ -287,20 +77,20 @@ export default function SubmissionLayout({
     (lang) => lang.language === submission.language
   )
   const displayLanguage = findLanguage[0].name
-  const submissionDate = new Date(submission.submittedAt);
+  const submissionDate = new Date(submission.submittedAt)
 
   let style = 'bg-yellow-500 dark:bg-yellow-900'
 
-  if (status === 'Completed') {
+  const result: Array<ResultData> = submission.result as Array<ResultData>
+
+  if (submission.status === 'Completed') {
     style = 'bg-green-500 dark:bg-green-900'
   }
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <h2 className="font-bold text-3xl lg:text-4xl">
-        Submission #{submission.id}
-      </h2>
-      <div className="flex flex-col items-center justify-center my-4 w-10/12 lg:w-[950px] ">
+      <h2 className="text-3xl font-bold">Submission #{submission.id}</h2>
+      <div className="flex flex-col items-center justify-center my-5 w-10/12 lg:w-[950px] ">
         <Table>
           <TableHeader>
             <TableRow>
@@ -326,7 +116,7 @@ export default function SubmissionLayout({
               <TableCell>
                 <div
                   className={cx(
-                    'px-2.5 py-0.5 rounded text-white font-medium w-fit inline',
+                    'px-2.5 py-0.5 rounded text-white font-medium w-fit',
                     style
                   )}
                 >
@@ -335,7 +125,15 @@ export default function SubmissionLayout({
               </TableCell>
               <TableCell>{submission.time} ms</TableCell>
               <TableCell>{submission.memory} KB</TableCell>
-              <TableCell>{submission.username}</TableCell>
+              <TableCell>
+                <Link
+                  className="hover:underline"
+                  href={`/profile/${userId}`}
+                  target="_blank"
+                >
+                  {submission.username}
+                </Link>
+              </TableCell>
               <TableCell>
                 <TooltipProvider>
                   <Tooltip>
@@ -356,13 +154,13 @@ export default function SubmissionLayout({
               <TableCell colSpan={7}>
                 <div className="flex flex-col md:items-center">
                   <div className="w-[270px] md:w-[350px] lg:w-[650px]">
-                    <p className="text-center text-base">
+                    <p className="text-base text-center">
                       Score: {submission.score}/{submission.fullScore}
                     </p>
                     <Progress
                       value={submission.score}
                       max={submission.fullScore}
-                      className="border hover:border-2 transition-all ease-in-out duration-300"
+                      className="transition-all duration-300 ease-in-out border hover:border-2"
                     />
                   </div>
                 </div>
@@ -371,10 +169,7 @@ export default function SubmissionLayout({
           </TableFooter>
         </Table>
       </div>
-      {canvasInit && playConfetti && (
-        <Particles id="tsparticles" options={options} />
-      )}
-      <Resultlayout id={id} result_interval={config.result_interval} />
+      <ResultsTable columns={columns} data={result} />
       <div className="flex flex-col items-center w-full mt-4">
         <Card className="w-10/12 lg:w-[950px] h-[600px] overflow-hidden">
           <Editor

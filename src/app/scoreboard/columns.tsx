@@ -61,7 +61,11 @@ export const columns: ColumnDef<ScoreboardData>[] = [
     },
     accessorFn: (row: ScoreboardData, index: number) => {
       return (
-        <Link href={`/profile/${row.id}`} target="_blank">
+        <Link
+          className="hover:underline"
+          href={`/profile/${row.id}`}
+          target="_blank"
+        >
           {row.name}
         </Link>
       )

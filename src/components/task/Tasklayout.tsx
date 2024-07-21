@@ -131,7 +131,7 @@ export default function TaskLayout({ ...props }) {
     <div className="flex flex-col items-center justify-center py-10 grow">
       <h2 className="text-3xl font-bold">{task.title}</h2>
       <h2 className="text-lg">Full score : {task.fullScore}</h2>
-      <div className="w-4/5 my-5 space-y-4 sm:space-x-4">
+      <div className="w-4/5 my-5 space-y-4 lg:w-4/6 sm:space-x-4">
         <StatementLayout id={task.id} />
       </div>
       <div className="flex flex-col mt-10 space-y-4 grow lg:flex-row lg:space-x-2">
