@@ -1,7 +1,7 @@
 'use client'
 
 import { ColumnDef } from '@tanstack/react-table'
-import { cx } from 'class-variance-authority'
+import { cn } from '@/lib/utils'
 
 export type ResultData = {
   time: number
@@ -32,7 +32,7 @@ export const columns: ColumnDef<ResultData>[] = [
 
       return (
         <div
-          className={cx(
+          className={cn(
             'px-2.5 py-0.5 rounded text-white font-medium w-fit',
             style
           )}

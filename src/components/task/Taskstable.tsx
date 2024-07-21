@@ -40,7 +40,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select'
-import clsx from 'clsx'
+import { cn } from '@/lib/utils'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -119,7 +119,7 @@ export default function TasksTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
-                  className={clsx(
+                  className={cn(
                     'cursor-pointer',
                     index % 2 === 1 ? 'bg-muted/30' : ''
                   )}

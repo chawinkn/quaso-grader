@@ -2,12 +2,12 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { getServerUser } from '@/lib/session'
 import Announcement from '@/components/announcement/Announcement'
-import { cx } from 'class-variance-authority'
+import { cn } from '@/lib/utils'
 import Image from 'next/image'
 
 function Landing() {
   return (
-    <div className="text-center flex flex-col items-center">
+    <div className="flex flex-col items-center text-center">
       <Image
         src="/quawaii.webp"
         width={500}
@@ -16,10 +16,7 @@ function Landing() {
         alt="quaso logo"
         style={{ marginBottom: '5px' }}
       />
-      <h1
-        className="text-4xl font-black md:text-6xl
-        bg-gradient-to-r from-pink-400 via-orange-400 to-yellow-400 bg-clip-text text-transparent "
-      >
+      <h1 className="text-4xl font-black text-transparent md:text-6xl bg-gradient-to-r from-pink-400 via-orange-400 to-yellow-400 bg-clip-text ">
         Quaso Grader
       </h1>
       <p className="pt-2 text-xl md:text-2xl text-muted-foreground">
@@ -42,7 +39,7 @@ export default async function Home() {
   const user = await getServerUser()
   return (
     <div
-      className={cx(
+      className={cn(
         'flex flex-col items-center min-h-[calc(100vh-57px)]',
         !user ? 'justify-center' : 'py-10 gap-8'
       )}

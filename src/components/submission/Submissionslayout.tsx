@@ -1,9 +1,7 @@
 'use client'
 
-import Editor from '@monaco-editor/react'
 import { Card } from '../ui/card'
 import Link from 'next/link'
-import { cx } from 'class-variance-authority'
 import { Progress } from '@/components/ui/progress'
 import {
   Table,
@@ -26,6 +24,12 @@ import usePollingSubmissionData from '@/lib/usePollingSubmissionData'
 import Loading from '@/app/loading'
 import ResultsTable from '../result/Resultstable'
 import { columns, ResultData } from '@/app/submissions/[id]/columns'
+import { Highlight, themes } from 'prism-react-renderer'
+import { cn } from '@/lib/utils'
+import styles from '@/components/HighlightWithLineNumbers.module.css'
+import { Copy } from 'lucide-react'
+import { Button } from '../ui/button'
+import toast from 'react-hot-toast'
 
 export type SubmissionData = {
   id: number
@@ -87,6 +91,15 @@ export default function SubmissionLayout({
     style = 'bg-green-500 dark:bg-green-900'
   }
 
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(submission.code)
+      toast.success('Code copied to clipboard')
+    } catch {
+      toast.error('Failed to copy code to clipboard')
+    }
+  }
+
   return (
     <div className="flex flex-col items-center justify-center">
       <h2 className="text-3xl font-bold">Submission #{submission.id}</h2>
@@ -115,7 +128,7 @@ export default function SubmissionLayout({
               </TableCell>
               <TableCell>
                 <div
-                  className={cx(
+                  className={cn(
                     'px-2.5 py-0.5 rounded text-white font-medium w-fit',
                     style
                   )}
@@ -155,7 +168,7 @@ export default function SubmissionLayout({
                 <div className="flex flex-col md:items-center">
                   <div className="w-[270px] md:w-[350px] lg:w-[650px]">
                     <p className="text-base text-center">
-                      Score: {submission.score}/{submission.fullScore}
+                      Score: {submission.score} / {submission.fullScore}
                     </p>
                     <Progress
                       value={submission.score}
@@ -171,19 +184,47 @@ export default function SubmissionLayout({
       </div>
       <ResultsTable columns={columns} data={result} />
       <div className="flex flex-col items-center w-full mt-4">
-        <Card className="w-10/12 lg:w-[950px] h-[600px] overflow-hidden">
-          <Editor
+        <Card className="relative w-10/12 lg:w-[950px] overflow-hidden monaco-font">
+          <Button
+            variant="secondary"
+            size="icon"
+            className="absolute m-1 border-0 top-2 right-2"
+            onClick={handleCopy}
+          >
+            <Copy size={20} />
+            <span className="sr-only">Copy code</span>
+          </Button>
+          <Highlight
+            theme={themes.vsDark}
+            code={submission.code}
             language={submission.language}
-            value={submission.code}
-            theme="vs-dark"
-            options={{
-              minimap: { enabled: false },
-              fontSize: 16,
-              fontLigatures: true,
-              readOnly: true,
-            }}
-            className="caret-transparent monaco-font"
-          />
+          >
+            {({ className, style, tokens, getLineProps, getTokenProps }) => (
+              <pre
+                style={{ ...style, tabSize: 4 }}
+                className={cn(
+                  className,
+                  'overflow-x-auto rounded-md monaco-font caret-transparent',
+                  styles.pre
+                )}
+              >
+                {tokens.map((line, i) => (
+                  <div
+                    {...getLineProps({ line, key: i })}
+                    key={i}
+                    className={styles.line}
+                  >
+                    <span className={styles.lineNo}>{i + 1}</span>
+                    <span className={styles.lineContent}>
+                      {line.map((token, key) => (
+                        <span {...getTokenProps({ token, key })} key={key} />
+                      ))}
+                    </span>
+                  </div>
+                ))}
+              </pre>
+            )}
+          </Highlight>
         </Card>
       </div>
     </div>

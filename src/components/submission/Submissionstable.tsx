@@ -39,7 +39,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select'
-import clsx from 'clsx'
+import { cn } from '@/lib/utils'
 
 interface DataTableProps<TData, TValue, TUsername, TRole> {
   columns: ColumnDef<TData, TValue>[]
@@ -122,8 +122,9 @@ export default function SubmissionsTable<TData, TValue, TUsername, TRole>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
-                  className={clsx(
-                    (username === row.getValue('user') || role === 'ADMIN') && 'cursor-pointer',
+                  className={cn(
+                    (username === row.getValue('user') || role === 'ADMIN') &&
+                      'cursor-pointer',
                     index % 2 ? 'bg-muted/30' : ''
                   )}
                   onClick={() => {

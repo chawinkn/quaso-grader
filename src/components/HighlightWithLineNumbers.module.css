@@ -1,0 +1,25 @@
+.pre {
+  text-align: left;
+  padding: 1em;
+}
+
+.tokenLine {
+  line-height: 1.3em;
+  height: 1.3em;
+}
+
+.line {
+  display: table-row;
+}
+
+.lineNo {
+  display: table-cell;
+  text-align: right;
+  padding-right: 1em;
+  user-select: none;
+  opacity: 0.5;
+}
+
+.lineContent {
+  display: table-cell;
+}
