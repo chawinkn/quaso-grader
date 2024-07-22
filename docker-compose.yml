@@ -1,0 +1,11 @@
+services:
+  nextapp:
+    container_name: nextapp
+    image: nextapp
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    env_file:
+      - .env

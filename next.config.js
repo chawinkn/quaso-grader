@@ -5,6 +5,7 @@ const nextConfig = {
       fullUrl: true,
     },
   },
+  output: 'standalone',
 }
 
 module.exports = nextConfig

@@ -197,7 +197,7 @@ export const columns: ColumnDef<TaskData>[] = [
 
         try {
           await fetch(
-            `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker`,
+            `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker${process.env.NEXT_PUBLIC_BACKEND_API_TOKEN}`,
             {
               method: 'GET',
               headers: {
@@ -215,7 +215,7 @@ export const columns: ColumnDef<TaskData>[] = [
             { method: 'DELETE' }
           )
           const deleted = await fetch(
-            `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${id}`,
+            `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${id}${process.env.NEXT_PUBLIC_BACKEND_API_TOKEN}`,
             {
               method: 'DELETE',
             }

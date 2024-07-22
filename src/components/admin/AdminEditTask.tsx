@@ -197,12 +197,15 @@ export default function EditTaskLayout({
     const { description } = data
 
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+      await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker${process.env.NEXT_PUBLIC_BACKEND_API_TOKEN}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
     } catch (error: any) {
       setSave(false)
       return toast.error(error.message)
@@ -213,7 +216,7 @@ export default function EditTaskLayout({
 
     try {
       const upload = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${task.id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${task.id}${process.env.NEXT_PUBLIC_BACKEND_API_TOKEN}`,
         {
           method: 'POST',
           body: formData,
@@ -287,12 +290,15 @@ export default function EditTaskLayout({
     }
 
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+      await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker${process.env.NEXT_PUBLIC_BACKEND_API_TOKEN}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
     } catch (error: any) {
       setSave(false)
       return toast.error(error.message)
@@ -315,7 +321,7 @@ export default function EditTaskLayout({
         return toast.error('Full score update failed')
       }
       const upload = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${task.id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${task.id}${process.env.NEXT_PUBLIC_BACKEND_API_TOKEN}`,
         {
           method: 'POST',
           body: formData,
@@ -340,7 +346,7 @@ export default function EditTaskLayout({
     setDownload(true)
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${task.id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${task.id}${process.env.NEXT_PUBLIC_BACKEND_API_TOKEN}`,
         {
           method: 'GET',
           headers: {

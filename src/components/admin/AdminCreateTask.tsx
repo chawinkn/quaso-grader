@@ -224,12 +224,15 @@ export default function CreateTaskLayout() {
     }
 
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+      await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker${process.env.NEXT_PUBLIC_BACKEND_API_TOKEN}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
     } catch (error: any) {
       setSubmit(false)
       return toast.error(error.message)
@@ -275,7 +278,7 @@ export default function CreateTaskLayout() {
         return toast.error(result.error)
       }
       const upload = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${id}${process.env.NEXT_PUBLIC_BACKEND_API_TOKEN}`,
         {
           method: 'POST',
           body: formData,

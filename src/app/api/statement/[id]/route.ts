@@ -34,7 +34,7 @@ export async function GET(
   } else {
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/desc/${params.id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/desc/${params.id}${process.env.NEXT_PUBLIC_BACKEND_API_TOKEN}`,
         {
           method: 'GET',
           headers: {

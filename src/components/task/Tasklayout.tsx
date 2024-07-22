@@ -77,12 +77,15 @@ export default function TaskLayout({ ...props }) {
   const handleSubmit = async () => {
     setSubmit(true)
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+      await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker${process.env.NEXT_PUBLIC_BACKEND_API_TOKEN}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
     } catch (error: any) {
       setSubmit(false)
       return toast.error(error.message)
@@ -99,7 +102,7 @@ export default function TaskLayout({ ...props }) {
       })
       const result = await res.json()
       const submitRes = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/submit`,
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/submit${process.env.NEXT_PUBLIC_BACKEND_API_TOKEN}`,
         {
           method: 'POST',
           headers: {
