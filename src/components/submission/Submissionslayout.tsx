@@ -188,7 +188,7 @@ export default function SubmissionLayout({
           <Button
             variant="secondary"
             size="icon"
-            className="absolute m-1 border-0 top-2 right-2"
+            className="absolute border-0 top-2 right-2"
             onClick={handleCopy}
           >
             <Copy size={20} />
