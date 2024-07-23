@@ -30,7 +30,7 @@ async function getManifest(id: string) {
   }
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/manifest/${id}${process.env.NEXT_PUBLIC_BACKEND_API_TOKEN}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/manifest/${id}`,
       {
         method: 'GET',
         headers: {
