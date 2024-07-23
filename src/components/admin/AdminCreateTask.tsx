@@ -225,7 +225,7 @@ export default function CreateTaskLayout() {
 
     try {
       await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker${process.env.NEXT_PUBLIC_BACKEND_API_TOKEN}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker`,
         {
           method: 'GET',
           headers: {
@@ -278,7 +278,7 @@ export default function CreateTaskLayout() {
         return toast.error(result.error)
       }
       const upload = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${id}${process.env.NEXT_PUBLIC_BACKEND_API_TOKEN}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${id}`,
         {
           method: 'POST',
           body: formData,

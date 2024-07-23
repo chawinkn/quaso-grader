@@ -78,7 +78,7 @@ export default function TaskLayout({ ...props }) {
     setSubmit(true)
     try {
       await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker${process.env.NEXT_PUBLIC_BACKEND_API_TOKEN}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker`,
         {
           method: 'GET',
           headers: {
@@ -102,7 +102,7 @@ export default function TaskLayout({ ...props }) {
       })
       const result = await res.json()
       const submitRes = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/submit${process.env.NEXT_PUBLIC_BACKEND_API_TOKEN}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/submit`,
         {
           method: 'POST',
           headers: {

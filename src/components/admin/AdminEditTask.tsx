@@ -198,7 +198,7 @@ export default function EditTaskLayout({
 
     try {
       await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker${process.env.NEXT_PUBLIC_BACKEND_API_TOKEN}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker`,
         {
           method: 'GET',
           headers: {
@@ -216,7 +216,7 @@ export default function EditTaskLayout({
 
     try {
       const upload = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${task.id}${process.env.NEXT_PUBLIC_BACKEND_API_TOKEN}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${task.id}`,
         {
           method: 'POST',
           body: formData,
@@ -291,7 +291,7 @@ export default function EditTaskLayout({
 
     try {
       await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker${process.env.NEXT_PUBLIC_BACKEND_API_TOKEN}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker`,
         {
           method: 'GET',
           headers: {
@@ -321,7 +321,7 @@ export default function EditTaskLayout({
         return toast.error('Full score update failed')
       }
       const upload = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${task.id}${process.env.NEXT_PUBLIC_BACKEND_API_TOKEN}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${task.id}`,
         {
           method: 'POST',
           body: formData,
@@ -346,7 +346,7 @@ export default function EditTaskLayout({
     setDownload(true)
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${task.id}${process.env.NEXT_PUBLIC_BACKEND_API_TOKEN}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${task.id}`,
         {
           method: 'GET',
           headers: {
