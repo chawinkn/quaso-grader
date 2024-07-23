@@ -111,10 +111,10 @@ export const columns: ColumnDef<TaskData>[] = [
         </div>
       )
     },
-    accessorFn: (row: TaskData, index: number) => {
+    cell: ({ row }) => {
       let style = 'bg-yellow-500 dark:bg-yellow-900'
-      let score = row.score
-      let fullScore = row.fullScore
+      let score = row.getValue('score')
+      let fullScore = row.original.fullScore
 
       if (score === fullScore) {
         style = 'bg-green-500 dark:bg-green-900'
@@ -129,13 +129,10 @@ export const columns: ColumnDef<TaskData>[] = [
             style
           )}
         >
-          <span>{score}</span>
+          <span>{String(score)}</span>
           <span className="hidden sm:inline"> / {fullScore}</span>
         </div>
       )
-    },
-    cell: ({ row }) => {
-      return row.getValue('score')
     },
   },
 ]

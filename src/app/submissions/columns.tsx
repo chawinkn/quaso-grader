@@ -1,6 +1,6 @@
 'use client'
 
-import { ColumnDef } from '@tanstack/react-table'
+import { ColumnDef, RowPagination } from '@tanstack/react-table'
 import { ArrowUpDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -131,19 +131,18 @@ export const columns: ColumnDef<SubmissionData>[] = [
         </div>
       )
     },
-    accessorFn: (row: SubmissionData, index: number) => {
+    accessorFn: (row: SubmissionData, index: number) => row.user.name,
+    cell: ({ row }) => {
+      const user = row.original.user
       return (
         <Link
           className="hover:underline"
-          href={`/profile/${row.user.id}`}
+          href={`/profile/${user.id}`}
           target="_blank"
         >
-          {row.user.name}
+          {user.name}
         </Link>
       )
-    },
-    cell: ({ row }) => {
-      return row.getValue('user')
     },
   },
   {
@@ -167,6 +166,18 @@ export const columns: ColumnDef<SubmissionData>[] = [
             </Button>
           </span>
         </div>
+      )
+    },
+    cell: ({ row }) => {
+      const taskId = row.getValue('taskId') as string
+      return (
+        <Link
+          className="hover:underline"
+          href={`/tasks/${taskId}`}
+          target="_blank"
+        >
+          {taskId}
+        </Link>
       )
     },
   },
@@ -193,10 +204,10 @@ export const columns: ColumnDef<SubmissionData>[] = [
         </div>
       )
     },
-    accessorFn: (row: SubmissionData, index: number) => {
+    cell: ({ row }) => {
       let style = 'bg-yellow-500 dark:bg-yellow-900'
-      let score = row.score
-      let fullScore = row.task.fullScore
+      let score = row.getValue('score')
+      let fullScore = row.original.task.fullScore
 
       if (score === fullScore) {
         style = 'bg-green-500 dark:bg-green-900'
@@ -211,13 +222,10 @@ export const columns: ColumnDef<SubmissionData>[] = [
             style
           )}
         >
-          <span>{score}</span>
+          <span>{String(score)}</span>
           <span className="hidden sm:inline"> / {fullScore}</span>
         </div>
       )
-    },
-    cell: ({ row }) => {
-      return row.getValue('score')
     },
   },
 ]

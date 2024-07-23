@@ -59,19 +59,18 @@ export const columns: ColumnDef<ScoreboardData>[] = [
         </div>
       )
     },
-    accessorFn: (row: ScoreboardData, index: number) => {
+    cell: ({ row }) => {
+      const id = row.original.id
+      const name = row.original.name
       return (
         <Link
           className="hover:underline"
-          href={`/profile/${row.id}`}
+          href={`/profile/${id}`}
           target="_blank"
         >
-          {row.name}
+          {name}
         </Link>
       )
-    },
-    cell: ({ row }) => {
-      return row.getValue('name')
     },
   },
   {
