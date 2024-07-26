@@ -1,4 +1,3 @@
-import { getConfig } from '@/utils/generalConfig'
 import useSWR from 'swr'
 
 interface IGeneralSubmission {
@@ -22,9 +21,7 @@ const fetcher = async (url: string): Promise<IGeneralSubmission> => {
   return res.json()
 }
 
-const usePollingSubmissionData = (id: string) => {
-  const { result_interval } = getConfig()
-
+const usePollingSubmissionData = (id: string, result_interval: number) => {
   const { data, error, mutate } = useSWR<IGeneralSubmission>(
     `/api/submissions/${id}`,
     fetcher,

@@ -87,6 +87,14 @@ model Announcement {
   @@map("announcement")
 }
 
+model Configuration {
+  key   String @unique
+  value String
+
+  @@index([key])
+  @@map("configuration")
+}
+
 model Session {
   id           String   @id @default(cuid())
   userId       Int

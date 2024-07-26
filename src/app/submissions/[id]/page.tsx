@@ -2,7 +2,7 @@ import { Suspense } from 'react'
 import SubmissionLayout from '@/components/submission/Submissionslayout'
 import { notFound } from 'next/navigation'
 import { headers } from 'next/headers'
-import { getConfig } from '@/utils/generalConfig'
+import { getConfig } from '@/app/dashboard/general/page'
 
 async function getSubmission(submissionId: string) {
   const res = await fetch(
@@ -59,10 +59,13 @@ export default async function Submission({
     id: string
   }
 }) {
-  const submission = await getSubmission(params.id)
-
-  const config = getConfig()
-
+  const [submission, result_intervalValues] = await Promise.all([
+    getSubmission(params.id),
+    getConfig('result_interval'),
+  ])
+  const result_interval = {
+    result_interval: result_intervalValues?.value || '2.5',
+  }
   const [User, Task] = await Promise.all([
     getUser(submission.userId),
     getTask(submission.taskId),
@@ -73,7 +76,7 @@ export default async function Submission({
       <Suspense fallback={null}>
         <SubmissionLayout
           id={params.id}
-          config={config}
+          config={result_interval}
           username={User.username}
           userId={User.id}
           task={{ title: Task.title, fullScore: Task.fullScore }}

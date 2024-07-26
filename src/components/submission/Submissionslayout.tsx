@@ -6,7 +6,6 @@ import { Progress } from '@/components/ui/progress'
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableFooter,
   TableHead,
@@ -19,7 +18,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { Config } from '../admin/AdminGeneralPanel'
 import usePollingSubmissionData from '@/lib/usePollingSubmissionData'
 import Loading from '@/app/loading'
 import ResultsTable from '../result/Resultstable'
@@ -30,6 +28,7 @@ import styles from '@/components/HighlightWithLineNumbers.module.css'
 import { Copy } from 'lucide-react'
 import { Button } from '../ui/button'
 import toast from 'react-hot-toast'
+import { languages } from '@/utils/generalConfig'
 
 export type SubmissionData = {
   id: number
@@ -55,7 +54,7 @@ export default function SubmissionLayout({
   task,
 }: {
   id: string
-  config: Config
+  config: { result_interval: string }
   username: string
   userId: number
   task: {
@@ -63,7 +62,10 @@ export default function SubmissionLayout({
     fullScore: number
   }
 }) {
-  const { submission, isLoading } = usePollingSubmissionData(id)
+  const { submission, isLoading } = usePollingSubmissionData(
+    id,
+    Number(config.result_interval)
+  )
 
   if (isLoading || !submission) {
     return <Loading />
@@ -73,14 +75,13 @@ export default function SubmissionLayout({
   submission.fullScore = task.fullScore
   submission.username = username
 
-  const languageList: Array<{ name: string; language: string; ext: string }> =
-    config.languages.map((i) => {
-      return { name: i.name, language: i.language, ext: i.ext }
-    })
-  const findLanguage = languageList.filter(
-    (lang) => lang.language === submission.language
+  const languagesItems: Array<{ id: string; label: string }> = languages.map(
+    (i) => {
+      return { id: i.language, label: i.name }
+    }
   )
-  const displayLanguage = findLanguage[0].name
+  const displayLanguage =
+    languagesItems.find((lang) => lang.id === submission.language)?.label || ''
   const submissionDate = new Date(submission.submittedAt)
 
   let style = 'bg-yellow-500 dark:bg-yellow-900'

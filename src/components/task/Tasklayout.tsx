@@ -17,26 +17,28 @@ import { useRouter } from 'next/navigation'
 import { Loader2 } from 'lucide-react'
 import { TaskData } from '@/app/tasks/columns'
 import StatementLayout from '../Statementlayout'
-import { Config } from '../admin/AdminGeneralPanel'
+import { languages } from '@/utils/generalConfig'
 
 export default function TaskLayout({ ...props }) {
   const task: TaskData = props?.task
+  const config = props?.config
   const [language, setLanguauge] = useState('')
   const [sourcecode, setSourcecode] = useState('')
   const [fileInputColor, setfileInputColor] = useState('')
   const [isSubmit, setSubmit] = useState(false)
   const router = useRouter()
-  const config: Config = props?.config
   const languageList: Array<{ name: string; language: string; ext: string }> =
     []
-  for (let i = 0; i < config.languages.length; i++) {
-    if (config.languages[i].available)
+  const available_language_split = config.available_language.split(',')
+  languages.forEach((lang) => {
+    if (available_language_split.includes(lang.ext)) {
       languageList.push({
-        name: config.languages[i].name,
-        language: config.languages[i].language,
-        ext: config.languages[i].ext,
+        name: lang.name,
+        language: lang.language,
+        ext: lang.ext,
       })
-  }
+    }
+  })
   const handleLanguage = (value: string) => {
     setLanguauge(value)
   }
@@ -63,11 +65,6 @@ export default function TaskLayout({ ...props }) {
     reader.readAsText(file)
 
     setLanguauge(ext)
-    // if (ext == 'py') {
-    //   setLanguauge('python')
-    // } else {
-    //   setLanguauge(ext)
-    // }
   }
 
   const handleEditorChange = (value: string | any) => {
@@ -77,15 +74,12 @@ export default function TaskLayout({ ...props }) {
   const handleSubmit = async () => {
     setSubmit(true)
     try {
-      await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      )
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
     } catch (error: any) {
       setSubmit(false)
       return toast.error(error.message)

@@ -2,7 +2,6 @@ import { badRequest, internalServerError, json } from '@/utils/apiResponse'
 import { NextRequest } from 'next/server'
 import bcrypt from 'bcrypt'
 import prisma from '@/lib/prisma'
-import { getConfig } from '@/utils/generalConfig'
 
 export async function POST(req: NextRequest) {
   try {
@@ -18,14 +17,20 @@ export async function POST(req: NextRequest) {
 
     const hashedPassword = bcrypt.hashSync(password, 10)
 
-    const config = getConfig()
+    const config = await prisma.configuration.findUnique({
+      where: {
+        key: 'approval_required',
+      },
+    })
+
+    const approval_required = config?.value || 'false'
 
     const newUser = await prisma.user.create({
       data: {
         username,
         name,
         password: hashedPassword,
-        approved: config.auto_approve,
+        approved: approval_required === 'false',
       },
     })
 
