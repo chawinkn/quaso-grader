@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
@@ -26,7 +26,7 @@ export default async function RootLayout({
           <Link href={'/dashboard/tasks'}>Tasks</Link>
         </Button>
       </div>
-      <div className="w-full h-full flex justify-center">{children}</div>
+      {children}
     </main>
   )
 }

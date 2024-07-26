@@ -2,6 +2,7 @@ import { Suspense } from 'react'
 import { headers } from 'next/headers'
 import { columns } from './AdminUserColumns'
 import AdminUserTable from './AdminUserTable'
+import { TableSkeleton } from '../skeletons'
 
 async function getUserList() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
@@ -15,12 +16,16 @@ async function getUserList() {
   return data
 }
 
-export default async function User() {
+async function UserTable() {
   const userList = await getUserList()
 
+  return <AdminUserTable columns={columns} data={userList} />
+}
+
+export default function User() {
   return (
-    <Suspense fallback={null}>
-      <AdminUserTable columns={columns} data={userList} />
+    <Suspense fallback={<TableSkeleton row={5} column={8} />}>
+      <UserTable />
     </Suspense>
   )
 }

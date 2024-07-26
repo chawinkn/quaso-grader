@@ -69,11 +69,8 @@ export default function AdminUserTable<TData, TValue>({
   })
 
   return (
-    <div className="flex flex-col justify-center items-center">
-      <div
-        className="flex flex-col items-center mb-5 space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0
-                      w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px] xl:w-full "
-      >
+    <>
+      <div className="flex flex-col items-center justify-center mb-5 space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
         <Input
           placeholder="Find username..."
           value={
@@ -98,8 +95,7 @@ export default function AdminUserTable<TData, TValue>({
           }}
         />
       </div>
-      <div className="flex"></div>
-      <Card className="w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px] xl:w-full overflow-auto">
+      <Card className="w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px]">
         <Table>
           <TableHeader className="bg-muted/80">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -214,6 +210,6 @@ export default function AdminUserTable<TData, TValue>({
           </Button>
         </div>
       </div>
-    </div>
+    </>
   )
 }

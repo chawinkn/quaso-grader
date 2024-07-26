@@ -2,6 +2,8 @@ import { headers } from 'next/headers'
 import CreateAnnouncementCard from './CreateAnnouncementCard'
 import AnnouncementCard, { AdminAnnouncementCard } from './AnnouncementCard'
 import { AnnouncementData } from './AnnouncementCard'
+import { Suspense } from 'react'
+import { AnnouncementCardSkeleton } from '../skeletons'
 
 export type UserData = {
   name: string
@@ -21,23 +23,29 @@ async function getAnnouncementList() {
   return data
 }
 
-export default async function Announcement(props: UserData) {
+async function AnnouncementComponent({ role }: { role: string }) {
   const announcementList = await getAnnouncementList()
 
+  return announcementList.map((announcement: AnnouncementData) => {
+    return (
+      <>
+        {role === 'ADMIN' ? (
+          <AdminAnnouncementCard key={announcement.id} {...announcement} />
+        ) : (
+          <AnnouncementCard key={announcement.id} {...announcement} />
+        )}
+      </>
+    )
+  })
+}
+
+export default function Announcement(props: UserData) {
   return (
     <div className="flex flex-col items-center justify-center h-full gap-4">
       {props.role === 'ADMIN' ? <CreateAnnouncementCard {...props} /> : <></>}
-      {announcementList.map((announcement: AnnouncementData) => {
-        return (
-          <>
-            {props.role === 'ADMIN' ? (
-              <AdminAnnouncementCard key={announcement.id} {...announcement} />
-            ) : (
-              <AnnouncementCard key={announcement.id} {...announcement} />
-            )}
-          </>
-        )
-      })}
+      <Suspense fallback={<AnnouncementCardSkeleton />}>
+        <AnnouncementComponent role={props.role} />
+      </Suspense>
     </div>
   )
 }

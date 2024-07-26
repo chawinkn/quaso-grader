@@ -1,5 +1,7 @@
 import AdminGeneralPanel from '@/components/admin/AdminGeneralPanel'
+import { GeneralPanelSkeleton } from '@/components/skeletons'
 import { headers } from 'next/headers'
+import { Suspense } from 'react'
 
 export async function getConfig(key: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/config/${key}`, {
@@ -13,7 +15,7 @@ export async function getConfig(key: string) {
   return data
 }
 
-export default async function AdminGeneral() {
+async function GeneralPanel() {
   const configValues = await Promise.all([
     getConfig('approval_required'),
     getConfig('available_language'),
@@ -26,4 +28,12 @@ export default async function AdminGeneral() {
     result_interval: configValues[2]?.value || '2.5',
   }
   return <AdminGeneralPanel config={config} />
+}
+
+export default function AdminGeneral() {
+  return (
+    <Suspense fallback={<GeneralPanelSkeleton />}>
+      <GeneralPanel />
+    </Suspense>
+  )
 }

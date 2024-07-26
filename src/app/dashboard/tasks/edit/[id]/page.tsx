@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import { headers } from 'next/headers'
 import EditTaskLayout from '@/components/admin/AdminEditTask'
+import { EditTaskSkeleton } from '@/components/skeletons'
 
 async function getTask(id: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks/${id}`, {
@@ -48,20 +49,29 @@ async function getManifest(id: string) {
   }
 }
 
-export default async function EditTask({
+async function EditTaskComponent({ id }: { id: string }) {
+  const [task, manifest] = await Promise.all([getTask(id), getManifest(id)])
+
+  return (
+    <EditTaskLayout
+      task={task}
+      manifest={manifest.manifest}
+      status={manifest.status}
+    />
+  )
+}
+
+export default function EditTask({
   params,
 }: {
   params: {
     id: string
   }
 }) {
-  const task = await getTask(params.id)
-  const { manifest, status } = await getManifest(params.id)
-
   return (
     <div className="min-h-[calc(100vh-57px)] flex flex-col space-y-4">
-      <Suspense fallback={null}>
-        <EditTaskLayout task={task} manifest={manifest} status={status} />
+      <Suspense fallback={<EditTaskSkeleton />}>
+        <EditTaskComponent id={params.id} />
       </Suspense>
     </div>
   )

@@ -3,6 +3,8 @@ import prisma from '@/lib/prisma'
 import ScoreboardTable from '@/components/scoreboard/ScoreboardTable'
 import { ScoreboardData } from './columns'
 import { columns } from './columns'
+import { TableSkeleton } from '@/components/skeletons'
+import { Suspense } from 'react'
 
 async function getScoreBoard() {
   const scores = await prisma.$queryRaw(
@@ -91,7 +93,7 @@ async function getTotalPassCount() {
   }))
 }
 
-export default async function Scoreboard() {
+async function ScoreTable() {
   const [scoreList, passCountList] = await Promise.all([
     getScoreBoard(),
     getTotalPassCount(),
@@ -103,13 +105,19 @@ export default async function Scoreboard() {
     user.passCount = passCount ? passCount.count : 0
   })
 
+  return <ScoreboardTable columns={columns} data={scoreList} />
+}
+
+export default function Scoreboard() {
   return (
     <div className="min-h-[calc(100vh-57px)]">
       <div className="flex flex-col items-center justify-center py-10">
         <div className="mb-5 md:mb-8">
           <h1 className="text-3xl font-bold">SCOREBOARD</h1>
         </div>
-        <ScoreboardTable columns={columns} data={scoreList} />
+        <Suspense fallback={<TableSkeleton row={5} column={4} />}>
+          <ScoreTable />
+        </Suspense>
       </div>
     </div>
   )

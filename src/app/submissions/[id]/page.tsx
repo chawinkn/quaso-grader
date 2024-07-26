@@ -3,6 +3,7 @@ import SubmissionLayout from '@/components/submission/Submissionslayout'
 import { notFound } from 'next/navigation'
 import { headers } from 'next/headers'
 import { getConfig } from '@/app/dashboard/general/page'
+import { SubmissionLayoutSkeleton } from '@/components/skeletons'
 
 async function getSubmission(submissionId: string) {
   const res = await fetch(
@@ -52,15 +53,9 @@ async function getTask(taskId: string) {
   return data
 }
 
-export default async function Submission({
-  params,
-}: {
-  params: {
-    id: string
-  }
-}) {
+async function SubmissionLayoutComponent({ id }: { id: string }) {
   const [submission, result_intervalValues] = await Promise.all([
-    getSubmission(params.id),
+    getSubmission(id),
     getConfig('result_interval'),
   ])
   const result_interval = {
@@ -72,15 +67,27 @@ export default async function Submission({
   ])
 
   return (
+    <SubmissionLayout
+      id={id}
+      config={result_interval}
+      username={User.username}
+      userId={User.id}
+      task={{ title: Task.title, fullScore: Task.fullScore }}
+    />
+  )
+}
+
+export default function Submission({
+  params,
+}: {
+  params: {
+    id: string
+  }
+}) {
+  return (
     <div className="min-h-[calc(100vh-57px)] py-10 space-y-4">
-      <Suspense fallback={null}>
-        <SubmissionLayout
-          id={params.id}
-          config={result_interval}
-          username={User.username}
-          userId={User.id}
-          task={{ title: Task.title, fullScore: Task.fullScore }}
-        />
+      <Suspense fallback={<SubmissionLayoutSkeleton />}>
+        <SubmissionLayoutComponent id={params.id} />
       </Suspense>
     </div>
   )

@@ -197,15 +197,12 @@ export default function EditTaskLayout({
     const { description } = data
 
     try {
-      await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      )
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
     } catch (error: any) {
       setSave(false)
       return toast.error(error.message)
@@ -290,15 +287,12 @@ export default function EditTaskLayout({
     }
 
     try {
-      await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      )
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
     } catch (error: any) {
       setSave(false)
       return toast.error(error.message)
@@ -387,10 +381,19 @@ export default function EditTaskLayout({
         <CardHeader className="space-y-4">
           <CardTitle>Download</CardTitle>
           <div className="space-x-4">
-            <Link href={`/api/statement/${task.id}`} target="_blank">
-              <Button>Statement</Button>
+            <Link
+              href={`/api/statement/${task.id}`}
+              target="_blank"
+              style={{
+                pointerEvents: status !== 'OK' ? 'none' : 'auto',
+              }}
+            >
+              <Button disabled={status !== 'OK'}>Statement</Button>
             </Link>
-            <Button disabled={isDownload} onClick={downloadTestcases}>
+            <Button
+              disabled={isDownload || status !== 'OK'}
+              onClick={downloadTestcases}
+            >
               {isDownload ? (
                 <Loader2 className="w-5 h-5 mr-2 animate-spin" />
               ) : (
@@ -403,7 +406,7 @@ export default function EditTaskLayout({
       <Card className="w-[350px] sm:w-[450px] md:w-[600px] xl:w-[700px]">
         <CardHeader className="space-y-4">
           <CardTitle>Edit Task</CardTitle>
-          <Badge variant="secondary" className="w-fit text-base">
+          <Badge variant="secondary" className="text-base w-fit">
             <h2 className="font-mono font-normal">{task.id}</h2>
           </Badge>
         </CardHeader>
@@ -455,7 +458,7 @@ export default function EditTaskLayout({
                       disabled={status !== 'OK'}
                       type="file"
                       accept=".pdf"
-                      className="transition-transform active:scale-95 cursor-pointer"
+                      className="transition-transform cursor-pointer active:scale-95"
                       {...descriptionRef}
                     />
                     <FormMessage />
@@ -537,7 +540,7 @@ export default function EditTaskLayout({
                       disabled={status !== 'OK'}
                       type="file"
                       accept=".zip"
-                      className="transition-transform active:scale-95 cursor-pointer"
+                      className="transition-transform cursor-pointer active:scale-95"
                       {...testcasesRef}
                     />
                     <FormMessage />

@@ -6,6 +6,8 @@ import { Prisma } from '@prisma/client'
 import prisma from '@/lib/prisma'
 import { Badge } from '@/components/ui/badge'
 import Link from 'next/link'
+import { Suspense } from 'react'
+import { ProfileSkeleton } from '@/components/skeletons'
 
 async function getUser(userId: number) {
   const res = await fetch(
@@ -75,29 +77,21 @@ async function getScore(userId: number) {
   return serialized[0]?.score || 0
 }
 
-export default async function Profile({
-  params,
-}: {
-  params: {
-    id: string
-  }
-}) {
-  if (isNaN(Number(params.id))) return notFound()
+async function ProfileComponent({ id }: { id: string }) {
   const [User, user, passList, score, submissionsCount] = await Promise.all([
-    getUser(Number(params.id)),
+    getUser(Number(id)),
     getServerUser(),
-    getPassList(Number(params.id)),
-    getScore(Number(params.id)),
+    getPassList(Number(id)),
+    getScore(Number(id)),
     prisma.submission.count({
       where: {
-        userId: Number(params.id),
+        userId: Number(id),
       },
     }),
   ])
 
   return (
-    <div className="flex flex-col items-center min-h-[calc(100vh-57px)] py-10 space-y-6">
-      <h1 className="text-3xl font-bold">PROFILE</h1>
+    <>
       <div className="flex flex-col items-center justify-center">
         <h1 className="text-2xl font-bold">{User.username}</h1>
         {User.username === user?.name ? (
@@ -105,16 +99,16 @@ export default async function Profile({
         ) : (
           <p className="text-md">{User.name}</p>
         )}
-        <div className="flex flex-row space-x-4 mt-6">
-          <div className="bg-muted rounded-lg px-4 py-2 text-center">
+        <div className="flex flex-row mt-6 space-x-4">
+          <div className="px-4 py-2 text-center rounded-lg bg-muted">
             <p className="text-muted-foreground">Solved</p>
             <p className="text-2xl font-bold">{passList.length}</p>
           </div>
-          <div className="bg-muted rounded-lg px-4 py-2 text-center">
+          <div className="px-4 py-2 text-center rounded-lg bg-muted">
             <p className="text-muted-foreground">Submissions</p>
             <p className="text-2xl font-bold">{submissionsCount}</p>
           </div>
-          <div className="bg-muted rounded-lg px-4 py-2 text-center">
+          <div className="px-4 py-2 text-center rounded-lg bg-muted">
             <p className="text-muted-foreground">Score</p>
             <p className="text-2xl font-bold">{score}</p>
           </div>
@@ -124,7 +118,7 @@ export default async function Profile({
         <h1 className="text-xl font-medium text-center">
           List of solved problems
         </h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+        <div className="grid grid-cols-1 gap-4 mt-6 md:grid-cols-2 lg:grid-cols-3">
           {passList.map((pass) => (
             <Badge
               variant="outline"
@@ -138,6 +132,25 @@ export default async function Profile({
           ))}
         </div>
       </div>
+    </>
+  )
+}
+
+export default function Profile({
+  params,
+}: {
+  params: {
+    id: string
+  }
+}) {
+  if (isNaN(Number(params.id))) return notFound()
+
+  return (
+    <div className="flex flex-col items-center min-h-[calc(100vh-57px)] py-10 space-y-6">
+      <h1 className="text-3xl font-bold">PROFILE</h1>
+      <Suspense fallback={<ProfileSkeleton />}>
+        <ProfileComponent id={params.id} />
+      </Suspense>
     </div>
   )
 }

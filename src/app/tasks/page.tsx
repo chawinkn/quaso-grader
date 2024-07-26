@@ -3,6 +3,8 @@ import { TaskData, columns } from './columns'
 import { headers } from 'next/headers'
 import { Prisma } from '@prisma/client'
 import prisma from '@/lib/prisma'
+import { TableSkeleton } from '@/components/skeletons'
+import { Suspense } from 'react'
 
 async function getTaskList() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks`, {
@@ -59,7 +61,7 @@ export async function getPassCount() {
   }))
 }
 
-export default async function Tasks() {
+async function TaskTable() {
   const [taskList, scoreList, passCountList] = await Promise.all([
     getTaskList(),
     getScore(),
@@ -77,13 +79,19 @@ export default async function Tasks() {
     task.passCount = passCount ? passCount.count : 0
   })
 
+  return <TasksTable columns={columns} data={taskList} />
+}
+
+export default function Tasks() {
   return (
     <div className="min-h-[calc(100vh-57px)]">
       <div className="flex flex-col items-center justify-center py-10">
         <div className="mb-5 md:mb-8">
           <h1 className="text-3xl font-bold">TASKS</h1>
         </div>
-        <TasksTable columns={columns} data={taskList} />
+        <Suspense fallback={<TableSkeleton row={5} column={4} />}>
+          <TaskTable />
+        </Suspense>
       </div>
     </div>
   )
