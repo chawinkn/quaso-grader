@@ -31,7 +31,7 @@ export default function TaskLayout({ ...props }) {
     []
   const available_language_split = config.available_language.split(',')
   languages.forEach((lang) => {
-    if (available_language_split.includes(lang.ext)) {
+    if (available_language_split.includes(lang.language)) {
       languageList.push({
         name: lang.name,
         language: lang.language,
@@ -72,6 +72,7 @@ export default function TaskLayout({ ...props }) {
   }
 
   const handleSubmit = async () => {
+    console.log(language)
     setSubmit(true)
     try {
       await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker`, {
