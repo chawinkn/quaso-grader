@@ -25,8 +25,7 @@ export function NavigationBar() {
 
   const logOut = (event: React.MouseEvent<HTMLButtonElement>) => {
     toast.success('Logout successfully')
-    signOut()
-    router.push('/')
+    signOut({ callbackUrl: '/', redirect: true })
   }
 
   return (
