@@ -1,10 +1,11 @@
 import prisma from '@/lib/prisma'
-import { json, unauthorized, badRequest } from '@/utils/apiResponse'
+import { json } from '@/utils/apiResponse'
 import { getServerUser } from '@/lib/session'
 import { Prisma } from '@prisma/client'
 
 export async function GET() {
   const user = await getServerUser()
+  if (!user) return json([])
 
   if (user?.role !== 'ADMIN') {
     const score = (await prisma.$queryRaw(

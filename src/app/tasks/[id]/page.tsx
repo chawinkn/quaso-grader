@@ -24,7 +24,6 @@ async function TaskLayoutComponent({ id }: { id: string }) {
   const [task, available_languageValues] = await Promise.all([
     getTask(id),
     getConfig('available_language'),
-    new Promise((resolve) => setTimeout(resolve, 1000)),
   ])
   const available_language = {
     available_language: available_languageValues?.value || 'c,cpp,python',

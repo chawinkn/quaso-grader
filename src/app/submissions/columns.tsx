@@ -10,15 +10,15 @@ export type SubmissionData = {
   id: number
   taskId: string
   user: {
-    name: string
-    id: number
-  }
+    name: string | null
+    id: number | null
+  } | null
   task: {
     fullScore: number
   }
   status: string
   score: number
-  submittedAt: string
+  submittedAt: Date
   language: string
   time: number
   memory: number
@@ -131,16 +131,16 @@ export const columns: ColumnDef<SubmissionData>[] = [
         </div>
       )
     },
-    accessorFn: (row: SubmissionData, index: number) => row.user.name,
+    accessorFn: (row: SubmissionData, index: number) => row.user?.name,
     cell: ({ row }) => {
       const user = row.original.user
       return (
         <Link
           className="hover:underline"
-          href={`/profile/${user.id}`}
+          href={`/profile/${user?.id}`}
           target="_blank"
         >
-          {user.name}
+          {user?.name}
         </Link>
       )
     },

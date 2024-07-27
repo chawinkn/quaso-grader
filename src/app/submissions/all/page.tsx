@@ -1,4 +1,4 @@
-import { columns, SubmissionData } from './columns'
+import { columns, SubmissionData } from '../columns'
 import { Suspense } from 'react'
 import SubmissionsTable from '@/components/submission/Submissionstable'
 import { headers } from 'next/headers'
@@ -20,10 +20,7 @@ async function getSubmission({
   User: { id: number; name: string; role: string } | null
 }): Promise<SubmissionData[]> {
   const res = await prisma.submission.findMany({
-    where:
-      User?.role !== 'ADMIN'
-        ? { task: { private: false }, userId: User?.id }
-        : { userId: User?.id },
+    where: User?.role !== 'ADMIN' ? { task: { private: false } } : {},
     orderBy: {
       id: 'desc',
     },
@@ -81,10 +78,7 @@ async function SubmissionTable({
 }) {
   const User = await getServerUser()
   const pageCount = await prisma.submission.count({
-    where:
-      User?.role !== 'ADMIN'
-        ? { task: { private: false }, userId: User?.id }
-        : { userId: User?.id },
+    where: User?.role !== 'ADMIN' ? { task: { private: false } } : {},
   })
   if (start > pageCount) {
     return notFound()
@@ -105,7 +99,7 @@ async function SubmissionTable({
         role={User?.role}
       />
       <PaginationControls
-        path={'/submissions'}
+        path={'/submissions/all'}
         hasNextPage={end < pageCount}
         hasPrevPage={start > 0}
         pageCount={Math.ceil(pageCount / per_page)}
@@ -114,7 +108,7 @@ async function SubmissionTable({
   )
 }
 
-export default function Submissions({
+export default function AllSubmissions({
   searchParams,
 }: {
   searchParams: {
@@ -139,10 +133,10 @@ export default function Submissions({
         </div>
         <div className="flex justify-center mb-5 space-x-4">
           <Link href={'/submissions'}>
-            <Button variant={'secondary'}>My submissions</Button>
+            <Button variant={'outline'}>My submissions</Button>
           </Link>
           <Link href={'/submissions/all'}>
-            <Button variant={'outline'}>All submissions</Button>
+            <Button variant={'secondary'}>All submissions</Button>
           </Link>
         </div>
         <Suspense fallback={<TableSkeleton row={5} column={5} />}>
