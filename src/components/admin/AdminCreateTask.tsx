@@ -102,7 +102,7 @@ export default function CreateTaskLayout() {
       .any()
       .refine((files) => files?.length == 1, 'File is required.')
       .refine(
-        (files) => files?.[0]?.size <= 5 * 1000 * 1000,
+        (files) => files?.[0]?.size <= 5 * 1024 * 1024,
         `Max file size is 5 MB.`
       )
       .refine(
@@ -118,7 +118,7 @@ export default function CreateTaskLayout() {
       )
       .refine(
         (files) =>
-          !manualTestcases ? files?.[0]?.size <= 10 * 1000 * 1000 : true,
+          !manualTestcases ? files?.[0]?.size <= 10 * 1024 * 1024 : true,
         'Max file size is 10 MB.'
       )
       .refine(
@@ -224,15 +224,12 @@ export default function CreateTaskLayout() {
     }
 
     try {
-      await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      )
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
     } catch (error: any) {
       setSubmit(false)
       return toast.error(error.message)
@@ -259,7 +256,7 @@ export default function CreateTaskLayout() {
         zip.file(file.name, file)
       })
       const zipTestcase = await zip.generateAsync({ type: 'blob' })
-      if (zipTestcase.size > 10 * 1000 * 1000) {
+      if (zipTestcase.size > 10 * 1024 * 1024) {
         return toast.error(
           `Size ${zipTestcase.size} bytes, Max zipped testcases size is 10 MB.`
         )

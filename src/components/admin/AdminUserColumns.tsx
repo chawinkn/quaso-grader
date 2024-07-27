@@ -161,21 +161,18 @@ export const columns: ColumnDef<UserData>[] = [
         const name = row.getValue('name')
         const approved = row.getValue('approved')
         try {
-          const request = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/users`,
-            {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                id: id,
-                name: name,
-                role: role === 'ADMIN' ? 'USER' : 'ADMIN',
-                approved: approved,
-              }),
-            }
-          )
+          const request = await fetch(`/api/users`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id: id,
+              name: name,
+              role: role === 'ADMIN' ? 'USER' : 'ADMIN',
+              approved: approved,
+            }),
+          })
 
           if (request.ok) {
             toast.success(`UserID: ${id} role changed successfully`)
@@ -239,21 +236,18 @@ export const columns: ColumnDef<UserData>[] = [
         const name = row.getValue('name')
         const role = row.getValue('role')
         try {
-          const request = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/users`,
-            {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                id: id,
-                name: name,
-                role: role,
-                approved: !approved,
-              }),
-            }
-          )
+          const request = await fetch(`/api/users`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id: id,
+              name: name,
+              role: role,
+              approved: !approved,
+            }),
+          })
 
           if (request.ok) {
             toast.success(

@@ -1,5 +1,5 @@
-import { PrismaClient } from '@prisma/client'
-import bcrypt from 'bcrypt'
+const { PrismaClient } = require('@prisma/client')
+const bcrypt = require('bcrypt')
 
 const prisma = new PrismaClient()
 
@@ -23,20 +23,12 @@ async function seed_root() {
 
 async function seed_config() {
   const data = [
-    {
-      key: 'approval_required',
-      value: 'false',
-    },
-    {
-      key: 'available_language',
-      value: 'c,cpp,python',
-    },
-    {
-      key: 'result_interval',
-      value: '2.5',
-    },
+    { key: 'approval_required', value: 'false' },
+    { key: 'available_language', value: 'c,cpp,python' },
+    { key: 'result_interval', value: '2.5' },
   ]
-  data.forEach(async (d) => {
+
+  for (const d of data) {
     try {
       await prisma.configuration.create({
         data: {
@@ -48,13 +40,14 @@ async function seed_config() {
     } catch (err) {
       console.log(`seed_config: ${d.key} already exists`)
     }
-  })
+  }
 }
 
 async function main() {
   await seed_root()
   await seed_config()
 }
+
 main()
   .then(async () => {
     await prisma.$disconnect()

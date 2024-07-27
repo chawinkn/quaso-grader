@@ -34,16 +34,18 @@ export async function GET(
   } else {
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/desc/${params.id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_API_SERVER_URL}/desc/${params.id}`,
         {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
           },
         }
       )
       return res
     } catch (err) {
+      console.log(err)
       return internalServerError()
     }
   }

@@ -130,27 +130,19 @@ export const columns: ColumnDef<TaskData>[] = [
       const handlePrivate = async () => {
         setLoading(true)
         try {
-          const request = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/tasks/${id}`,
-            {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${localStorage.getItem('token')}`,
-              },
-              body: JSON.stringify({
-                private: !isPrivate,
-              }),
-            }
-          )
+          const request = await fetch(`/api/tasks/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+              private: !isPrivate,
+            }),
+          })
 
           if (request.ok) {
             toast.success(`TaskID: ${id} updated successfully`)
             setIsPrivate(!isPrivate)
             router.refresh()
           } else {
-            console.log(request.text())
-            toast.success(`TaskID: ${id} update failed`)
+            toast.error(`TaskID: ${id} update failed`)
           }
         } catch (error: any) {
           console.error(error)
@@ -210,10 +202,7 @@ export const columns: ColumnDef<TaskData>[] = [
         }
 
         try {
-          const request = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/tasks/${id}`,
-            { method: 'DELETE' }
-          )
+          const request = await fetch(`/api/tasks/${id}`, { method: 'DELETE' })
           const deleted = await fetch(
             `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${id}`,
             {

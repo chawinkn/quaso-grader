@@ -37,6 +37,9 @@ import { useRouter } from 'next/navigation'
 import { TaskData } from '@/app/dashboard/tasks/columns'
 import { Badge } from '../ui/badge'
 import Link from 'next/link'
+import JSZip from 'jszip'
+import { Switch } from '../ui/switch'
+import { Textarea } from '../ui/textarea'
 
 const formDBSchema = z.object({
   title: z
@@ -50,73 +53,13 @@ const formDescSchema = z.object({
     .any()
     .refine((files) => files?.length == 1, 'File is required.')
     .refine(
-      (files) => files?.[0]?.size <= 5 * 1000 * 1000,
+      (files) => files?.[0]?.size <= 5 * 1024 * 1024,
       `Max file size is 5 MB.`
     )
     .refine(
       (files) => ['application/pdf'].includes(files?.[0]?.type),
       'Only .pdf is accepted.'
     ),
-})
-
-const formSchema = z.object({
-  time_limit: z.preprocess(
-    (x) => (x ? x : undefined),
-    z.coerce
-      .number()
-      .min(0.25, { message: 'Time limit must be 0.25-5 seconds.' })
-      .max(5, { message: 'Time limit must be 0.25-5 seconds.' })
-  ),
-  memory_limit: z.preprocess(
-    (x) => (x ? x : undefined),
-    z.coerce
-      .number()
-      .int()
-      .min(4, { message: 'Memory limit must be 4-512 MB.' })
-      .max(512, { message: 'Memory limit must be 4-512 MB.' })
-  ),
-  num_testcases: z.preprocess(
-    (x) => (x ? x : undefined),
-    z.coerce
-      .number()
-      .int()
-      .min(1, { message: 'Num testcases must be at least 1.' })
-  ),
-  checker: z.string(),
-  skip: z.string(),
-  full_score: z.preprocess(
-    (x) => (x ? x : undefined),
-    z.coerce
-      .number()
-      .int()
-      .min(0, { message: 'Full score must be at least 0 points.' })
-  ),
-  testcases: z
-    .any()
-    .refine((files) => files?.length == 1, 'File is required.')
-    .refine(
-      (files) => files?.[0]?.size <= 10 * 1000 * 1000,
-      `Max file size is 10 MB.`
-    )
-    .refine(
-      (files) =>
-        ['application/zip', 'application/x-zip-compressed'].includes(
-          files?.[0]?.type
-        ),
-      'Only .zip is accepted.'
-    ),
-  subtasks: z.array(
-    z.object({
-      full_score: z.coerce
-        .number()
-        .int()
-        .min(0, { message: 'Full score must be at least 0 points.' }),
-      num_testcases: z.coerce
-        .number()
-        .int()
-        .min(1, { message: 'Num testcases must be at least 1.' }),
-    })
-  ),
 })
 
 type Manifest = {
@@ -140,7 +83,82 @@ export default function EditTaskLayout({
 }) {
   const [isSave, setSave] = useState(false)
   const [numSubtasks, setnumSubtasks] = useState(manifest.subtasks.length)
+  const [numTestcases, setnumTestcases] = useState(0)
+  const [manualTestcases, setmanualTestcases] = useState(false)
   const router = useRouter()
+
+  const formSchema = z.object({
+    time_limit: z.preprocess(
+      (x) => (x ? x : undefined),
+      z.coerce
+        .number()
+        .min(0.25, { message: 'Time limit must be 0.25-5 seconds.' })
+        .max(5, { message: 'Time limit must be 0.25-5 seconds.' })
+    ),
+    memory_limit: z.preprocess(
+      (x) => (x ? x : undefined),
+      z.coerce
+        .number()
+        .int()
+        .min(4, { message: 'Memory limit must be 4-512 MB.' })
+        .max(512, { message: 'Memory limit must be 4-512 MB.' })
+    ),
+    num_testcases: z.preprocess(
+      (x) => (x ? x : undefined),
+      z.coerce
+        .number()
+        .int()
+        .min(1, { message: 'Num testcases must be at least 1.' })
+    ),
+    checker: z.string(),
+    skip: z.string(),
+    full_score: z.preprocess(
+      (x) => (x ? x : undefined),
+      z.coerce
+        .number()
+        .int()
+        .min(0, { message: 'Full score must be at least 0 points.' })
+    ),
+    testcases: z
+      .any()
+      .optional()
+      .refine(
+        (files) => (!manualTestcases ? files?.length === 1 : true),
+        'File is required.'
+      )
+      .refine(
+        (files) =>
+          !manualTestcases ? files?.[0]?.size <= 10 * 1024 * 1024 : true,
+        'Max file size is 10 MB.'
+      )
+      .refine(
+        (files) =>
+          !manualTestcases
+            ? ['application/zip', 'application/x-zip-compressed'].includes(
+                files?.[0]?.type
+              )
+            : true,
+        'Only .zip is accepted.'
+      ),
+    subtasks: z.array(
+      z.object({
+        full_score: z.coerce
+          .number()
+          .int()
+          .min(0, { message: 'Full score must be at least 0 points.' }),
+        num_testcases: z.coerce
+          .number()
+          .int()
+          .min(1, { message: 'Num testcases must be at least 1.' }),
+      })
+    ),
+    testcase: z.array(
+      z.object({
+        input: z.string(),
+        output: z.string(),
+      })
+    ),
+  })
 
   const [isSaveDB, setSaveDB] = useState(false)
   const formDB = useForm<z.infer<typeof formDBSchema>>({
@@ -164,6 +182,7 @@ export default function EditTaskLayout({
       full_score: manifest.full_score,
       num_testcases: manifest.num_testcases,
       subtasks: manifest.subtasks,
+      testcase: [],
     },
   })
 
@@ -244,6 +263,7 @@ export default function EditTaskLayout({
       full_score,
       testcases,
       subtasks,
+      testcase,
     } = data
 
     if (subtasks?.length) {
@@ -303,7 +323,28 @@ export default function EditTaskLayout({
       type: 'application/json',
     })
     formData.append('manifest', manifestBlob, 'manifest.json')
-    formData.append('testcases', testcases[0], 'testcases.zip')
+    if (!manualTestcases) {
+      formData.append('testcases', testcases[0], 'testcases.zip')
+    } else {
+      const testcaseFile = Array()
+      testcase.forEach((i, index) => {
+        const inFile = new File([i.input], `${index + 1}.in`)
+        const solFile = new File([i.output], `${index + 1}.sol`)
+        testcaseFile.push(inFile)
+        testcaseFile.push(solFile)
+      })
+      const zip = new JSZip()
+      testcaseFile.forEach((file) => {
+        zip.file(file.name, file)
+      })
+      const zipTestcase = await zip.generateAsync({ type: 'blob' })
+      if (zipTestcase.size > 10 * 1024 * 1024) {
+        return toast.error(
+          `Size ${zipTestcase.size} bytes, Max zipped testcases size is 10 MB.`
+        )
+      }
+      formData.append('testcases', zipTestcase, 'testcases.zip')
+    }
 
     try {
       const res = await fetch(`/api/tasks/${task.id}`, {
@@ -373,6 +414,11 @@ export default function EditTaskLayout({
     toast.error('Failed to fetch backend api', {
       id: 'status_error',
     })
+  }
+
+  const handleManualChange = () => {
+    setnumTestcases(0)
+    setmanualTestcases(!manualTestcases)
   }
 
   return (
@@ -553,18 +599,113 @@ export default function EditTaskLayout({
               />
               <FormField
                 control={form.control}
+                name="testcases"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Testcases</FormLabel>
+                    <div className="flex space-x-4 items-center my-2">
+                      <Switch
+                        disabled={status !== 'OK'}
+                        onClick={handleManualChange}
+                      />
+                      <Label>Manual testcases</Label>
+                    </div>
+                    <FormDescription>
+                      For simple testcases at most 10 testcases
+                    </FormDescription>
+                    <Input
+                      id="testcases"
+                      type="file"
+                      accept=".zip"
+                      className="transition-transform active:scale-95 cursor-pointer"
+                      disabled={manualTestcases || status !== 'OK'}
+                      {...testcasesRef}
+                    />
+                    <FormMessage />
+                    <FormDescription>
+                      In .zip (Max file size is 10 MB). It must include inputs
+                      and solutions (eg. 1.in, 1.sol, 2.in, 2.sol)
+                    </FormDescription>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 disabled={status !== 'OK'}
                 name="num_testcases"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Num testcases</FormLabel>
                     <FormControl>
-                      <Input placeholder="Num testcases" {...field} />
+                      <Input
+                        placeholder="Num testcases"
+                        onChangeCapture={(event) => {
+                          const value = Number(event.currentTarget.value)
+                          if (!manualTestcases) {
+                            setnumTestcases(0)
+                            return
+                          }
+                          if (value < 0 || value > 10) {
+                            toast.error('Num testcases must be 1-10.')
+                            setnumTestcases(0)
+                            return
+                          }
+                          setnumTestcases(value)
+                          const testcase = Array.from(
+                            { length: value },
+                            () => ({
+                              input: '',
+                              output: '',
+                            })
+                          )
+                          form.setValue('testcase', testcase)
+                        }}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+              {Array.from({ length: numTestcases }, (_, index) => (
+                <div key={index} className="space-y-2">
+                  <Label>Testcase {index + 1}</Label>
+                  <div className="flex flex-row space-x-2">
+                    <FormField
+                      control={form.control}
+                      name={`testcase.${index}.input`}
+                      render={({ field }) => (
+                        <FormItem className="w-full">
+                          <FormControl>
+                            <Textarea
+                              placeholder="Input"
+                              className="min-h-48"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`testcase.${index}.output`}
+                      render={({ field }) => (
+                        <FormItem className="w-full">
+                          <FormControl>
+                            <Textarea
+                              placeholder="Output"
+                              className="min-h-48"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+              ))}
               <FormField
                 control={form.control}
                 disabled={status !== 'OK'}

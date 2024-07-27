@@ -6,10 +6,11 @@
     "dev": "next dev",
     "build": "next build && prisma generate",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "start:prod": "npx prisma db push --skip-generate && npx prisma db seed && node server.js"
   },
   "prisma": {
-    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+    "seed": "node prisma/seed.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",

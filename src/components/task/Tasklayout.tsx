@@ -45,6 +45,12 @@ export default function TaskLayout({ ...props }) {
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
+    if (file) {
+      if (file?.size > 1024 * 25) {
+        event.target.value = ''
+        return toast.error('File size must be less than 25KB')
+      }
+    }
     const name = file?.name
     const ext = name?.substring(name.lastIndexOf('.') + 1) as string
     const isExist = languageList.map((lang) => lang.ext).includes(ext)
