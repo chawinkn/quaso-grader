@@ -537,6 +537,7 @@ export default function CreateTaskLayout() {
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
+                    disabled={numSubtasks === 0}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -548,6 +549,12 @@ export default function CreateTaskLayout() {
                       <SelectItem value="NO">NO</SelectItem>
                     </SelectContent>
                   </Select>
+                  <FormDescription className="flex flex-col space-y-1">
+                    <span>
+                      Skip when judging results in a wrong Answer within each
+                      subtask
+                    </span>
+                  </FormDescription>
                 </FormItem>
               )}
             />
@@ -569,7 +576,7 @@ export default function CreateTaskLayout() {
                 }}
               ></Input>
               <FormDescription className="flex flex-col space-y-1">
-                <span>Leave 0 for no subtasks </span>
+                <span>Leave 0 for no subtasks</span>
               </FormDescription>
               {Array.from({ length: numSubtasks }, (_, index) => (
                 <div key={index} className="space-y-2">

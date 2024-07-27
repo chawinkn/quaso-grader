@@ -579,28 +579,6 @@ export default function EditTaskLayout({
                 control={form.control}
                 name="testcases"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Testcases</FormLabel>
-                    <Input
-                      id="testcases"
-                      disabled={status !== 'OK'}
-                      type="file"
-                      accept=".zip"
-                      className="transition-transform cursor-pointer active:scale-95"
-                      {...testcasesRef}
-                    />
-                    <FormMessage />
-                    <FormDescription>
-                      In .zip (Max file size is 10 MB). It must include inputs
-                      and solutions (eg. 1.in, 1.sol, 2.in, 2.sol)
-                    </FormDescription>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="testcases"
-                render={({ field }) => (
                   <FormItem className="flex flex-col">
                     <FormLabel>Testcases</FormLabel>
                     <div className="flex space-x-4 items-center my-2">
@@ -743,7 +721,7 @@ export default function EditTaskLayout({
                     <FormLabel>Skip</FormLabel>
                     <Select
                       onValueChange={field.onChange}
-                      disabled={status !== 'OK'}
+                      disabled={status !== 'OK' || numSubtasks === 0}
                       defaultValue={field.value}
                     >
                       <FormControl>
@@ -756,6 +734,12 @@ export default function EditTaskLayout({
                         <SelectItem value="NO">NO</SelectItem>
                       </SelectContent>
                     </Select>
+                    <FormDescription className="flex flex-col space-y-1">
+                      <span>
+                        Skip when judging results in a wrong Answer within each
+                        subtask
+                      </span>
+                    </FormDescription>
                   </FormItem>
                 )}
               />
@@ -778,7 +762,7 @@ export default function EditTaskLayout({
                   }}
                 ></Input>
                 <FormDescription className="flex flex-col space-y-1">
-                  <span>Leave 0 for no subtasks </span>
+                  <span>Leave 0 for no subtasks</span>
                 </FormDescription>
                 {Array.from({ length: numSubtasks }, (_, index) => (
                   <div key={index} className="space-y-2">
