@@ -1,7 +1,7 @@
 import prisma from '@/lib/prisma'
 import { badRequest, json, unauthorized } from '@/utils/apiResponse'
 import { getServerUser } from '@/lib/session'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import { revalidatePath } from 'next/cache'
 
 export async function GET(
@@ -15,7 +15,7 @@ export async function GET(
   }
 ) {
   const user = await getServerUser()
-  if (!user || user.role !== 'ADMIN') return unauthorized()
+  if (!user) return unauthorized()
 
   const config = await prisma.configuration.findUnique({
     where: {
