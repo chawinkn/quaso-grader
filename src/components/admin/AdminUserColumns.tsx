@@ -358,10 +358,7 @@ export const columns: ColumnDef<UserData>[] = [
       const handleDelete = async () => {
         const id = row.getValue('id')
         try {
-          const request = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/users/${id}`,
-            { method: 'DELETE' }
-          )
+          const request = await fetch(`/api/users/${id}`, { method: 'DELETE' })
 
           if (request.ok) {
             toast.success(`UserID: ${id} deleted successfully`)
