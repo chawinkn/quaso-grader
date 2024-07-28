@@ -78,19 +78,7 @@ export default function TaskLayout({ ...props }) {
   }
 
   const handleSubmit = async () => {
-    console.log(language)
     setSubmit(true)
-    try {
-      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-    } catch (error: any) {
-      setSubmit(false)
-      return toast.error(error.message)
-    }
 
     try {
       const res = await fetch('/api/submissions', {
@@ -102,27 +90,11 @@ export default function TaskLayout({ ...props }) {
         }),
       })
       const result = await res.json()
-      const submitRes = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/submit`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            task_id: task.id,
-            submission_id: result.id,
-            code: sourcecode,
-            language,
-          }),
-        }
-      )
-      if (!submitRes?.ok) {
+      if (!res?.ok) {
         setSubmit(false)
-        toast.error('Internal Server Error')
-        return
+        return toast.error(result.error)
       }
-      toast.success('Submit successfully')
+      toast.success('Submitted successfully')
       router.push(`/submissions/${result.id}`)
     } catch (error: any) {
       setSubmit(false)

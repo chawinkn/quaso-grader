@@ -121,7 +121,7 @@ export default function AdminGeneralPanel({ ...props }) {
         const result = await res.json()
         return toast.error(result.error)
       }
-      toast.success('approval_required save successfully')
+      toast.success('approval_required saved successfully')
       router.refresh()
     } catch (error: any) {
       setSaveApprove(false)
@@ -143,7 +143,7 @@ export default function AdminGeneralPanel({ ...props }) {
         const result = await res.json()
         return toast.error(result.error)
       }
-      toast.success('available_language save successfully')
+      toast.success('available_language saved successfully')
       router.refresh()
     } catch (error: any) {
       setSaveLang(false)
@@ -165,7 +165,7 @@ export default function AdminGeneralPanel({ ...props }) {
         const result = await res.json()
         return toast.error(result.error)
       }
-      toast.success('result_interval save successfully')
+      toast.success('result_interval saved successfully')
       router.refresh()
     } catch (error: any) {
       setSaveInterval(false)

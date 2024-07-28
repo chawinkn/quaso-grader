@@ -28,8 +28,14 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const { id, title, fullScore } = await req.json()
-  if (!id || !title || !fullScore) return badRequest()
+  const data = await req.formData()
+
+  if (!data.has('id') || !data.has('title') || !data.has('fullScore'))
+    return badRequest()
+
+  const id = String(data.get('id'))
+  const title = String(data.get('title'))
+  const fullScore = Number(data.get('fullScore'))
 
   const user = await getServerUser()
   if (!user || user.role !== 'ADMIN') return unauthorized()
@@ -40,6 +46,30 @@ export async function POST(req: NextRequest) {
     },
   })
   if (existingTask) return badRequest('Task already exists')
+
+  try {
+    await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+  } catch {
+    return badRequest('Failed to fetch backend api')
+  }
+
+  data.delete('id')
+  data.delete('title')
+  data.delete('fullScore')
+
+  try {
+    await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${id}`, {
+      method: 'POST',
+      body: data,
+    })
+  } catch {
+    return badRequest('Failed to upload to backend api')
+  }
 
   await prisma.task.create({
     data: {

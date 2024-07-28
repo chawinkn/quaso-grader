@@ -78,7 +78,7 @@ export default function Register() {
         }),
       })
       if (response?.ok) {
-        toast.success('Registration successfully')
+        toast.success('Registered successfully')
         router.push('/login')
       } else {
         const result = await response.json()

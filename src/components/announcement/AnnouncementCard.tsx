@@ -44,7 +44,7 @@ export function AdminAnnouncementCard(props: AnnouncementData) {
       })
       const result = await response.json()
       if (response?.ok) {
-        toast.success('Delete successfully')
+        toast.success('Deleted successfully')
         router.refresh()
       } else {
         toast.error(result.error)

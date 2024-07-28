@@ -188,35 +188,15 @@ export const columns: ColumnDef<TaskData>[] = [
         const id = row.getValue('id')
 
         try {
-          await fetch(
-            `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker`,
-            {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            }
-          )
-        } catch (error: any) {
-          return toast.error(error.message)
-        }
-
-        try {
-          const request = await fetch(`/api/tasks/${id}`, { method: 'DELETE' })
-          const deleted = await fetch(
-            `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${id}`,
-            {
-              method: 'DELETE',
-            }
-          )
-          if (!deleted?.ok) {
-            toast.error('Internal Server Error')
-            return
+          const res = await fetch(`/api/tasks/${id}`, { method: 'DELETE' })
+          const result = await res.json()
+          if (!res?.ok) {
+            return toast.error(result.error)
           }
           toast.success(`TaskID: ${id} deleted successfully`)
           router.refresh()
-        } catch (error) {
-          toast.error(`TaskID: ${id} deletion failed`)
+        } catch (error: any) {
+          toast.error(`TaskID: ${id} ${error.message}`)
         }
       }
 

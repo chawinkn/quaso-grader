@@ -223,18 +223,6 @@ export default function CreateTaskLayout() {
         : [],
     }
 
-    try {
-      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-    } catch (error: any) {
-      setSubmit(false)
-      return toast.error(error.message)
-    }
-
     const formData = new FormData()
     const manifestBlob = new Blob([JSON.stringify(manifest)], {
       type: 'application/json',
@@ -263,29 +251,21 @@ export default function CreateTaskLayout() {
       }
       formData.append('testcases', zipTestcase, 'testcases.zip')
     }
+    formData.append('id', id)
+    formData.append('title', title)
+    formData.append('fullScore', String(full_score))
 
     try {
       const res = await fetch('/api/tasks', {
         method: 'POST',
-        body: JSON.stringify({ id, title, fullScore: full_score }),
+        body: formData,
       })
       if (!res?.ok) {
         setSubmit(false)
         const result = await res.json()
         return toast.error(result.error)
       }
-      const upload = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${id}`,
-        {
-          method: 'POST',
-          body: formData,
-        }
-      )
-      if (!upload?.ok) {
-        setSubmit(false)
-        return toast.error('Internal Server Error')
-      }
-      toast.success('Create successfully')
+      toast.success('Task created successfully')
       router.push(`/dashboard/tasks`)
       router.refresh()
     } catch (error: any) {

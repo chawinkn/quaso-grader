@@ -215,34 +215,20 @@ export default function EditTaskLayout({
     setSaveDesc(true)
     const { description } = data
 
-    try {
-      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-    } catch (error: any) {
-      setSave(false)
-      return toast.error(error.message)
-    }
-
     const formData = new FormData()
     formData.append('desc', description[0], 'desc.pdf')
 
     try {
-      const upload = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${task.id}`,
-        {
-          method: 'POST',
-          body: formData,
-        }
-      )
-      if (!upload?.ok) {
+      const res = await fetch(`/api/tasks/${task.id}`, {
+        method: 'POST',
+        body: formData,
+      })
+      if (!res?.ok) {
         setSaveDesc(false)
-        return toast.error('Description update failed')
+        const result = await res.json()
+        return toast.error(result.error)
       }
-      toast.success('Description update successfully')
+      toast.success('Description updated successfully')
       router.push(`/dashboard/tasks`)
       router.refresh()
     } catch (error: any) {
@@ -306,18 +292,6 @@ export default function EditTaskLayout({
         : [],
     }
 
-    try {
-      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/healthchecker`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-    } catch (error: any) {
-      setSave(false)
-      return toast.error(error.message)
-    }
-
     const formData = new FormData()
     const manifestBlob = new Blob([JSON.stringify(manifest)], {
       type: 'application/json',
@@ -355,16 +329,14 @@ export default function EditTaskLayout({
         setSave(false)
         return toast.error('Full score update failed')
       }
-      const upload = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${task.id}`,
-        {
-          method: 'POST',
-          body: formData,
-        }
-      )
+      const upload = await fetch(`/api/task/${task.id}`, {
+        method: 'POST',
+        body: formData,
+      })
       if (!upload?.ok) {
         setSave(false)
-        return toast.error('Testcases update failed')
+        const result = await upload.json()
+        return toast.error(result.error)
       }
       toast.success('Testcases update successfully')
       router.push(`/dashboard/tasks`)
@@ -380,18 +352,14 @@ export default function EditTaskLayout({
   const downloadTestcases = async () => {
     setDownload(true)
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${task.id}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      )
+      const res = await fetch(`/api/tasks/testcases/${task.id}`, {
+        method: 'GET',
+      })
 
-      if (!res.ok) {
-        throw new Error('Network response was not ok')
+      if (!res?.ok) {
+        setDownload(false)
+        const result = await res.json()
+        return toast.error(result.error)
       }
 
       const blob = await res.blob()
@@ -403,9 +371,10 @@ export default function EditTaskLayout({
       document.body.appendChild(a)
       a.click()
       window.URL.revokeObjectURL(url)
-      toast.success('Download testcases successfully')
+      toast.success('Testcases downloaded successfully')
     } catch (error) {
-      toast.error('Failed to download testcases')
+      setDownload(false)
+      return toast.error('Failed to download testcases')
     }
     setDownload(false)
   }

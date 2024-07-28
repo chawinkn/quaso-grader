@@ -1,10 +1,5 @@
 import prisma from '@/lib/prisma'
-import {
-  unauthorized,
-  json,
-  internalServerError,
-  forbidden,
-} from '@/utils/apiResponse'
+import { unauthorized, json, forbidden, badRequest } from '@/utils/apiResponse'
 import { NextRequest } from 'next/server'
 import { getServerUser } from '@/lib/session'
 
@@ -34,19 +29,17 @@ export async function GET(
   } else {
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_SERVER_URL}/desc/${params.id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/desc/${params.id}`,
         {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
           },
         }
       )
       return res
     } catch (err) {
-      console.log(err)
-      return internalServerError()
+      return badRequest('Failed to fetch backend api')
     }
   }
 }

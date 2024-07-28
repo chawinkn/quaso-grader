@@ -61,7 +61,7 @@ export default function CreateAnnouncementCard(props: UserData) {
       })
       const result = await response.json()
       if (response?.ok) {
-        toast.success('Create successfully')
+        toast.success('Created successfully')
         router.refresh()
       } else {
         toast.error(result.error)

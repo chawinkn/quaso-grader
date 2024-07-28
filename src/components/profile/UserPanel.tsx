@@ -57,7 +57,7 @@ export default function UserPanel(props: UserData) {
         }),
       })
       if (response?.ok) {
-        toast.success('Save successfully')
+        toast.success('Saved successfully')
         router.refresh()
       } else {
         const result = await response.json()
