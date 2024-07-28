@@ -9,11 +9,11 @@ export async function middleware(req: NextRequest) {
 
   const path = req.nextUrl.pathname
 
-  if (
+  if (!user && path === '/submissions') {
+    return NextResponse.redirect(new URL('/submissions/all', req.url))
+  } else if (
     !user &&
-    (path.startsWith('/tasks/') ||
-      path.startsWith('/submissions/') ||
-      path.startsWith('/dashboard'))
+    (path.startsWith('/tasks/') || path.startsWith('/dashboard'))
   ) {
     return NextResponse.redirect(new URL('/login', req.url))
   } else if (user && (path === '/login' || path === '/register')) {

@@ -7,7 +7,9 @@ import { TableSkeleton } from '@/components/skeletons'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import prisma from '@/lib/prisma'
-import PaginationControls from '@/components/PaginationControls'
+import PaginationControls, {
+  PerPageControls,
+} from '@/components/PaginationControls'
 import { notFound } from 'next/navigation'
 
 async function getSubmission({
@@ -104,12 +106,15 @@ async function SubmissionTable({
         username={user?.name}
         role={User?.role}
       />
-      <PaginationControls
-        path={'/submissions'}
-        hasNextPage={end < pageCount}
-        hasPrevPage={start > 0}
-        pageCount={Math.ceil(pageCount / per_page)}
-      />
+      <div className="flex items-center mt-4 space-x-6 lg:space-x-8">
+        <PerPageControls path={'/submissions'} />
+        <PaginationControls
+          path={'/submissions'}
+          hasNextPage={end < pageCount}
+          hasPrevPage={start > 0}
+          pageCount={Math.ceil(pageCount / per_page)}
+        />
+      </div>
     </>
   )
 }
@@ -121,15 +126,21 @@ export default function Submissions({
     [key: string]: string | string[] | undefined
   }
 }) {
-  const page = searchParams['page'] ?? '1'
-  const per_page = searchParams['per_page'] ?? '10'
+  const pageParam = searchParams['page'] ?? '1'
+  const perPageParam = searchParams['per_page'] ?? '10'
 
-  if (page < '1' || per_page < '1') {
+  const page = Number(pageParam)
+  const per_page = Number(perPageParam)
+
+  if (isNaN(page) || isNaN(per_page) || page < 1 || per_page < 1) {
+    return notFound()
+  }
+  if (![10, 20, 30, 40, 50].includes(per_page)) {
     return notFound()
   }
 
-  const start = (Number(page) - 1) * Number(per_page)
-  const end = start + Number(per_page)
+  const start = (page - 1) * per_page
+  const end = start + per_page
 
   return (
     <div className="min-h-[calc(100vh-57px)]">
