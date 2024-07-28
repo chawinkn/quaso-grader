@@ -329,7 +329,7 @@ export default function EditTaskLayout({
         setSave(false)
         return toast.error('Full score update failed')
       }
-      const upload = await fetch(`/api/task/${task.id}`, {
+      const upload = await fetch(`/api/tasks/${task.id}`, {
         method: 'POST',
         body: formData,
       })
