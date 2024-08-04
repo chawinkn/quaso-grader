@@ -79,6 +79,11 @@ export default function TaskLayout({ ...props }) {
 
   const handleSubmit = async () => {
     setSubmit(true)
+    const blob = new Blob([sourcecode], { type: 'text/plain;charset=utf-8' })
+    if (blob.size > 1024 * 25) {
+      setSubmit(false)
+      return toast.error('Text size must be less than 25KB')
+    }
 
     try {
       const res = await fetch('/api/submissions', {
@@ -130,7 +135,7 @@ export default function TaskLayout({ ...props }) {
           <Input
             id="sourcecode"
             type="file"
-            accept=".c,.cpp,.py"
+            accept={languageList.map((lang) => lang.ext).join(',')}
             onChange={handleFileUpload}
             className={`${fileInputColor} transition-transform active:scale-95 cursor-pointer`}
           />

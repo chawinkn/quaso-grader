@@ -172,8 +172,8 @@ export default function SubmissionLayout({
                       Score: {submission.score} / {submission.fullScore}
                     </p>
                     <Progress
-                      value={submission.score}
-                      max={submission.fullScore}
+                      value={(submission.score / submission.fullScore) * 100}
+                      max={100}
                       className="transition-all duration-300 ease-in-out border hover:border-2"
                     />
                   </div>
