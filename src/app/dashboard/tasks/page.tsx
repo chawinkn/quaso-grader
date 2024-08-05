@@ -1,15 +1,11 @@
 import { Suspense } from 'react'
 import { columns } from './columns'
-import TasksTable from '@/components/admin/AdminTaskTable'
-import { TaskData } from './columns'
 import { headers } from 'next/headers'
-import { getPassCount } from '@/app/tasks/page'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
 import { TableSkeleton } from '@/components/skeletons'
+import GroupsTable from '@/components/admin/AdminGroupTable'
 
-async function getTaskList() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks`, {
+async function getGroupList() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks/groups`, {
     method: 'GET',
     headers: new Headers(headers()),
   })
@@ -20,32 +16,17 @@ async function getTaskList() {
   return data
 }
 
-async function TaskTable() {
-  const [taskList, passCountList] = await Promise.all([
-    getTaskList(),
-    getPassCount(),
-  ])
+async function GroupTable() {
+  const groupList = await getGroupList()
 
-  taskList.map((task: TaskData) => {
-    const passCount = passCountList.find(
-      (i: { task_id: string; count: number }) => i.task_id === task.id
-    )
-    task.passCount = passCount ? passCount.count : 0
-  })
-
-  return <TasksTable columns={columns} data={taskList} />
+  return <GroupsTable columns={columns} data={groupList} />
 }
 
-export default function AdminTasks() {
+export default function AdminGroups() {
   return (
     <div className="flex flex-col">
-      <div className="flex justify-center mb-6">
-        <Link href={'/dashboard/tasks/create'}>
-          <Button>Create Task</Button>
-        </Link>
-      </div>
       <Suspense fallback={<TableSkeleton row={5} column={6} />}>
-        <TaskTable />
+        <GroupTable />
       </Suspense>
     </div>
   )

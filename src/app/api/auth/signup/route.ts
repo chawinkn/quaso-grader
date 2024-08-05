@@ -5,8 +5,8 @@ import prisma from '@/lib/prisma'
 
 export async function POST(req: NextRequest) {
   try {
-    const { username, name, password } = await req.json()
-    if (!username || !name || !password) return badRequest()
+    const { username, name, group, password } = await req.json()
+    if (!username || !name || !group || !password) return badRequest()
 
     const existingUser = await prisma.user.findUnique({
       where: {
@@ -29,6 +29,7 @@ export async function POST(req: NextRequest) {
       data: {
         username,
         name,
+        group,
         password: hashedPassword,
         approved: approval_required === 'false',
       },

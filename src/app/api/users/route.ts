@@ -27,7 +27,7 @@ export async function PUT(req: NextRequest) {
     return unauthorized()
   }
 
-  if (user.role === "ADMIN" && role && approved !== undefined) {
+  if (user.role === 'ADMIN' && role && approved !== undefined) {
     const update = await prisma.user.update({
       where: {
         id,
@@ -38,9 +38,13 @@ export async function PUT(req: NextRequest) {
         approved,
       },
     })
-    revalidatePath(`/dashboard`);
-    //return NextResponse.error()
-    return NextResponse.json({success: true, name: update.name, role: update.role, approved: update.approved})
+    revalidatePath(`/dashboard`)
+    return NextResponse.json({
+      success: true,
+      name: update.name,
+      role: update.role,
+      approved: update.approved,
+    })
   } else {
     await prisma.user.update({
       where: {

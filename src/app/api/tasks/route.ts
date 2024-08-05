@@ -30,12 +30,18 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const data = await req.formData()
 
-  if (!data.has('id') || !data.has('title') || !data.has('fullScore'))
+  if (
+    !data.has('id') ||
+    !data.has('title') ||
+    !data.has('fullScore') ||
+    !data.has('groupId')
+  )
     return badRequest()
 
   const id = String(data.get('id'))
   const title = String(data.get('title'))
   const fullScore = Number(data.get('fullScore'))
+  const groupId = String(data.get('groupId'))
 
   const user = await getServerUser()
   if (!user || user.role !== 'ADMIN') return unauthorized()
@@ -61,6 +67,7 @@ export async function POST(req: NextRequest) {
   data.delete('id')
   data.delete('title')
   data.delete('fullScore')
+  data.delete('groupId')
 
   try {
     await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${id}`, {
@@ -77,6 +84,7 @@ export async function POST(req: NextRequest) {
       title,
       fullScore,
       private: true,
+      groupId,
     },
   })
 

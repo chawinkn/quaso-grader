@@ -12,6 +12,7 @@ async function getScoreBoard() {
       SELECT 
         submission.user_id as id, 
         "user".name, 
+        "user".group,
         SUM(submission.max_score) as score
       FROM (
         SELECT 
@@ -34,7 +35,7 @@ async function getScoreBoard() {
       INNER JOIN 
         "user" ON submission.user_id = "user".id
       GROUP BY 
-        submission.user_id, "user".name
+        submission.user_id, "user".name, "user".group
       ORDER BY
         score DESC, "user".name
     `
@@ -47,14 +48,16 @@ async function getScoreBoard() {
     rank: number
     id: string
     name: string
+    group: string
     passCount: number
     score: number
   }>
 
-  return serialized.map(({ id, name, score }, index) => ({
+  return serialized.map(({ id, name, score, group }, index) => ({
     rank: index + 1,
     id,
     name,
+    group,
     passCount: 0,
     score,
   }))

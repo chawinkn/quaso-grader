@@ -7,12 +7,6 @@ import { Switch } from '@/components/ui/switch'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
 
 import { MoreHorizontal } from 'lucide-react'
 
@@ -23,19 +17,42 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import Link from 'next/link'
+import { Checkbox } from '../ui/checkbox'
 
 export type UserData = {
   id: number
   username: string
   name: string
+  group: string
   role: string
   createdAt: string
   updatedAt: string
   approved: boolean
 }
 
-// ก็อปมาเลย ไอ่น้อง
 export const columns: ColumnDef<UserData>[] = [
+  {
+    id: 'select',
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && 'indeterminate')
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     accessorKey: 'id',
     header: ({ column }) => {
@@ -47,9 +64,35 @@ export const columns: ColumnDef<UserData>[] = [
               variant="ghost"
               size="icon"
               className="border-0"
-              onClick={() => {
-                column.toggleSorting(column.getIsSorted() == 'asc')
-              }}
+              onClick={() =>
+                column.toggleSorting(
+                  column.getIsSorted() === 'asc' || !column.getIsSorted()
+                )
+              }
+            >
+              <ArrowUpDown className="w-4 h-4" />
+            </Button>
+          </span>
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: 'group',
+    header: ({ column }) => {
+      return (
+        <div>
+          <span className="flex items-center">
+            Group
+            <Button
+              variant="ghost"
+              size="icon"
+              className="border-0"
+              onClick={() =>
+                column.toggleSorting(
+                  column.getIsSorted() === 'asc' || !column.getIsSorted()
+                )
+              }
             >
               <ArrowUpDown className="w-4 h-4" />
             </Button>
@@ -190,13 +233,11 @@ export const columns: ColumnDef<UserData>[] = [
         setIsChanged(false)
       }
       return (
-        <div className="text-center">
-          <Switch
-            onClick={handleChange}
-            disabled={isChanged}
-            checked={role === 'ADMIN'}
-          />
-        </div>
+        <Switch
+          onClick={handleChange}
+          disabled={isChanged}
+          checked={role === 'ADMIN'}
+        />
       )
     },
   },
@@ -269,85 +310,11 @@ export const columns: ColumnDef<UserData>[] = [
         setIsChanged(false)
       }
       return (
-        <div className="text-center pr-4">
-          <Switch
-            disabled={isChanged}
-            onClick={handleChange}
-            checked={approved}
-          />
-        </div>
-      )
-    },
-  },
-  {
-    accessorKey: 'createdAt',
-    header: ({ column }) => {
-      return (
-        <div>
-          <span className="flex items-center">
-            Date Created
-            <Button
-              variant="ghost"
-              size="icon"
-              className="border-0"
-              onClick={() =>
-                column.toggleSorting(
-                  column.getIsSorted() === 'asc' || !column.getIsSorted()
-                )
-              }
-            >
-              <ArrowUpDown className="w-4 h-4" />
-            </Button>
-          </span>
-        </div>
-      )
-    },
-    cell: ({ row }) => {
-      const date = new Date(row.getValue('createdAt'))
-
-      return (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>{date.toLocaleDateString()}</TooltipTrigger>
-            <TooltipContent>{date.toLocaleTimeString()}</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      )
-    },
-  },
-  {
-    accessorKey: 'updatedAt',
-    header: ({ column }) => {
-      return (
-        <div>
-          <span className="flex items-center">
-            Date Updated
-            <Button
-              variant="ghost"
-              size="icon"
-              className="border-0"
-              onClick={() =>
-                column.toggleSorting(
-                  column.getIsSorted() === 'asc' || !column.getIsSorted()
-                )
-              }
-            >
-              <ArrowUpDown className="w-4 h-4" />
-            </Button>
-          </span>
-        </div>
-      )
-    },
-    cell: ({ row }) => {
-      const date = new Date(row.getValue('updatedAt'))
-
-      return (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>{date.toLocaleDateString()}</TooltipTrigger>
-            <TooltipContent>{date.toLocaleTimeString()}</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <Switch
+          disabled={isChanged}
+          onClick={handleChange}
+          checked={approved}
+        />
       )
     },
   },
@@ -375,9 +342,9 @@ export const columns: ColumnDef<UserData>[] = [
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
+            <Button variant="ghost" className="w-8 h-8 p-0">
               <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
+              <MoreHorizontal className="w-4 h-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">

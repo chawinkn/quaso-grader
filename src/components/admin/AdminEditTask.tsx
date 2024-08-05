@@ -34,7 +34,7 @@ import {
 } from '../ui/select'
 import { Label } from '../ui/label'
 import { useRouter } from 'next/navigation'
-import { TaskData } from '@/app/dashboard/tasks/columns'
+import { TaskData } from '@/app/dashboard/tasks/groups/[id]/columns'
 import { Badge } from '../ui/badge'
 import Link from 'next/link'
 import JSZip from 'jszip'
@@ -550,7 +550,7 @@ export default function EditTaskLayout({
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
                     <FormLabel>Testcases</FormLabel>
-                    <div className="flex space-x-4 items-center my-2">
+                    <div className="flex items-center my-2 space-x-4">
                       <Switch
                         disabled={status !== 'OK'}
                         onClick={handleManualChange}
@@ -564,7 +564,7 @@ export default function EditTaskLayout({
                       id="testcases"
                       type="file"
                       accept=".zip"
-                      className="transition-transform active:scale-95 cursor-pointer"
+                      className="transition-transform cursor-pointer active:scale-95"
                       disabled={manualTestcases || status !== 'OK'}
                       {...testcasesRef}
                     />

@@ -48,7 +48,7 @@ type Manifest = {
   subtasks: Array<{ full_score: number; num_testcases: number }>
 }
 
-export default function CreateTaskLayout() {
+export default function CreateTaskLayout({ groupId }: { groupId: string }) {
   const [isSubmit, setSubmit] = useState(false)
   const [numSubtasks, setnumSubtasks] = useState(0)
   const [numTestcases, setnumTestcases] = useState(0)
@@ -58,8 +58,8 @@ export default function CreateTaskLayout() {
   let formSchema = z.object({
     id: z
       .string()
-      .regex(/^[\w]+$/, {
-        message: 'Only alphabets, numbers and underscore',
+      .regex(/^[a-z0-9_]+$/, {
+        message: 'Only lowercase, numbers and underscore',
       })
       .min(3, { message: 'Task id must be 3-25 characters.' })
       .max(20, { message: 'Task id must be 3-25 characters.' }),
@@ -254,6 +254,7 @@ export default function CreateTaskLayout() {
     formData.append('id', id)
     formData.append('title', title)
     formData.append('fullScore', String(full_score))
+    formData.append('groupId', groupId)
 
     try {
       const res = await fetch('/api/tasks', {
@@ -299,7 +300,7 @@ export default function CreateTaskLayout() {
                   </FormControl>
                   <FormMessage />
                   <FormDescription>
-                    Only alphabets, numbers and underscore (Cannot change later)
+                    Only lowercase, numbers and underscore (Cannot change later)
                   </FormDescription>
                 </FormItem>
               )}
@@ -368,7 +369,7 @@ export default function CreateTaskLayout() {
                     id="description"
                     type="file"
                     accept=".pdf"
-                    className="transition-transform active:scale-95 cursor-pointer"
+                    className="transition-transform cursor-pointer active:scale-95"
                     {...descriptionRef}
                   />
                   <FormMessage />
@@ -384,7 +385,7 @@ export default function CreateTaskLayout() {
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>Testcases</FormLabel>
-                  <div className="flex space-x-4 items-center my-2">
+                  <div className="flex items-center my-2 space-x-4">
                     <Switch onClick={handleManualChange} />
                     <Label>Manual testcases</Label>
                   </div>
@@ -396,7 +397,7 @@ export default function CreateTaskLayout() {
                     id="testcases"
                     type="file"
                     accept=".zip"
-                    className="transition-transform active:scale-95 cursor-pointer"
+                    className="transition-transform cursor-pointer active:scale-95"
                     disabled={manualTestcases}
                     {...testcasesRef}
                   />

@@ -9,6 +9,7 @@ export type ScoreboardData = {
   rank: number
   id: string
   name: string
+  group: string
   passCount: number
   score: number
 }
@@ -28,6 +29,30 @@ export const columns: ColumnDef<ScoreboardData>[] = [
               onClick={() => {
                 column.toggleSorting(column.getIsSorted() !== 'desc')
               }}
+            >
+              <ArrowUpDown className="w-4 h-4" />
+            </Button>
+          </span>
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: 'group',
+    header: ({ column }) => {
+      return (
+        <div>
+          <span className="flex items-center">
+            Group
+            <Button
+              variant="ghost"
+              size="icon"
+              className="border-0"
+              onClick={() =>
+                column.toggleSorting(
+                  column.getIsSorted() === 'asc' || !column.getIsSorted()
+                )
+              }
             >
               <ArrowUpDown className="w-4 h-4" />
             </Button>

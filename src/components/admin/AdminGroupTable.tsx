@@ -4,7 +4,6 @@ import {
   ColumnDef,
   ColumnFiltersState,
   SortingState,
-  VisibilityState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -42,28 +41,40 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select'
-import { Label } from '../ui/label'
-import { DataTableViewOptions } from '../ViewOptions'
-import Link from 'next/link'
+import { cn } from '@/lib/utils'
 import toast from 'react-hot-toast'
+import * as z from 'zod'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Form, FormControl, FormField, FormItem, FormMessage } from '../ui/form'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
-  id: string
 }
 
-export default function TasksTable<TData, TValue>({
+const formSchema = z.object({
+  id: z
+    .string()
+    .regex(/^[a-z0-9_]+$/, {
+      message: 'Only lowercase, numbers and underscore',
+    })
+    .min(3, { message: 'Group id must be 2-25 characters.' })
+    .max(20, { message: 'Group id must be 2-25 characters.' }),
+  name: z
+    .string()
+    .min(3, { message: 'Group name must be 3-45 characters.' })
+    .max(40, { message: 'Group name must be 3-45 characters.' }),
+})
+
+export default function GroupsTable<TData, TValue>({
   columns,
   data,
-  id,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   )
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
 
   const table = useReactTable({
     data,
@@ -74,114 +85,64 @@ export default function TasksTable<TData, TValue>({
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
     state: {
       sorting,
       columnFilters,
-      columnVisibility,
+    },
+  })
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      id: '',
+      name: '',
     },
   })
 
-  const [isSubmit, setSubmit] = React.useState(false)
   const router = useRouter()
+  const [isSubmit, setSubmit] = React.useState(false)
+  const [name, setName] = React.useState('')
+  const [id, setId] = React.useState('')
 
-  const availableAll = async () => {
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setSubmit(true)
 
-    const updatePromises = table.getSelectedRowModel().rows.map(async (row) => {
-      const id = row.getValue('id')
-      return fetch(`/api/tasks/${id}`, {
-        method: 'PUT',
+    const { id, name } = data
+
+    try {
+      const res = await fetch('/api/tasks/groups', {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          private: false,
+          id,
+          name,
         }),
-      }).then(async (res) => {
-        const result = await res.json()
-        if (!res.ok) {
-          throw new Error(result.error || 'Failed to update')
-        }
-        return result
       })
-    })
-
-    try {
-      await Promise.all(updatePromises)
-      toast.success('All tasks available successfully')
-      router.refresh()
+      if (res?.ok) {
+        toast.success('Group created successfully')
+        router.refresh()
+      } else {
+        toast.error('Failed to create group')
+      }
     } catch (error: any) {
-      toast.error(`Error: ${error.message}`)
-    } finally {
-      setSubmit(false)
+      toast.error(error.message)
     }
-  }
 
-  const unavailableAll = async () => {
-    setSubmit(true)
-
-    const updatePromises = table.getSelectedRowModel().rows.map(async (row) => {
-      const id = row.getValue('id')
-      return fetch(`/api/tasks/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          private: true,
-        }),
-      }).then(async (res) => {
-        const result = await res.json()
-        if (!res.ok) {
-          throw new Error(result.error || 'Failed to update')
-        }
-        return result
-      })
-    })
-
-    try {
-      await Promise.all(updatePromises)
-      toast.success('All tasks unavailable successfully')
-      router.refresh()
-    } catch (error: any) {
-      toast.error(`Error: ${error.message}`)
-    } finally {
-      setSubmit(false)
-    }
-  }
-
-  const deleteAll = async () => {
-    setSubmit(true)
-
-    const updatePromises = table.getSelectedRowModel().rows.map(async (row) => {
-      const id = row.getValue('id')
-
-      return fetch(`/api/tasks/${id}`, { method: 'DELETE' }).then(
-        async (res) => {
-          const result = await res.json()
-          if (!res.ok) {
-            throw new Error(result.error || 'Failed to update')
-          }
-          return result
-        }
-      )
-    })
-
-    try {
-      await Promise.all(updatePromises)
-      toast.success('All tasks deleted successfully')
-      router.refresh()
-    } catch (error: any) {
-      toast.error(`Error: ${error.message}`)
-    } finally {
-      setSubmit(false)
-    }
+    setSubmit(false)
   }
 
   return (
     <>
       <div className="flex flex-col items-center justify-center mb-5 space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
+        <Input
+          placeholder="Find name..."
+          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
+          onChange={(event) => {
+            table.getColumn('name')?.setFilterValue(event.target.value)
+          }}
+          className="w-[250px] lg:w-[300px]"
+        />
         <Input
           placeholder="Find id..."
           value={(table.getColumn('id')?.getFilterValue() as string) ?? ''}
@@ -190,57 +151,45 @@ export default function TasksTable<TData, TValue>({
           }}
           className="w-[250px] lg:w-[300px]"
         />
-        <Input
-          placeholder="Find title..."
-          value={(table.getColumn('title')?.getFilterValue() as string) ?? ''}
-          onChange={(event) => {
-            table.getColumn('title')?.setFilterValue(event.target.value)
-          }}
-          className="w-[250px] lg:w-[300px]"
-        />
-        <DataTableViewOptions table={table} />
       </div>
-      <div className="flex flex-row justify-center my-5 space-x-4">
-        <Button
-          onClick={availableAll}
-          disabled={isSubmit || !table.getSelectedRowModel().rows.length}
-        >
-          {isSubmit ? (
-            <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-          ) : (
-            'Available'
-          )}
-        </Button>
-        <Button
-          onClick={unavailableAll}
-          variant="outline"
-          disabled={isSubmit || !table.getSelectedRowModel().rows.length}
-        >
-          {isSubmit ? (
-            <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-          ) : (
-            'Unavailable'
-          )}
-        </Button>
-        <Link href={`/dashboard/tasks/create/${id}`}>
-          <Button>Create Task</Button>
-        </Link>
-        <Button
-          onClick={deleteAll}
-          variant="destructive"
-          disabled={isSubmit || !table.getSelectedRowModel().rows.length}
-        >
-          {isSubmit ? (
-            <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-          ) : (
-            'Delete'
-          )}
-        </Button>
+      <div className="flex flex-col items-center justify-center my-5 space-y-4 sm:space-x-4 sm:flex-row sm:space-y-0">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input placeholder="Group id" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input placeholder="Group name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button disabled={isSubmit} className="w-full" type="submit">
+              {isSubmit ? (
+                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+              ) : (
+                'Create Group'
+              )}
+            </Button>
+          </form>
+        </Form>
       </div>
-      <div className="flex justify-center my-5">
-        <Label>* To edit a task, it must be marked as unavailable</Label>
-      </div>
-      <Card className="w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px]">
+      <Card className="mt-5 w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px]">
         <Table>
           <TableHeader className="bg-muted/70">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -266,7 +215,13 @@ export default function TasksTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
-                  className={index % 2 === 1 ? 'bg-muted/30' : ''}
+                  className={cn(
+                    'cursor-pointer',
+                    index % 2 === 1 ? 'bg-muted/30' : ''
+                  )}
+                  onClick={() =>
+                    router.push(`/dashboard/tasks/groups/${row.getValue('id')}`)
+                  }
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -284,7 +239,7 @@ export default function TasksTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No tasks.
+                  No groups.
                 </TableCell>
               </TableRow>
             )}
