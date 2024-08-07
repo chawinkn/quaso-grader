@@ -35,10 +35,10 @@ const formSchema = z
       .string()
       .min(3, { message: 'Username must be 3-30 characters.' })
       .max(30, { message: 'Username must be 3-30 characters.' }),
-    group: z
+    className: z
       .string()
-      .min(0, { message: 'Group must be 0-10 characters.' })
-      .max(10, { message: 'Group must be 0-10 characters.' }),
+      .min(1, { message: 'Group must be 1-10 characters.' })
+      .max(10, { message: 'Group must be 1-10 characters.' }),
     password: z
       .string()
       .min(8, { message: 'Password must be 8-24 characters.' })
@@ -68,7 +68,7 @@ export default function Register() {
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setSubmit(true)
-    const { username, name, group, confirm_password, password } = data
+    const { username, name, className, confirm_password, password } = data
     try {
       const response = await fetch('/api/auth/signup', {
         method: 'POST',
@@ -78,7 +78,7 @@ export default function Register() {
         body: JSON.stringify({
           username,
           name,
-          group,
+          className,
           password,
         }),
       })
@@ -96,7 +96,7 @@ export default function Register() {
   }
 
   return (
-    <div className="flex items-center justify-center h-screen">
+    <div className="flex items-center justify-center h-[calc(100vh-57px)]">
       <Card className="w-[350px]">
         <CardHeader className="text-center">
           <CardTitle>Register</CardTitle>
@@ -130,11 +130,11 @@ export default function Register() {
               />
               <FormField
                 control={form.control}
-                name="group"
+                name="className"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input placeholder="Group" {...field} />
+                      <Input placeholder="Class name" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

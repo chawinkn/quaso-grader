@@ -80,6 +80,7 @@ export const columns: ColumnDef<GroupData>[] = [
             return toast.error(result.error)
           }
           toast.success(`GroupID: ${id} deleted successfully`)
+          router.push('/dashboard/tasks')
           router.refresh()
         } catch (error: any) {
           toast.error(`GroupID: ${id} ${error.message}`)

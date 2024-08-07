@@ -1,6 +1,6 @@
 import CreateTaskLayout from '@/components/admin/AdminCreateTask'
 import { Suspense } from 'react'
-import { getGroup } from '../../groups/[id]/page'
+import { getGroup } from '../../[id]/page'
 
 async function Layout({ id }: { id: string }) {
   await getGroup(id)

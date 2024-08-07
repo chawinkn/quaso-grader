@@ -34,7 +34,7 @@ import {
 } from '../ui/select'
 import { Label } from '../ui/label'
 import { useRouter } from 'next/navigation'
-import { TaskData } from '@/app/dashboard/tasks/groups/[id]/columns'
+import { TaskData } from '@/app/dashboard/tasks/[id]/columns'
 import { Badge } from '../ui/badge'
 import Link from 'next/link'
 import JSZip from 'jszip'
@@ -44,8 +44,8 @@ import { Textarea } from '../ui/textarea'
 const formDBSchema = z.object({
   title: z
     .string()
-    .min(3, { message: 'Task title must be 3-45 characters.' })
-    .max(40, { message: 'Task title must be 3-45 characters.' }),
+    .min(3, { message: 'Task title must be 3-40 characters.' })
+    .max(40, { message: 'Task title must be 3-40 characters.' }),
 })
 
 const formDescSchema = z.object({

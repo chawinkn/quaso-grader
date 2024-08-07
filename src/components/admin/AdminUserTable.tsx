@@ -42,13 +42,8 @@ import {
 import { Card } from '@/components/ui/card'
 import * as React from 'react'
 import { DataTableViewOptions } from '../ViewOptions'
-import {
-  DropdownMenu,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '../ui/dropdown-menu'
 import toast from 'react-hot-toast'
-import router, { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -194,10 +189,12 @@ export default function AdminUserTable<TData, TValue>({
     <>
       <div className="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
         <Input
-          placeholder="Find group..."
-          value={(table.getColumn('group')?.getFilterValue() as string) ?? ''}
+          placeholder="Find class..."
+          value={
+            (table.getColumn('className')?.getFilterValue() as string) ?? ''
+          }
           onChange={(event) => {
-            table.getColumn('group')?.setFilterValue(event.target.value)
+            table.getColumn('className')?.setFilterValue(event.target.value)
           }}
         />
         <Input

@@ -94,11 +94,11 @@ async function ProfileComponent({ id }: { id: string }) {
     <>
       <div className="flex flex-col items-center justify-center">
         <h1 className="text-2xl font-bold">{User.username}</h1>
-        {User.username === user?.name ? (
-          <UserPanel {...User} />
-        ) : (
-          <p className="text-md">{User.name}</p>
-        )}
+        <p className="text-md mt-1">{User.name}</p>
+        <Badge className="mt-2">{User.className}</Badge>
+        <div className="mt-6">
+          {User.username === user?.name ? <UserPanel {...User} /> : <></>}
+        </div>
         <div className="flex flex-row mt-6 space-x-4">
           <div className="px-4 py-2 text-center rounded-lg bg-muted">
             <p className="text-muted-foreground">Solved</p>

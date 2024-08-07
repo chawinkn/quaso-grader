@@ -7,7 +7,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from '@/components/ui/form'
 import { Loader2 } from 'lucide-react'
@@ -17,6 +16,13 @@ import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '../ui/dialog'
 
 export type UserData = {
   username: string
@@ -70,29 +76,38 @@ export default function UserPanel(props: UserData) {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem className="space-y-4">
-              <p className="text-center text-md">{props.name}</p>
-              <FormControl>
-                <Input placeholder="Display name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button disabled={isSubmit} className="w-full" type="submit">
-          {isSubmit ? (
-            <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-          ) : (
-            'Save'
-          )}
-        </Button>
-      </form>
-    </Form>
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button>Change Display Name</Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Change Display Name</DialogTitle>
+        </DialogHeader>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem className="space-y-4">
+                  <FormControl>
+                    <Input placeholder="Display name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button disabled={isSubmit} className="w-full" type="submit">
+              {isSubmit ? (
+                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+              ) : (
+                'Save'
+              )}
+            </Button>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
   )
 }

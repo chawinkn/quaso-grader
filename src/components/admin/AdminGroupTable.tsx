@@ -21,7 +21,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
-import { Card } from '@/components/ui/card'
+import { Card, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
@@ -47,6 +47,13 @@ import * as z from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '../ui/form'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '../ui/dialog'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -57,14 +64,14 @@ const formSchema = z.object({
   id: z
     .string()
     .regex(/^[a-z0-9_]+$/, {
-      message: 'Only lowercase, numbers and underscore',
+      message: 'Only English lowercase, numbers and underscore',
     })
-    .min(3, { message: 'Group id must be 2-25 characters.' })
-    .max(20, { message: 'Group id must be 2-25 characters.' }),
+    .min(3, { message: 'Group id must be 3-20 characters.' })
+    .max(20, { message: 'Group id must be 3-20 characters.' }),
   name: z
     .string()
-    .min(3, { message: 'Group name must be 3-45 characters.' })
-    .max(40, { message: 'Group name must be 3-45 characters.' }),
+    .min(3, { message: 'Group name must be 3-40 characters.' })
+    .max(40, { message: 'Group name must be 3-40 characters.' }),
 })
 
 export default function GroupsTable<TData, TValue>({
@@ -100,8 +107,6 @@ export default function GroupsTable<TData, TValue>({
 
   const router = useRouter()
   const [isSubmit, setSubmit] = React.useState(false)
-  const [name, setName] = React.useState('')
-  const [id, setId] = React.useState('')
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setSubmit(true)
@@ -121,9 +126,11 @@ export default function GroupsTable<TData, TValue>({
       })
       if (res?.ok) {
         toast.success('Group created successfully')
+        router.push('/dashboard/tasks')
         router.refresh()
       } else {
-        toast.error('Failed to create group')
+        const data = await res.json()
+        toast.error(data.error)
       }
     } catch (error: any) {
       toast.error(error.message)
@@ -134,15 +141,7 @@ export default function GroupsTable<TData, TValue>({
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center mb-5 space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
-        <Input
-          placeholder="Find name..."
-          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-          onChange={(event) => {
-            table.getColumn('name')?.setFilterValue(event.target.value)
-          }}
-          className="w-[250px] lg:w-[300px]"
-        />
+      <div className="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
         <Input
           placeholder="Find id..."
           value={(table.getColumn('id')?.getFilterValue() as string) ?? ''}
@@ -151,45 +150,66 @@ export default function GroupsTable<TData, TValue>({
           }}
           className="w-[250px] lg:w-[300px]"
         />
+        <Input
+          placeholder="Find name..."
+          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
+          onChange={(event) => {
+            table.getColumn('name')?.setFilterValue(event.target.value)
+          }}
+          className="w-[250px] lg:w-[300px]"
+        />
       </div>
-      <div className="flex flex-col items-center justify-center my-5 space-y-4 sm:space-x-4 sm:flex-row sm:space-y-0">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="id"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input placeholder="Group id" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input placeholder="Group name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button disabled={isSubmit} className="w-full" type="submit">
-              {isSubmit ? (
-                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-              ) : (
-                'Create Group'
-              )}
-            </Button>
-          </form>
-        </Form>
+      <div className="my-2">
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button>Create Task Group</Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Create Task Group</DialogTitle>
+            </DialogHeader>
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4 mt-4"
+              >
+                <FormField
+                  control={form.control}
+                  name="id"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input placeholder="ID" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input placeholder="Name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button disabled={isSubmit} className="w-full" type="submit">
+                  {isSubmit ? (
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  ) : (
+                    'Create'
+                  )}
+                </Button>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
       </div>
-      <Card className="mt-5 w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px]">
+      <Card className="w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px]">
         <Table>
           <TableHeader className="bg-muted/70">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -220,7 +240,7 @@ export default function GroupsTable<TData, TValue>({
                     index % 2 === 1 ? 'bg-muted/30' : ''
                   )}
                   onClick={() =>
-                    router.push(`/dashboard/tasks/groups/${row.getValue('id')}`)
+                    router.push(`/dashboard/tasks/${row.getValue('id')}`)
                   }
                 >
                   {row.getVisibleCells().map((cell) => (

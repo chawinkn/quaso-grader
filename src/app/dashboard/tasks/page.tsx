@@ -24,10 +24,8 @@ async function GroupTable() {
 
 export default function AdminGroups() {
   return (
-    <div className="flex flex-col">
-      <Suspense fallback={<TableSkeleton row={5} column={6} />}>
-        <GroupTable />
-      </Suspense>
-    </div>
+    <Suspense fallback={<TableSkeleton row={5} column={2} />}>
+      <GroupTable />
+    </Suspense>
   )
 }

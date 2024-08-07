@@ -18,12 +18,13 @@ import {
 } from '@/components/ui/dropdown-menu'
 import Link from 'next/link'
 import { Checkbox } from '../ui/checkbox'
+import { Badge } from '../ui/badge'
 
 export type UserData = {
   id: number
   username: string
   name: string
-  group: string
+  className: string
   role: string
   createdAt: string
   updatedAt: string
@@ -78,12 +79,12 @@ export const columns: ColumnDef<UserData>[] = [
     },
   },
   {
-    accessorKey: 'group',
+    accessorKey: 'className',
     header: ({ column }) => {
       return (
         <div>
           <span className="flex items-center">
-            Group
+            Class
             <Button
               variant="ghost"
               size="icon"
@@ -265,7 +266,6 @@ export const columns: ColumnDef<UserData>[] = [
       )
     },
     cell: ({ row }) => {
-      const router = useRouter()
       const [approved, setApproved] = useState<boolean>(
         row.getValue('approved')
       )

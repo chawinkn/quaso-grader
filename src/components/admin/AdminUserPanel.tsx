@@ -3,6 +3,7 @@ import { headers } from 'next/headers'
 import { columns } from './AdminUserColumns'
 import AdminUserTable from './AdminUserTable'
 import { TableSkeleton } from '../skeletons'
+import { group } from 'console'
 
 async function getUserList() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {

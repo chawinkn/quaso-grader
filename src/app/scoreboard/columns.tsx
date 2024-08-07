@@ -9,7 +9,7 @@ export type ScoreboardData = {
   rank: number
   id: string
   name: string
-  group: string
+  className: string
   passCount: number
   score: number
 }
@@ -38,12 +38,12 @@ export const columns: ColumnDef<ScoreboardData>[] = [
     },
   },
   {
-    accessorKey: 'group',
+    accessorKey: 'className',
     header: ({ column }) => {
       return (
         <div>
           <span className="flex items-center">
-            Group
+            Class
             <Button
               variant="ghost"
               size="icon"

@@ -71,7 +71,7 @@ export default function LogIn() {
   }
 
   return (
-    <div className="flex items-center justify-center h-screen">
+    <div className="flex items-center justify-center h-[calc(100vh-57px)]">
       <Card className="w-[350px]">
         <CardHeader className="text-center">
           <CardTitle>Grader</CardTitle>

@@ -31,6 +31,13 @@ export async function POST(req: NextRequest) {
 
   const { id, name } = await req.json()
 
+  const existingGroup = await prisma.group.findFirst({
+    where: {
+      id,
+    },
+  })
+  if (existingGroup) return badRequest('Group already exists')
+
   await prisma.group.create({
     data: {
       id,

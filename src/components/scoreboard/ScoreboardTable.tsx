@@ -75,6 +75,16 @@ export default function ScoreboardTable<TData, TValue>({
     <>
       <div className="flex flex-col items-center mb-5 space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
         <Input
+          placeholder="Find class..."
+          value={
+            (table.getColumn('className')?.getFilterValue() as string) ?? ''
+          }
+          onChange={(event) => {
+            table.getColumn('className')?.setFilterValue(event.target.value)
+          }}
+          className="w-[250px] lg:w-[300px]"
+        />
+        <Input
           placeholder="Find user..."
           value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
           onChange={(event) => {

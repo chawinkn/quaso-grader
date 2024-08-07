@@ -32,7 +32,7 @@ model User {
   username      String?        @unique
   name          String?
   password      String
-  group         String?
+  className     String?        @map("class_name")
   role          UserRole       @default(USER)
   submissions   Submission[]
   createdAt     DateTime       @default(now()) @map("created_at")
@@ -41,8 +41,6 @@ model User {
   accounts      Account[]
   sessions      Session[]
   approved      Boolean        @default(false)
-  Group         Group?         @relation(fields: [groupId], references: [id])
-  groupId       String?
 
   @@map("user")
 }
@@ -65,7 +63,6 @@ model Group {
   id    String @id
   name  String
   tasks Task[]
-  User  User[]
 
   @@map("group")
 }

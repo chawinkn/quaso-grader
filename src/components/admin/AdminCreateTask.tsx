@@ -59,14 +59,14 @@ export default function CreateTaskLayout({ groupId }: { groupId: string }) {
     id: z
       .string()
       .regex(/^[a-z0-9_]+$/, {
-        message: 'Only lowercase, numbers and underscore',
+        message: 'Only English lowercase, numbers and underscore',
       })
-      .min(3, { message: 'Task id must be 3-25 characters.' })
-      .max(20, { message: 'Task id must be 3-25 characters.' }),
+      .min(3, { message: 'Task id must be 3-20 characters.' })
+      .max(20, { message: 'Task id must be 3-20 characters.' }),
     title: z
       .string()
-      .min(3, { message: 'Task title must be 3-45 characters.' })
-      .max(40, { message: 'Task title must be 3-45 characters.' }),
+      .min(3, { message: 'Task title must be 3-40 characters.' })
+      .max(40, { message: 'Task title must be 3-40 characters.' }),
     time_limit: z.preprocess(
       (x) => (x ? x : undefined),
       z.coerce
@@ -300,7 +300,8 @@ export default function CreateTaskLayout({ groupId }: { groupId: string }) {
                   </FormControl>
                   <FormMessage />
                   <FormDescription>
-                    Only lowercase, numbers and underscore (Cannot change later)
+                    Only English lowercase, numbers and underscore (Cannot
+                    change later)
                   </FormDescription>
                 </FormItem>
               )}

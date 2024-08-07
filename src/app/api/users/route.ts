@@ -39,7 +39,7 @@ export async function PUT(req: NextRequest) {
       },
     })
     revalidatePath(`/dashboard`)
-    return NextResponse.json({
+    return json({
       success: true,
       name: update.name,
       role: update.role,
