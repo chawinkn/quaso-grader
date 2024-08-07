@@ -63,10 +63,8 @@ export default function AdminTasks({
   }
 }) {
   return (
-    <div className="flex flex-col">
-      <Suspense fallback={<TableSkeleton row={5} column={6} />}>
-        <TaskTable id={params.id} />
-      </Suspense>
-    </div>
+    <Suspense fallback={<TableSkeleton row={5} column={6} />}>
+      <TaskTable id={params.id} />
+    </Suspense>
   )
 }

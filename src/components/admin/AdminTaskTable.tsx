@@ -27,7 +27,7 @@ import { Input } from '@/components/ui/input'
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
 
-import { Button } from '../ui/button'
+import { Button, buttonVariants } from '../ui/button'
 import {
   ChevronFirst,
   ChevronLeft,
@@ -46,6 +46,16 @@ import { Label } from '../ui/label'
 import { DataTableViewOptions } from '../ViewOptions'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -181,7 +191,7 @@ export default function TasksTable<TData, TValue>({
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center mb-5 space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
+      <div className="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
         <Input
           placeholder="Find id..."
           value={(table.getColumn('id')?.getFilterValue() as string) ?? ''}
@@ -200,44 +210,69 @@ export default function TasksTable<TData, TValue>({
         />
         <DataTableViewOptions table={table} />
       </div>
-      <div className="flex flex-row justify-center my-5 space-x-4">
-        <Button
-          onClick={availableAll}
-          disabled={isSubmit || !table.getSelectedRowModel().rows.length}
-        >
-          {isSubmit ? (
-            <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-          ) : (
-            'Available'
-          )}
-        </Button>
-        <Button
-          onClick={unavailableAll}
-          variant="outline"
-          disabled={isSubmit || !table.getSelectedRowModel().rows.length}
-        >
-          {isSubmit ? (
-            <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-          ) : (
-            'Unavailable'
-          )}
-        </Button>
-        <Link href={`/dashboard/tasks/create/${id}`}>
-          <Button>Create Task</Button>
-        </Link>
-        <Button
-          onClick={deleteAll}
-          variant="destructive"
-          disabled={isSubmit || !table.getSelectedRowModel().rows.length}
-        >
-          {isSubmit ? (
-            <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-          ) : (
-            'Delete'
-          )}
-        </Button>
+      <div className="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
+        <div className="space-x-4">
+          <Button
+            onClick={availableAll}
+            disabled={isSubmit || !table.getSelectedRowModel().rows.length}
+          >
+            {isSubmit ? (
+              <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+            ) : (
+              'Available'
+            )}
+          </Button>
+          <Button
+            onClick={unavailableAll}
+            variant="outline"
+            disabled={isSubmit || !table.getSelectedRowModel().rows.length}
+          >
+            {isSubmit ? (
+              <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+            ) : (
+              'Unavailable'
+            )}
+          </Button>
+        </div>
+        <div className="space-x-4">
+          <Link href={`/dashboard/tasks/create/${id}`}>
+            <Button>Create Task</Button>
+          </Link>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant="destructive"
+                disabled={isSubmit || !table.getSelectedRowModel().rows.length}
+              >
+                {isSubmit ? (
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                ) : (
+                  'Delete'
+                )}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete all selected tasks?</AlertDialogTitle>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={deleteAll}
+                  className={buttonVariants({ variant: 'destructive' })}
+                >
+                  {isSubmit ? (
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  ) : (
+                    'Delete'
+                  )}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
       </div>
-      <div className="flex justify-center my-5">
+      <div className="flex justify-center">
         <Label>* To edit a task, it must be marked as unavailable</Label>
       </div>
       <Card className="w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px]">

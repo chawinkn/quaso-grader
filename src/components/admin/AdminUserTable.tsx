@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/table'
 
 import { Input } from '@/components/ui/input'
-import { Button } from '../ui/button'
+import { Button, buttonVariants } from '../ui/button'
 import {
   ChevronFirst,
   ChevronLeft,
@@ -44,6 +44,16 @@ import * as React from 'react'
 import { DataTableViewOptions } from '../ViewOptions'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -237,17 +247,38 @@ export default function AdminUserTable<TData, TValue>({
             'Unapprove'
           )}
         </Button>
-        <Button
-          onClick={deleteAll}
-          variant="destructive"
-          disabled={isSubmit || !table.getSelectedRowModel().rows.length}
-        >
-          {isSubmit ? (
-            <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-          ) : (
-            'Delete'
-          )}
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="destructive"
+              disabled={isSubmit || !table.getSelectedRowModel().rows.length}
+            >
+              {isSubmit ? (
+                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+              ) : (
+                'Delete'
+              )}
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete all selected users?</AlertDialogTitle>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={deleteAll}
+                className={buttonVariants({ variant: 'destructive' })}
+              >
+                {isSubmit ? (
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                ) : (
+                  'Delete'
+                )}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
       <Card className="w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px]">
         <Table>
