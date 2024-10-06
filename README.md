@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Quaso Grader
 
-## Getting Started
+You can test the Quaso Grader frontend at [quaso.vercel.app](https://quaso.vercel.app)
 
-First, run the development server:
+# Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- React (JavaScript Library)
+- Next.js (React Framework)
+- NextAuth.js (Authentication)
+- tailwindcss (CSS Framework)
+- shadcn/ui (UI Components)
+- PostgreSQL (Database)
+- prisma (Database ORM)
+- zod (Schema Validation)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+# [:link:Setup](https://gist.github.com/chawinkn/f1c7dae8bc4b0b8f489d0f775c715bcd)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Docker (Containerization)
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+# Screenshot
 
-## Learn More
+### User
 
-To learn more about Next.js, take a look at the following resources:
+<table>
+    <tr>
+        <td><image src="screenshot/quaso3.png" width="200"></td>
+        <td><image src="screenshot/quaso4.png" width="200"></td>
+    </tr>
+    <tr>
+        <td><image src="screenshot/quaso5.png" width="200"></td>
+        <td><image src="screenshot/quaso6.png" width="200"></td>
+    </tr>
+    <tr>
+        <td><image src="screenshot/quasosubmission1.png" width="200"></td>
+        <td><image src="screenshot/quasosubmission2.png" width="200"></td>
+    </tr>
+    <tr>
+        <td><image src="screenshot/quaso7.png" width="200"></td>
+        <td><image src="screenshot/quaso8.png" width="200"></td>
+    </tr>
+</table>
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Admin
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+<table>
+    <tr>
+        <td><image src="screenshot/quaso9.png" width="200"></td>
+        <td><image src="screenshot/quaso10.png" width="200"></td>
+    </tr>
+    <tr>
+        <td><image src="screenshot/quaso11.png" width="200"></td>
+        <td><image src="screenshot/quaso12.png" width="200"></td>
+    </tr>
+    <tr>
+        <td><image src="screenshot/quaso13.png" width="200"></td>
+        <td><image src="screenshot/quaso14.png" width="200"></td>
+    </tr>
+    <tr>
+        <td><image src="screenshot/quaso15.png" width="200"></td>
+    </tr>
+</table>
 
-## Deploy on Vercel
+# Known Issues
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- NextAuth.js does not support session management for authentication using credentials.
