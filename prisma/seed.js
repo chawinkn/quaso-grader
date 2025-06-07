@@ -1,15 +1,16 @@
-const { PrismaClient } = require('@prisma/client')
+const { PrismaClient, Prisma } = require('@prisma/client')
 const bcrypt = require('bcrypt')
 
 const prisma = new PrismaClient()
 
 async function seed_root() {
   const hashedPassword = bcrypt.hashSync('root1234', 10)
+  const username = 'rootroot'
   try {
     await prisma.user.create({
       data: {
-        username: 'rootroot',
-        name: 'rootroot',
+        username,
+        name: username,
         password: hashedPassword,
         role: 'ADMIN',
         approved: true,
@@ -17,7 +18,17 @@ async function seed_root() {
     })
     console.log('seed_root: Root created')
   } catch (err) {
-    console.log('seed_root: Root already exists')
+    if (err instanceof Prisma.PrismaClientKnownRequestError) {
+      if (err.code === 'P2002') {
+        console.log(`seed_root: ${username} already exists`)
+      } else {
+        console.error(
+          `seed_root: Prisma error code ${error.code}: ${error.message}`
+        )
+      }
+    } else {
+      console.error(`seed_root: Unexpected error: ${error}`)
+    }
   }
 }
 
@@ -38,7 +49,17 @@ async function seed_config() {
       })
       console.log(`seed_config: ${d.key} created`)
     } catch (err) {
-      console.log(`seed_config: ${d.key} already exists`)
+      if (err instanceof Prisma.PrismaClientKnownRequestError) {
+        if (err.code === 'P2002') {
+          console.log(`seed_config: ${d.key} already exists`)
+        } else {
+          console.error(
+            `seed_root: Prisma error code ${error.code}: ${error.message}`
+          )
+        }
+      } else {
+        console.error(`seed_root: Unexpected error: ${error}`)
+      }
     }
   }
 }
