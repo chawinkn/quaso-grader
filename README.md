@@ -59,7 +59,3 @@ You can test the Quaso Grader frontend at [quaso.vercel.app](https://quaso.verce
         <td><image src="screenshot/quaso15.png" width="200"></td>
     </tr>
 </table>
-
-# Known Issues
-
-- NextAuth.js does not support session management for authentication using credentials.
