@@ -2,17 +2,15 @@
 
 import {
   ColumnDef,
+  RowData,
   ColumnFiltersState,
   RowModel,
   SortingState,
-  VisibilityState,
+  ColumnVisibilityState,
   flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
+  useTable,
 } from '@tanstack/react-table'
+import { features, Features } from '@/lib/table'
 
 import {
   Table,
@@ -39,7 +37,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select'
-import { Card } from '@/components/ui/card'
 import * as React from 'react'
 import { DataTableViewOptions } from '../ViewOptions'
 import toast from 'react-hot-toast'
@@ -55,31 +52,28 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
+interface DataTableProps<TData extends RowData> {
+  columns: ColumnDef<Features, TData>[]
   data: TData[]
 }
 
-export default function AdminUserTable<TData, TValue>({
+export default function AdminUserTable<TData extends RowData>({
   columns,
   data,
-}: DataTableProps<TData, TValue>) {
+}: DataTableProps<TData>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   )
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
+    React.useState<ColumnVisibilityState>({})
 
-  const table = useReactTable({
+  const table = useTable({
+    features,
     data,
     columns,
-    getCoreRowModel: getCoreRowModel(),
     onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     state: {
       sorting,
@@ -280,9 +274,9 @@ export default function AdminUserTable<TData, TValue>({
           </AlertDialogContent>
         </AlertDialog>
       </div>
-      <Card className="w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px]">
+      <div className="w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px]">
         <Table>
-          <TableHeader className="bg-muted/80">
+          <TableHeader className="bg-muted">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
@@ -306,7 +300,7 @@ export default function AdminUserTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
-                  className={index % 2 ? 'bg-muted/30' : ''}
+                  className={index % 2 ? 'bg-muted/50' : ''}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -330,18 +324,18 @@ export default function AdminUserTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
-      </Card>
+      </div>
       <div className="flex flex-row items-center justify-center mt-4 space-x-6 lg:space-x-8">
         <div className="flex items-center space-x-2">
           <p className="text-sm font-medium">Rows per page</p>
           <Select
-            value={`${table.getState().pagination.pageSize}`}
+            value={`${table.state.pagination.pageSize}`}
             onValueChange={(value) => {
               table.setPageSize(Number(value))
             }}
           >
             <SelectTrigger className="h-8 w-[65px]">
-              <SelectValue placeholder={table.getState().pagination.pageSize} />
+              <SelectValue placeholder={table.state.pagination.pageSize} />
             </SelectTrigger>
             <SelectContent side="top">
               {[10, 20, 30, 40, 50].map((pageSize) => (
@@ -353,8 +347,7 @@ export default function AdminUserTable<TData, TValue>({
           </Select>
         </div>
         <div className="text-sm font-medium">
-          Page {table.getState().pagination.pageIndex + 1} of{' '}
-          {table.getPageCount()}
+          Page {table.state.pagination.pageIndex + 1} of {table.getPageCount()}
         </div>
         <div className="flex items-center space-x-2">
           <Button

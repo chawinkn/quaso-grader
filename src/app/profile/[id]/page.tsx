@@ -2,7 +2,7 @@ import { headers } from 'next/headers'
 import { notFound } from 'next/navigation'
 import { getServerUser } from '@/lib/session'
 import UserPanel from '@/components/profile/UserPanel'
-import { Prisma } from '@prisma/client'
+import { Prisma } from '@/generated/prisma/client'
 import prisma from '@/lib/prisma'
 import { Badge } from '@/components/ui/badge'
 import Link from 'next/link'
@@ -14,7 +14,7 @@ async function getUser(userId: number) {
     `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`,
     {
       method: 'GET',
-      headers: new Headers(headers()),
+      headers: new Headers(await headers()),
     }
   )
   if (!res.ok) {
@@ -119,7 +119,7 @@ async function ProfileComponent({ id }: { id: string }) {
           List of solved problems
         </h1>
         <div className="grid grid-cols-1 gap-4 mt-6 md:grid-cols-2 lg:grid-cols-3">
-          {passList.map((pass) => (
+          {passList?.map((pass) => (
             <Badge
               variant="outline"
               key={pass.task_id}
@@ -136,20 +136,21 @@ async function ProfileComponent({ id }: { id: string }) {
   )
 }
 
-export default function Profile({
+export default async function Profile({
   params,
 }: {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }) {
-  if (isNaN(Number(params.id))) return notFound()
+  const { id } = await params
+  if (isNaN(Number(id))) return notFound()
 
   return (
     <div className="flex flex-col items-center min-h-[calc(100vh-57px)] py-10 space-y-6">
       <h1 className="text-3xl font-bold">PROFILE</h1>
       <Suspense fallback={<ProfileSkeleton />}>
-        <ProfileComponent id={params.id} />
+        <ProfileComponent id={id} />
       </Suspense>
     </div>
   )

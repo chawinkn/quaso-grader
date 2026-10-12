@@ -1,6 +1,7 @@
 'use client'
 
 import { ColumnDef } from '@tanstack/react-table'
+import { Features } from '@/lib/table'
 import { ArrowUpDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
@@ -17,8 +18,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import Link from 'next/link'
-import { Checkbox } from '../ui/checkbox'
-import { Badge } from '../ui/badge'
+import { Checkbox } from '../../../components/ui/checkbox'
+import { Badge } from '../../../components/ui/badge'
 
 export type UserData = {
   id: number
@@ -31,7 +32,7 @@ export type UserData = {
   approved: boolean
 }
 
-export const columns: ColumnDef<UserData>[] = [
+export const columns: ColumnDef<Features, UserData>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -341,7 +342,7 @@ export const columns: ColumnDef<UserData>[] = [
 
       return (
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+          <DropdownMenuTrigger>
             <Button variant="ghost" className="w-8 h-8 p-0">
               <span className="sr-only">Open menu</span>
               <MoreHorizontal className="w-4 h-4" />

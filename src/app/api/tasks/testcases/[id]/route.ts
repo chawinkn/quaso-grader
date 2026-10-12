@@ -7,17 +7,18 @@ export async function GET(
   {
     params,
   }: {
-    params: {
+    params: Promise<{
       id: string
-    }
+    }>
   }
 ) {
+  const { id } = await params
   const user = await getServerUser()
   if (!user || user.role !== 'ADMIN') return unauthorized()
 
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${params.id}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${id}`,
       {
         method: 'GET',
         headers: {

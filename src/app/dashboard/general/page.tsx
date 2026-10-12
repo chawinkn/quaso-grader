@@ -6,7 +6,7 @@ import { Suspense } from 'react'
 export async function getConfig(key: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/config/${key}`, {
     method: 'GET',
-    headers: new Headers(headers()),
+    headers: new Headers(await headers()),
   })
   if (!res.ok) {
     return null

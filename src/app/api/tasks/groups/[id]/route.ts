@@ -8,11 +8,12 @@ export async function GET(
   {
     params,
   }: {
-    params: {
+    params: Promise<{
       id: string
-    }
+    }>
   }
 ) {
+  const { id } = await params
   const user = await getServerUser()
   if (!user || user.role !== 'ADMIN') return unauthorized()
 
@@ -21,7 +22,7 @@ export async function GET(
       id: 'asc',
     },
     where: {
-      groupId: params.id,
+      groupId: id,
     },
   })
   return json(res)
@@ -32,29 +33,30 @@ export async function DELETE(
   {
     params,
   }: {
-    params: {
+    params: Promise<{
       id: string
-    }
+    }>
   }
 ) {
+  const { id } = await params
   const user = await getServerUser()
   if (!user || user.role !== 'ADMIN') return unauthorized()
 
   await prisma.submission.deleteMany({
     where: {
       task: {
-        groupId: params.id,
+        groupId: id,
       },
     },
   })
   await prisma.task.deleteMany({
     where: {
-      groupId: params.id,
+      groupId: id,
     },
   })
   await prisma.group.delete({
     where: {
-      id: params.id,
+      id: id,
     },
   })
 

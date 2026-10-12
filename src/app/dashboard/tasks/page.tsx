@@ -7,7 +7,7 @@ import GroupsTable from '@/components/admin/AdminGroupTable'
 async function getGroupList() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks/groups`, {
     method: 'GET',
-    headers: new Headers(headers()),
+    headers: new Headers(await headers()),
   })
   if (!res.ok) {
     return null

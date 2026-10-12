@@ -1,10 +1,17 @@
 'use client'
 
-import { ColumnDef, RowPagination } from '@tanstack/react-table'
+import { ColumnDef } from '@tanstack/react-table'
+import { Features } from '@/lib/table'
 import { ArrowUpDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 export type SubmissionData = {
   id: number
@@ -24,37 +31,7 @@ export type SubmissionData = {
   memory: number
 }
 
-export function formatDateTime(dateTimeString: string) {
-  const date = new Date(dateTimeString)
-
-  const day = date.getDate()
-  const month = date.getMonth()
-  const year = date.getFullYear()
-  const monthNames = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ]
-  const formattedDate = `${day} ${monthNames[month]} ${year}`
-
-  const hours = date.getHours().toString().padStart(2, '0')
-  const minutes = date.getMinutes().toString().padStart(2, '0')
-
-  const formattedTime = `${hours}:${minutes}`
-
-  return { formattedDate, formattedTime }
-}
-
-export const columns: ColumnDef<SubmissionData>[] = [
+export const columns: ColumnDef<Features, SubmissionData>[] = [
   {
     accessorKey: 'id',
     header: ({ column }) => {
@@ -99,12 +76,24 @@ export const columns: ColumnDef<SubmissionData>[] = [
       )
     },
     cell: ({ row }) => {
+      const submissionDate = new Date(row.getValue('submittedAt'))
+
       return (
-        <div className="hidden sm:flex">
-          {formatDateTime(row.getValue('submittedAt')).formattedDate}
-          <br />
-          {formatDateTime(row.getValue('submittedAt')).formattedTime}
-        </div>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              {submissionDate.toLocaleDateString()}
+            </TooltipTrigger>
+            <TooltipContent>
+              {submissionDate.toLocaleTimeString()}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+        // <div className="hidden sm:flex">
+        //   {formatDateTime(row.getValue('submittedAt')).formattedDate}
+        //   <br />
+        //   {formatDateTime(row.getValue('submittedAt')).formattedTime}
+        // </div>
       )
     },
   },
@@ -213,7 +202,7 @@ export const columns: ColumnDef<SubmissionData>[] = [
         style = 'bg-green-500 dark:bg-green-900'
       } else if (score === -1) {
         score = 0
-        style = 'bg-primary dark:bg-muted/90'
+        style = 'bg-primary dark:bg-muted'
       }
       return (
         <div

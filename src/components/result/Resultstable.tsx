@@ -1,13 +1,7 @@
 'use client'
 
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from '@tanstack/react-table'
+import { ColumnDef, flexRender, RowData, useTable } from '@tanstack/react-table'
+import { features, Features } from '@/lib/table'
 
 import {
   Table,
@@ -18,31 +12,28 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
-import { Card } from '@/components/ui/card'
 import * as React from 'react'
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
+interface DataTableProps<TData extends RowData> {
+  columns: ColumnDef<Features, TData>[]
   data: TData[]
 }
 
-export default function ResultsTable<TData, TValue>({
+export default function ResultsTable<TData extends RowData>({
   columns,
   data,
-}: DataTableProps<TData, TValue>) {
-  const table = useReactTable({
+}: DataTableProps<TData>) {
+  const table = useTable({
+    features,
     data,
     columns,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
   })
 
   return (
     <div className="flex flex-col w-full items-center justify-center h-max">
-      <Card className="w-10/12 lg:w-[950px] min-h-max">
+      <div className="w-10/12 lg:w-[950px] min-h-max">
         <Table>
-          <TableHeader className="bg-muted/80">
+          <TableHeader className="bg-muted">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
@@ -72,7 +63,7 @@ export default function ResultsTable<TData, TValue>({
                         ? index % 2
                         : (row.getValue('subtask_index') as number) % 2
                     )
-                      ? 'bg-muted/30'
+                      ? 'bg-muted/50'
                       : ''
                   }
                 >
@@ -98,7 +89,7 @@ export default function ResultsTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
-      </Card>
+      </div>
     </div>
   )
 }

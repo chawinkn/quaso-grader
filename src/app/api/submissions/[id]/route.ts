@@ -9,28 +9,29 @@ export async function GET(
   {
     params,
   }: {
-    params: {
+    params: Promise<{
       id: string
-    }
+    }>
   }
 ) {
+  const { id } = await params
   const user = await getServerUser()
   if (!user) return unauthorized()
 
-  if (isNaN(Number(params.id))) return json(null)
+  if (isNaN(Number(id))) return json(null)
 
   let submission
   if (user.role !== 'ADMIN') {
     submission = await prisma.submission.findFirst({
       where: {
-        id: Number(params.id),
+        id: Number(id),
         userId: user.id,
       },
     })
   } else {
     submission = await prisma.submission.findFirst({
       where: {
-        id: Number(params.id),
+        id: Number(id),
       },
     })
   }

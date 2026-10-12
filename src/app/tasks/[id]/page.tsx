@@ -8,7 +8,7 @@ import { TaskLayoutSkeleton } from '@/components/skeletons'
 async function getTask(id: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks/${id}`, {
     method: 'GET',
-    headers: new Headers(headers()),
+    headers: new Headers(await headers()),
   })
   if (!res.ok) {
     return null
@@ -32,17 +32,18 @@ async function TaskLayoutComponent({ id }: { id: string }) {
   return <TaskLayout task={task} config={available_language} />
 }
 
-export default function Task({
+export default async function Task({
   params,
 }: {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }) {
+  const { id } = await params
   return (
     <div className="min-h-[calc(100vh-57px)] flex">
       <Suspense fallback={<TaskLayoutSkeleton />}>
-        <TaskLayoutComponent id={params.id} />
+        <TaskLayoutComponent id={id} />
       </Suspense>
     </div>
   )

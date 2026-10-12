@@ -8,17 +8,18 @@ export async function GET(
   {
     params,
   }: {
-    params: {
+    params: Promise<{
       id: string
-    }
+    }>
   }
 ) {
+  const { id } = await params
   const user = await getServerUser()
   if (!user || user.role !== 'ADMIN') return unauthorized()
 
   const res = await prisma.group.findFirst({
     where: {
-      id: params.id,
+      id: id,
     },
   })
   return json(res)

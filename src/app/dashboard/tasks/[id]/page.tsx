@@ -10,7 +10,7 @@ import { notFound } from 'next/navigation'
 export async function getGroup(id: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/groups/${id}`, {
     method: 'GET',
-    headers: new Headers(headers()),
+    headers: new Headers(await headers()),
   })
   if (!res.ok) {
     return null
@@ -27,7 +27,7 @@ async function getTaskList(id: string) {
     `${process.env.NEXT_PUBLIC_API_URL}/tasks/groups/${id}`,
     {
       method: 'GET',
-      headers: new Headers(headers()),
+      headers: new Headers(await headers()),
     }
   )
   if (!res.ok) {
@@ -45,7 +45,7 @@ async function TaskTable({ id }: { id: string }) {
     getPassCount(),
   ])
 
-  taskList.map((task: TaskData) => {
+  taskList?.map((task: TaskData) => {
     const passCount = passCountList.find(
       (i: { task_id: string; count: number }) => i.task_id === task.id
     )
@@ -55,16 +55,17 @@ async function TaskTable({ id }: { id: string }) {
   return <TasksTable columns={columns} data={taskList} id={id} />
 }
 
-export default function AdminTasks({
+export default async function AdminTasks({
   params,
 }: {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }) {
+  const { id } = await params
   return (
     <Suspense fallback={<TableSkeleton row={5} column={6} />}>
-      <TaskTable id={params.id} />
+      <TaskTable id={id} />
     </Suspense>
   )
 }

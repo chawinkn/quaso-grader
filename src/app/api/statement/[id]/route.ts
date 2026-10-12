@@ -8,17 +8,18 @@ export async function GET(
   {
     params,
   }: {
-    params: {
+    params: Promise<{
       id: string
-    }
+    }>
   }
 ) {
+  const { id } = await params
   const user = await getServerUser()
   if (!user) return unauthorized()
 
   const task = await prisma.task.findFirst({
     where: {
-      id: params.id,
+      id: id,
     },
   })
 
@@ -29,7 +30,7 @@ export async function GET(
   } else {
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/desc/${params.id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/desc/${id}`,
         {
           method: 'GET',
           headers: {

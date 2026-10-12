@@ -22,7 +22,7 @@ import toast from 'react-hot-toast'
 
 import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { Resolver, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Loader2 } from 'lucide-react'
 import {
@@ -151,7 +151,7 @@ export default function CreateTaskLayout({ groupId }: { groupId: string }) {
   })
 
   const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(formSchema) as Resolver<z.infer<typeof formSchema>>,
     defaultValues: {
       time_limit: 1,
       memory_limit: 32,

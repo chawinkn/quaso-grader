@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import { headers } from 'next/headers'
-import { columns } from './AdminUserColumns'
+import { columns } from '../../app/dashboard/users/columns'
 import AdminUserTable from './AdminUserTable'
 import { TableSkeleton } from '../skeletons'
 import { group } from 'console'
@@ -8,7 +8,7 @@ import { group } from 'console'
 async function getUserList() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
     method: 'GET',
-    headers: new Headers(headers()),
+    headers: new Headers(await headers()),
   })
   if (!res.ok) {
     return null

@@ -2,7 +2,7 @@
 
 import { Card, CardTitle, CardContent, CardHeader } from '../ui/card'
 import { Separator } from '../ui/separator'
-import { Loader2, Trash2 } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
 import { Button } from '../ui/button'
@@ -57,7 +57,7 @@ export function AdminAnnouncementCard(props: AnnouncementData) {
 
   return (
     <Card className="w-[350px] sm:w-[450px] md:w-[600px] xl:w-[700px]">
-      <CardHeader className="flex flex-col items-center justify-between md:flex-row bg-muted/40">
+      <CardHeader className="flex flex-col items-center justify-between md:flex-row bg-muted/50">
         <CardTitle className="text-xl">{props.title}</CardTitle>
         <div className="flex flex-row-reverse items-center gap-2 grow">
           <Badge className="w-max">
@@ -72,21 +72,24 @@ export function AdminAnnouncementCard(props: AnnouncementData) {
       </CardHeader>
       <Separator />
       <CardContent className="p-6 break-all">
-        <Markdown
+        <div
           className={
             'prose dark:prose-invert text-muted-foreground dark:text-muted-foreground'
           }
-          remarkPlugins={[remarkGfm]}
-          rehypePlugins={[
-            rehypeSanitize,
-            [rehypeExternalLinks, { content: { type: 'text', value: '🔗' } }],
-          ]}
         >
-          {props.content}
-        </Markdown>
+          <Markdown
+            remarkPlugins={[remarkGfm]}
+            rehypePlugins={[
+              rehypeSanitize,
+              [rehypeExternalLinks, { content: { type: 'text', value: '🔗' } }],
+            ]}
+          >
+            {props.content}
+          </Markdown>
+        </div>
         <Button
           onClick={onClick}
-          variant={'destructive'}
+          variant="destructive"
           disabled={isSubmit}
           className="w-full mt-4"
         >
@@ -94,10 +97,7 @@ export function AdminAnnouncementCard(props: AnnouncementData) {
             <Loader2 className="w-5 h-5 mr-2 animate-spin" />
           ) : (
             <div className="flex flex-row items-center justify-center">
-              Delete{' '}
-              <span className="ml-2">
-                <Trash2 />
-              </span>
+              Delete
             </div>
           )}
         </Button>
@@ -111,7 +111,7 @@ export default function AnnouncementCard(props: AnnouncementData) {
 
   return (
     <Card className="w-[350px] sm:w-[450px] md:w-[600px] xl:w-[700px]">
-      <CardHeader className="flex flex-col items-center justify-between md:flex-row bg-muted/40">
+      <CardHeader className="flex flex-col items-center justify-between md:flex-row bg-muted/50">
         <CardTitle className="text-xl">{props.title}</CardTitle>
         <div className="flex flex-row-reverse items-center gap-2 grow">
           <Badge className="w-max">
@@ -126,18 +126,21 @@ export default function AnnouncementCard(props: AnnouncementData) {
       </CardHeader>
       <Separator />
       <CardContent className="p-6 break-all">
-        <Markdown
+        <div
           className={
             'prose dark:prose-invert text-muted-foreground dark:text-muted-foreground'
           }
-          remarkPlugins={[remarkGfm]}
-          rehypePlugins={[
-            rehypeSanitize,
-            [rehypeExternalLinks, { content: { type: 'text', value: '🔗' } }],
-          ]}
         >
-          {props.content}
-        </Markdown>
+          <Markdown
+            remarkPlugins={[remarkGfm]}
+            rehypePlugins={[
+              rehypeSanitize,
+              [rehypeExternalLinks, { content: { type: 'text', value: '🔗' } }],
+            ]}
+          >
+            {props.content}
+          </Markdown>
+        </div>
       </CardContent>
     </Card>
   )

@@ -104,9 +104,9 @@ export default function SubmissionLayout({
   return (
     <div className="flex flex-col items-center justify-center">
       <h2 className="text-3xl font-bold">Submission #{submission.id}</h2>
-      <div className="flex flex-col items-center justify-center my-5 w-10/12 lg:w-[950px] ">
+      <div className="flex flex-col items-center justify-center my-5 w-10/12 lg:w-[950px]">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-muted/50">
             <TableRow>
               <TableHead>Task</TableHead>
               <TableHead>Status</TableHead>
@@ -163,26 +163,27 @@ export default function SubmissionLayout({
               <TableCell>{displayLanguage}</TableCell>
             </TableRow>
           </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TableCell colSpan={7}>
-                <div className="flex flex-col md:items-center">
-                  <div className="w-[270px] md:w-[350px] lg:w-[650px]">
-                    <p className="text-base text-center">
-                      Score: {submission.score} / {submission.fullScore}
-                    </p>
-                    <Progress
-                      value={(submission.score / submission.fullScore) * 100}
-                      max={100}
-                      className="transition-all duration-300 ease-in-out border hover:border-2"
-                    />
-                  </div>
-                </div>
-              </TableCell>
-            </TableRow>
-          </TableFooter>
         </Table>
       </div>
+      <Card className="flex flex-col items-center w-10/12 lg:w-[950px] mb-5">
+        <div className="w-full space-y-2 py-2 px-10">
+          <p className="text-foreground text-sm font-medium text-center">
+            Score
+          </p>
+          <div className="flex flex-col items-center gap-2">
+            <div className="relative w-full max-w-md">
+              <Progress
+                value={(submission.score / submission.fullScore) * 100}
+                max={100}
+                className="transition-all duration-300 ease-in-out h-5 bg-secondary"
+              />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-sm font-normal text-primary-foreground">
+                {submission.score} / {submission.fullScore}
+              </div>
+            </div>
+          </div>
+        </div>
+      </Card>
       <ResultsTable columns={columns} data={result} />
       <div className="flex flex-col items-center w-full mt-4">
         <Card className="relative w-10/12 lg:w-[950px] overflow-hidden monaco-font">

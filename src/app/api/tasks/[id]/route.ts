@@ -8,18 +8,19 @@ export async function GET(
   {
     params,
   }: {
-    params: {
+    params: Promise<{
       id: string
-    }
+    }>
   }
 ) {
+  const { id } = await params
   const user = await getServerUser()
   if (!user) return unauthorized()
 
   if (user.role !== 'ADMIN') {
     const res = await prisma.task.findFirst({
       where: {
-        id: params.id,
+        id: id,
         private: false,
       },
     })
@@ -27,7 +28,7 @@ export async function GET(
   } else {
     const res = await prisma.task.findFirst({
       where: {
-        id: params.id,
+        id: id,
       },
     })
     return json(res)
@@ -39,23 +40,21 @@ export async function POST(
   {
     params,
   }: {
-    params: {
+    params: Promise<{
       id: string
-    }
+    }>
   }
 ) {
+  const { id } = await params
   const user = await getServerUser()
   if (!user || user.role !== 'ADMIN') return unauthorized()
 
   const data = await req.formData()
   try {
-    await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${params.id}`,
-      {
-        method: 'POST',
-        body: data,
-      }
-    )
+    await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${id}`, {
+      method: 'POST',
+      body: data,
+    })
   } catch {
     return badRequest('Failed to upload to backend api')
   }
@@ -68,18 +67,19 @@ export async function PUT(
   {
     params,
   }: {
-    params: {
+    params: Promise<{
       id: string
-    }
+    }>
   }
 ) {
+  const { id } = await params
   const user = await getServerUser()
   if (!user || user.role !== 'ADMIN') return unauthorized()
 
   const data = await req.json()
   await prisma.task.update({
     where: {
-      id: params.id,
+      id: id,
     },
     data,
   })
@@ -91,11 +91,12 @@ export async function DELETE(
   {
     params,
   }: {
-    params: {
+    params: Promise<{
       id: string
-    }
+    }>
   }
 ) {
+  const { id } = await params
   const user = await getServerUser()
   if (!user || user.role !== 'ADMIN') return unauthorized()
 
@@ -112,15 +113,15 @@ export async function DELETE(
 
   await prisma.submission.deleteMany({
     where: {
-      taskId: params.id,
+      taskId: id,
     },
   })
   await prisma.task.delete({
     where: {
-      id: params.id,
+      id: id,
     },
   })
-  await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${params.id}`, {
+  await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/task/${id}`, {
     method: 'DELETE',
   })
 

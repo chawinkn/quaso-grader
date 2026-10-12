@@ -1,6 +1,7 @@
 'use client'
 
 import { ColumnDef } from '@tanstack/react-table'
+import { Features } from '@/lib/table'
 import { ArrowUpDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
@@ -14,7 +15,7 @@ export type ScoreboardData = {
   score: number
 }
 
-export const columns: ColumnDef<ScoreboardData>[] = [
+export const columns: ColumnDef<Features, ScoreboardData>[] = [
   {
     accessorKey: 'rank',
     header: ({ column }) => {
@@ -145,7 +146,7 @@ export const columns: ColumnDef<ScoreboardData>[] = [
     },
     cell: ({ row }) => {
       return (
-        <div className="bg-primary dark:bg-muted/90 px-2.5 py-0.5 rounded text-white font-medium w-fit">
+        <div className="bg-primary dark:bg-muted px-2.5 py-0.5 rounded text-white font-medium w-fit">
           <span>{row.getValue('score')}</span>
         </div>
       )

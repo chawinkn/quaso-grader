@@ -30,7 +30,7 @@ export function NavigationBar() {
 
   return (
     <>
-      <div className="z-50 sticky top-0 bg-background flex items-center px-8 py-2 text-sm font-medium border-b md:px-16 lg:px-24">
+      <div className="sticky top-0 z-50 flex items-center px-8 text-sm font-medium border-b bg-background md:px-16 lg:px-24">
         <NavigationMenu>
           <NavigationMenuList>
             <NavigationMenuItem>
@@ -129,7 +129,7 @@ export function NavigationBar() {
               <NavigationMenuItem className="visible md:hidden">
                 <Sheet open={open} onOpenChange={setOpen}>
                   <SheetTrigger asChild>
-                    <Button className="p-2" variant={'ghost'}>
+                    <Button className="p-2" variant="ghost">
                       <Menu />
                     </Button>
                   </SheetTrigger>
@@ -195,7 +195,7 @@ export function NavigationBar() {
                       {session?.user ? (
                         <Button
                           variant="ghost"
-                          className="p-0 text-md text-left text-red-500"
+                          className="p-0 text-left text-red-500 text-md"
                           onClick={logOut}
                         >
                           Logout

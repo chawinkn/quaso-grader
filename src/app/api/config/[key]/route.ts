@@ -9,17 +9,18 @@ export async function GET(
   {
     params,
   }: {
-    params: {
+    params: Promise<{
       key: string
-    }
+    }>
   }
 ) {
+  const { key } = await params
   const user = await getServerUser()
   if (!user) return unauthorized()
 
   const config = await prisma.configuration.findUnique({
     where: {
-      key: params.key,
+      key: key,
     },
     select: {
       value: true,
@@ -34,11 +35,12 @@ export async function PUT(
   {
     params,
   }: {
-    params: {
+    params: Promise<{
       key: string
-    }
+    }>
   }
 ) {
+  const { key } = await params
   const user = await getServerUser()
   if (!user || user.role !== 'ADMIN') return unauthorized()
 
@@ -48,14 +50,14 @@ export async function PUT(
   try {
     await prisma.configuration.update({
       where: {
-        key: params.key,
+        key: key,
       },
       data: {
         value,
       },
     })
   } catch (error) {
-    return badRequest(`Config: ${params.key} not found`)
+    return badRequest(`Config: ${key} not found`)
   }
 
   revalidatePath(`/dashboard/general`)

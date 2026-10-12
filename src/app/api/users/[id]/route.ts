@@ -9,16 +9,17 @@ export async function GET(
   {
     params,
   }: {
-    params: {
+    params: Promise<{
       id: string
-    }
+    }>
   }
 ) {
-  if (isNaN(Number(params.id))) return json(null)
+  const { id } = await params
+  if (isNaN(Number(id))) return json(null)
 
   const User = await prisma.user.findUnique({
     where: {
-      id: Number(params.id),
+      id: Number(id),
     },
     select: {
       id: true,
@@ -36,25 +37,26 @@ export async function DELETE(
   {
     params,
   }: {
-    params: {
+    params: Promise<{
       id: string
-    }
+    }>
   }
 ) {
+  const { id } = await params
   const user = await getServerUser()
   if (!user || user.role !== 'ADMIN') return unauthorized()
 
-  if (isNaN(Number(params.id))) return json(null)
+  if (isNaN(Number(id))) return json(null)
 
   await prisma.submission.deleteMany({
     where: {
-      userId: Number(params.id),
+      userId: Number(id),
     },
   })
 
   await prisma.user.delete({
     where: {
-      id: Number(params.id),
+      id: Number(id),
     },
   })
 
@@ -66,21 +68,22 @@ export async function PUT(
   {
     params,
   }: {
-    params: {
+    params: Promise<{
       id: string
-    }
+    }>
   }
 ) {
+  const { id } = await params
   const user = await getServerUser()
   if (!user || user.role !== 'ADMIN') return unauthorized()
 
-  if (isNaN(Number(params.id))) return json(null)
+  if (isNaN(Number(id))) return json(null)
 
   const { role, approved } = await req.json()
 
   const User = await prisma.user.update({
     where: {
-      id: Number(params.id),
+      id: Number(id),
     },
     data: {
       role,

@@ -1,7 +1,7 @@
-const { PrismaClient, Prisma } = require('@prisma/client')
+const { PrismaPg } = require('@prisma/adapter-pg')
 const bcrypt = require('bcrypt')
 
-const prisma = new PrismaClient()
+let prisma, Prisma
 
 async function seed_root() {
   const hashedPassword = bcrypt.hashSync('root1234', 10)
@@ -23,11 +23,11 @@ async function seed_root() {
         console.log(`seed_root: ${username} already exists`)
       } else {
         console.error(
-          `seed_root: Prisma error code ${error.code}: ${error.message}`
+          `seed_root: Prisma error code ${err.code}: ${err.message}`
         )
       }
     } else {
-      console.error(`seed_root: Unexpected error: ${error}`)
+      console.error(`seed_root: Unexpected error: ${err}`)
     }
   }
 }
@@ -54,17 +54,22 @@ async function seed_config() {
           console.log(`seed_config: ${d.key} already exists`)
         } else {
           console.error(
-            `seed_root: Prisma error code ${error.code}: ${error.message}`
+            `seed_root: Prisma error code ${err.code}: ${err.message}`
           )
         }
       } else {
-        console.error(`seed_root: Unexpected error: ${error}`)
+        console.error(`seed_root: Unexpected error: ${err}`)
       }
     }
   }
 }
 
 async function main() {
+  const client = await import('../src/generated/prisma/client.ts')
+  Prisma = client.Prisma
+  prisma = new client.PrismaClient({
+    adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
+  })
   await seed_root()
   await seed_config()
 }
@@ -75,6 +80,6 @@ main()
   })
   .catch(async (e) => {
     console.error(e)
-    await prisma.$disconnect()
+    await prisma?.$disconnect()
     process.exit(1)
   })

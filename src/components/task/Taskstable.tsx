@@ -2,15 +2,13 @@
 
 import {
   ColumnDef,
+  RowData,
   ColumnFiltersState,
   SortingState,
   flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
+  useTable,
 } from '@tanstack/react-table'
+import { features, Features } from '@/lib/table'
 
 import {
   Table,
@@ -21,7 +19,6 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
-import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
@@ -42,29 +39,26 @@ import {
 } from '../ui/select'
 import { cn } from '@/lib/utils'
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
+interface DataTableProps<TData extends RowData> {
+  columns: ColumnDef<Features, TData>[]
   data: TData[]
 }
 
-export default function TasksTable<TData, TValue>({
+export default function TasksTable<TData extends RowData>({
   columns,
   data,
-}: DataTableProps<TData, TValue>) {
+}: DataTableProps<TData>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   )
 
-  const table = useReactTable({
+  const table = useTable({
+    features,
     data,
     columns,
-    getCoreRowModel: getCoreRowModel(),
     onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(),
     onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     state: {
       sorting,
       columnFilters,
@@ -93,9 +87,9 @@ export default function TasksTable<TData, TValue>({
           className="w-[250px] lg:w-[300px]"
         />
       </div>
-      <Card className="w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px]">
+      <div className="w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px]">
         <Table>
-          <TableHeader className="bg-muted/70">
+          <TableHeader className="bg-muted">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
@@ -121,7 +115,7 @@ export default function TasksTable<TData, TValue>({
                   data-state={row.getIsSelected() && 'selected'}
                   className={cn(
                     'cursor-pointer',
-                    index % 2 === 1 ? 'bg-muted/30' : ''
+                    index % 2 === 1 ? 'bg-muted/50' : ''
                   )}
                   onClick={() => {
                     router.push(`/tasks/${row.getValue('id')}`)
@@ -149,18 +143,18 @@ export default function TasksTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
-      </Card>
+      </div>
       <div className="flex items-center mt-4 space-x-6 lg:space-x-8">
         <div className="flex items-center space-x-2">
           <p className="text-sm font-medium">Rows per page</p>
           <Select
-            value={`${table.getState().pagination.pageSize}`}
+            value={`${table.state.pagination.pageSize}`}
             onValueChange={(value) => {
               table.setPageSize(Number(value))
             }}
           >
             <SelectTrigger className="h-8 w-[65px]">
-              <SelectValue placeholder={table.getState().pagination.pageSize} />
+              <SelectValue placeholder={table.state.pagination.pageSize} />
             </SelectTrigger>
             <SelectContent side="top">
               {[10, 20, 30, 40, 50].map((pageSize) => (
@@ -172,8 +166,7 @@ export default function TasksTable<TData, TValue>({
           </Select>
         </div>
         <div className="text-sm font-medium">
-          Page {table.getState().pagination.pageIndex + 1} of{' '}
-          {table.getPageCount()}
+          Page {table.state.pagination.pageIndex + 1} of {table.getPageCount()}
         </div>
         <div className="flex items-center space-x-2">
           <Button

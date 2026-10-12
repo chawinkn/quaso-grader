@@ -46,7 +46,7 @@ export function TableSkeleton({
     <>
       <div className="w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px]">
         <Table>
-          <TableHeader className="bg-muted/70">
+          <TableHeader className="bg-muted">
             <TableRow>
               {columns.map((_, index) => (
                 <TableHead key={index}>
@@ -59,7 +59,7 @@ export function TableSkeleton({
             {rows.map((_, rowIndex) => (
               <TableRow
                 key={rowIndex}
-                className={rowIndex % 2 === 1 ? 'bg-muted/30' : ''}
+                className={rowIndex % 2 === 1 ? 'bg-muted/50' : ''}
               >
                 {columns.map((_, cellIndex) => (
                   <TableCell key={cellIndex}>

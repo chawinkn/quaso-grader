@@ -14,7 +14,7 @@ export type UserData = {
 async function getAnnouncementList() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/announcements`, {
     method: 'GET',
-    headers: new Headers(headers()),
+    headers: new Headers(await headers()),
   })
   if (!res.ok) {
     return null
@@ -26,7 +26,7 @@ async function getAnnouncementList() {
 async function AnnouncementComponent({ role }: { role: string }) {
   const announcementList = await getAnnouncementList()
 
-  return announcementList.map((announcement: AnnouncementData) => {
+  return announcementList?.map((announcement: AnnouncementData) => {
     return (
       <>
         {role === 'ADMIN' ? (

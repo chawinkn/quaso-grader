@@ -1,6 +1,7 @@
 'use client'
 
 import { ColumnDef } from '@tanstack/react-table'
+import { Features } from '@/lib/table'
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import toast from 'react-hot-toast'
@@ -17,7 +18,7 @@ export type GroupData = {
   name: string
 }
 
-export const columns: ColumnDef<GroupData>[] = [
+export const columns: ColumnDef<Features, GroupData>[] = [
   {
     accessorKey: 'id',
     header: ({ column }) => {
@@ -89,7 +90,7 @@ export const columns: ColumnDef<GroupData>[] = [
 
       return (
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+          <DropdownMenuTrigger>
             <Button variant="ghost" className="w-8 h-8 p-0">
               <span className="sr-only">Open menu</span>
               <MoreHorizontal className="w-4 h-4" />

@@ -1,6 +1,7 @@
 'use client'
 
 import { ColumnDef } from '@tanstack/react-table'
+import { Features } from '@/lib/table'
 import { cn } from '@/lib/utils'
 
 export type ResultData = {
@@ -12,7 +13,7 @@ export type ResultData = {
   subtask_index: number
 }
 
-export const columns: ColumnDef<ResultData>[] = [
+export const columns: ColumnDef<Features, ResultData>[] = [
   {
     accessorKey: 'test_index',
     header: 'ID',

@@ -8,17 +8,18 @@ async function Layout({ id }: { id: string }) {
   return <CreateTaskLayout groupId={id} />
 }
 
-export default function CreateTask({
+export default async function CreateTask({
   params,
 }: {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }) {
+  const { id } = await params
   return (
     <div className="min-h-[calc(100vh-57px)] flex">
       <Suspense fallback={null}>
-        <Layout id={params.id} />
+        <Layout id={id} />
       </Suspense>
     </div>
   )

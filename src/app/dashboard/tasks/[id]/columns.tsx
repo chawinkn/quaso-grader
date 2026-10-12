@@ -1,7 +1,8 @@
 'use client'
 
 import { ColumnDef } from '@tanstack/react-table'
-import { ArrowUpDown, MoreHorizontal, Router, Trash2 } from 'lucide-react'
+import { Features } from '@/lib/table'
+import { ArrowUpDown, MoreHorizontal } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
 import toast from 'react-hot-toast'
@@ -25,7 +26,7 @@ export type TaskData = {
   score: number
 }
 
-export const columns: ColumnDef<TaskData>[] = [
+export const columns: ColumnDef<Features, TaskData>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -225,7 +226,7 @@ export const columns: ColumnDef<TaskData>[] = [
 
       return (
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+          <DropdownMenuTrigger>
             <Button variant="ghost" className="w-8 h-8 p-0">
               <span className="sr-only">Open menu</span>
               <MoreHorizontal className="w-4 h-4" />

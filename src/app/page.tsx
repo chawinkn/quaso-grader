@@ -16,7 +16,7 @@ function Landing() {
         alt="quaso logo"
         style={{ marginBottom: '5px' }}
       />
-      <h1 className="text-4xl font-black text-transparent md:text-6xl bg-gradient-to-r from-pink-400 via-orange-400 to-yellow-400 bg-clip-text ">
+      <h1 className="text-4xl font-black text-transparent md:text-6xl bg-linear-to-r from-pink-400 via-orange-400 to-yellow-400 bg-clip-text ">
         Quaso Grader
       </h1>
       <p className="pt-2 text-xl md:text-2xl text-muted-foreground">

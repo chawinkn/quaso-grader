@@ -7,7 +7,7 @@ import { EditTaskSkeleton } from '@/components/skeletons'
 async function getTask(id: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks/${id}`, {
     method: 'GET',
-    headers: new Headers(headers()),
+    headers: new Headers(await headers()),
   })
   if (!res.ok) {
     return null
@@ -61,17 +61,18 @@ async function EditTaskComponent({ id }: { id: string }) {
   )
 }
 
-export default function EditTask({
+export default async function EditTask({
   params,
 }: {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }) {
+  const { id } = await params
   return (
     <div className="min-h-[calc(100vh-57px)] flex flex-col space-y-4">
       <Suspense fallback={<EditTaskSkeleton />}>
-        <EditTaskComponent id={params.id} />
+        <EditTaskComponent id={id} />
       </Suspense>
     </div>
   )

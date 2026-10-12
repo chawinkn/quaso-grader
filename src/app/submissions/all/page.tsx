@@ -59,7 +59,7 @@ async function getUser(userId: number) {
     `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`,
     {
       method: 'GET',
-      headers: new Headers(headers()),
+      headers: new Headers(await headers()),
     }
   )
   if (!res.ok) {
@@ -96,11 +96,11 @@ async function SubmissionTable({
     <>
       {User ? (
         <div className="flex justify-center mb-5 space-x-4">
-          <Link href={'/submissions'}>
-            <Button variant={'outline'}>My submissions</Button>
+          <Link href="/submissions">
+            <Button variant="outline">My submissions</Button>
           </Link>
-          <Link href={'/submissions/all'}>
-            <Button variant={'secondary'}>All submissions</Button>
+          <Link href="/submissions/all">
+            <Button variant="secondary">All submissions</Button>
           </Link>
         </div>
       ) : (
@@ -125,15 +125,16 @@ async function SubmissionTable({
   )
 }
 
-export default function AllSubmissions({
+export default async function AllSubmissions({
   searchParams,
 }: {
-  searchParams: {
+  searchParams: Promise<{
     [key: string]: string | string[] | undefined
-  }
+  }>
 }) {
-  const pageParam = searchParams['page'] ?? '1'
-  const perPageParam = searchParams['per_page'] ?? '10'
+  const query = await searchParams
+  const pageParam = query['page'] ?? '1'
+  const perPageParam = query['per_page'] ?? '10'
 
   const page = Number(pageParam)
   const per_page = Number(perPageParam)

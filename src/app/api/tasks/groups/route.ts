@@ -4,16 +4,7 @@ import { NextRequest } from 'next/server'
 import { getServerUser } from '@/lib/session'
 import { revalidatePath } from 'next/cache'
 
-export async function GET(
-  _: NextRequest,
-  {
-    params,
-  }: {
-    params: {
-      id: string
-    }
-  }
-) {
+export async function GET(_: NextRequest) {
   const user = await getServerUser()
   if (!user || user.role !== 'ADMIN') return unauthorized()
 

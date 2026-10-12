@@ -1,7 +1,7 @@
 import TasksTable from '@/components/task/Taskstable'
 import { TaskData, columns } from './columns'
 import { headers } from 'next/headers'
-import { Prisma } from '@prisma/client'
+import { Prisma } from '@/generated/prisma/client'
 import prisma from '@/lib/prisma'
 import { TableSkeleton } from '@/components/skeletons'
 import { Suspense } from 'react'
@@ -9,7 +9,7 @@ import { Suspense } from 'react'
 async function getTaskList() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks`, {
     method: 'GET',
-    headers: new Headers(headers()),
+    headers: new Headers(await headers()),
   })
   if (!res.ok) {
     return null
@@ -21,7 +21,7 @@ async function getTaskList() {
 async function getScore() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/score`, {
     method: 'GET',
-    headers: new Headers(headers()),
+    headers: new Headers(await headers()),
   })
   if (!res.ok) {
     return null
@@ -68,7 +68,7 @@ async function TaskTable() {
     getPassCount(),
   ])
 
-  taskList.map((task: TaskData) => {
+  taskList?.map((task: TaskData) => {
     const score = scoreList.find(
       (i: { task_id: string; max: number }) => i.task_id === task.id
     )

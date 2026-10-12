@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client'
+import { Prisma } from '@/generated/prisma/client'
 import prisma from '@/lib/prisma'
 import ScoreboardTable from '@/components/scoreboard/ScoreboardTable'
 import { ScoreboardData } from './columns'

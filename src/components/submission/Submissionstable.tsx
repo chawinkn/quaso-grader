@@ -2,15 +2,13 @@
 
 import {
   ColumnDef,
+  RowData,
   ColumnFiltersState,
   SortingState,
   flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
+  useTable,
 } from '@tanstack/react-table'
+import { features, Features } from '@/lib/table'
 
 import {
   Table,
@@ -27,32 +25,29 @@ import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 
-interface DataTableProps<TData, TValue, TUsername, TRole> {
-  columns: ColumnDef<TData, TValue>[]
+interface DataTableProps<TData extends RowData, TUsername, TRole> {
+  columns: ColumnDef<Features, TData>[]
   data: TData[]
   username: TUsername
   role: TRole
 }
 
-export default function SubmissionsTable<TData, TValue, TUsername, TRole>({
-  columns,
-  data,
-  username,
-  role,
-}: DataTableProps<TData, TValue, TUsername, TRole>) {
+export default function SubmissionsTable<
+  TData extends RowData,
+  TUsername,
+  TRole,
+>({ columns, data, username, role }: DataTableProps<TData, TUsername, TRole>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   )
 
-  const table = useReactTable({
+  const table = useTable({
+    features,
     data,
     columns,
-    getCoreRowModel: getCoreRowModel(),
     onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(),
     onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
     state: {
       sorting,
       columnFilters,
@@ -81,9 +76,9 @@ export default function SubmissionsTable<TData, TValue, TUsername, TRole>({
           className="w-[250px] lg:w-[300px]"
         />
       </div>
-      <Card className="w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px]">
+      <div className="w-[350px] sm:w-[550px] md:w-[750px] lg:w-[950px]">
         <Table>
-          <TableHeader className="bg-muted/80">
+          <TableHeader className="bg-muted">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
@@ -110,7 +105,7 @@ export default function SubmissionsTable<TData, TValue, TUsername, TRole>({
                   className={cn(
                     (username === row.getValue('user') || role === 'ADMIN') &&
                       'cursor-pointer',
-                    index % 2 ? 'bg-muted/30' : ''
+                    index % 2 ? 'bg-muted/50' : ''
                   )}
                   onClick={() => {
                     if (username === row.getValue('user') || role === 'ADMIN') {
@@ -140,7 +135,7 @@ export default function SubmissionsTable<TData, TValue, TUsername, TRole>({
             )}
           </TableBody>
         </Table>
-      </Card>
+      </div>
     </>
   )
 }

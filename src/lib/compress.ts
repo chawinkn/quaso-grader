@@ -2,16 +2,18 @@
 
 import { brotliCompress, brotliDecompress } from 'zlib'
 
-export async function compressCode(code: string): Promise<Buffer> {
+export async function compressCode(
+  code: string
+): Promise<Uint8Array<ArrayBuffer>> {
   return new Promise((resolve, reject) => {
     brotliCompress(code, (err, res) => {
       if (err) reject(err)
-      resolve(res)
+      resolve(new Uint8Array(res))
     })
   })
 }
 
-export async function decompressCode(code: Buffer): Promise<string[]> {
+export async function decompressCode(code: Uint8Array): Promise<string[]> {
   return new Promise((resolve, reject) => {
     brotliDecompress(code, (err, res) => {
       if (err) reject(err)

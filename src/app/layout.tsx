@@ -25,7 +25,7 @@ const notoSans = Noto_Sans_Thai({
 })
 
 export const metadata: Metadata = {
-  title: '🥐 Quaso Grader',
+  title: 'Quaso Grader',
   description: 'Online programming grader system',
 }
 
@@ -47,7 +47,7 @@ export default async function RootLayout({
           <Toaster />
           <ThemeProvider
             attribute="class"
-            themes={['light', 'dark', 'quaso', 'salad']}
+            themes={['light', 'dark']}
             defaultTheme="system"
             disableTransitionOnChange
           >

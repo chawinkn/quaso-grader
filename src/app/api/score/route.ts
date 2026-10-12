@@ -1,7 +1,7 @@
 import prisma from '@/lib/prisma'
 import { json } from '@/utils/apiResponse'
 import { getServerUser } from '@/lib/session'
-import { Prisma } from '@prisma/client'
+import { Prisma } from '@/generated/prisma/client'
 
 export async function GET() {
   const user = await getServerUser()

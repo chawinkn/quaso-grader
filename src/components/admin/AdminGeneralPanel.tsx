@@ -20,7 +20,7 @@ import {
 
 import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { Resolver, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Checkbox } from '../ui/checkbox'
 import { Loader2 } from 'lucide-react'
@@ -95,7 +95,9 @@ export default function AdminGeneralPanel({ ...props }) {
   })
 
   const formInterval = useForm<z.infer<typeof formIntervalSchema>>({
-    resolver: zodResolver(formIntervalSchema),
+    resolver: zodResolver(formIntervalSchema) as Resolver<
+      z.infer<typeof formIntervalSchema>
+    >,
     defaultValues: {
       result_interval: config?.result_interval,
     },
@@ -294,7 +296,11 @@ export default function AdminGeneralPanel({ ...props }) {
                 <FormItem>
                   <FormLabel>result_interval</FormLabel>
                   <FormControl>
-                    <Input placeholder="Result interval" {...field} />
+                    <Input
+                      placeholder="Result interval"
+                      className="w-[85px]"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                   <FormDescription>
@@ -313,7 +319,6 @@ export default function AdminGeneralPanel({ ...props }) {
           </form>
         </Form>
       </CardContent>
-      <CardFooter></CardFooter>
     </Card>
   )
 }

@@ -10,7 +10,7 @@ async function getSubmission(submissionId: string) {
     `${process.env.NEXT_PUBLIC_API_URL}/submissions/${submissionId}`,
     {
       method: 'GET',
-      headers: new Headers(headers()),
+      headers: new Headers(await headers()),
     }
   )
   if (!res.ok) {
@@ -28,7 +28,7 @@ async function getUser(userId: number) {
     `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`,
     {
       method: 'GET',
-      headers: new Headers(headers()),
+      headers: new Headers(await headers()),
     }
   )
   if (!res.ok) {
@@ -43,7 +43,7 @@ async function getTask(taskId: string) {
     `${process.env.NEXT_PUBLIC_API_URL}/tasks/${taskId}`,
     {
       method: 'GET',
-      headers: new Headers(headers()),
+      headers: new Headers(await headers()),
     }
   )
   if (!res.ok) {
@@ -77,17 +77,18 @@ async function SubmissionLayoutComponent({ id }: { id: string }) {
   )
 }
 
-export default function Submission({
+export default async function Submission({
   params,
 }: {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }) {
+  const { id } = await params
   return (
     <div className="min-h-[calc(100vh-57px)] py-10 space-y-4">
       <Suspense fallback={<SubmissionLayoutSkeleton />}>
-        <SubmissionLayoutComponent id={params.id} />
+        <SubmissionLayoutComponent id={id} />
       </Suspense>
     </div>
   )

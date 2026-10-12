@@ -1,6 +1,7 @@
 'use client'
 
 import { ColumnDef } from '@tanstack/react-table'
+import { Features } from '@/lib/table'
 import { ArrowUpDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -14,7 +15,7 @@ export type TaskData = {
   score: number
 }
 
-export const columns: ColumnDef<TaskData>[] = [
+export const columns: ColumnDef<Features, TaskData>[] = [
   {
     accessorKey: 'id',
     header: ({ column }) => {
@@ -120,7 +121,7 @@ export const columns: ColumnDef<TaskData>[] = [
         style = 'bg-green-500 dark:bg-green-900'
       } else if (score === -1) {
         score = 0
-        style = 'bg-primary dark:bg-muted/90'
+        style = 'bg-primary dark:bg-muted'
       }
       return (
         <div
